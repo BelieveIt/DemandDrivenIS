@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:body>
+	    <ui:composition>
+			<h:form style="float:right;padding:6px;margin-right:25px;">
+			<p:outputLabel id="lanSelectLabel" for="lanSelect" value="#{lanManager.getText('language')}: " style="font-weight:bold;font-size:16px;padding:6px;"/>
+			<p:selectOneMenu id="lanSelect" value="#{lanManager.selectedLanguage}" >
+			    <p:ajax update="lanSelect" oncomplete="window.location.replace(window.location.href);"/>
+			            <f:selectItems value="#{lanManager.supportedLanguages}" var="lan"
+			            itemLabel="#{lan.languageLabel}" itemValue="#{lan.languageCode}" />
+			</p:selectOneMenu>
+			</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

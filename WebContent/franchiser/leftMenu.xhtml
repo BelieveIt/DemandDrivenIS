@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+	    <h:form>
+	   	<p:menu style="width:280px">
+	        <p:submenu label="#{lanManager.getText('merchandiseInfoManagement')}">
+	            <p:menuitem value="#{lanManager.getText('categoryManagement')}" icon="ui-icon-contact" />
+	            <p:menuitem value="#{lanManager.getText('productManagement')}" icon="ui-icon-contact" />
+	            <p:menuitem value="#{lanManager.getText('versionManagement')}" icon="ui-icon-contact" />
+	        </p:submenu>
+	    </p:menu>
+	    </h:form>
+		<div class="ui-menu ui-widget ui-widget-content ui-corner-all ui-helper-clearfix leftMenu">
+		<a href="" class="badge1" data-badge="0">Badge Notification Example</a>
+		</div>
+	    </ui:composition>
+    </h:body>
+</html>

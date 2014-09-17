@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+	<p:layout id="pageLayout" fullPage="true">
+	    <p:layoutUnit position="north" size="70">
+	    <p:graphicImage library="img" name="logo.png" />
+		<ui:insert name="headerContent" >
+	    </ui:insert>
+	    <ui:include src="lanSelect.xhtml" />
+	    </p:layoutUnit>
+
+	    <p:layoutUnit position="south" size="50" >
+	        <h:outputText style="font-weight:bold; font-size:16px;" value="Demand-Driven IS © Works Applications Co., Ltd." />
+	    </p:layoutUnit>
+
+	    <p:layoutUnit position="west" size="300"  resizable="true" collapsible="true">
+	    <ui:insert name="leftMenu" >
+	    </ui:insert>
+	    </p:layoutUnit>
+
+	    <p:layoutUnit position="center">
+	    <ui:insert name="rightContent" >
+	    </ui:insert>
+	    </p:layoutUnit>
+
+	</p:layout>
+    </h:body>
+</html>
