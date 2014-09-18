@@ -13,6 +13,7 @@ import javax.faces.event.ActionEvent;
 import merchandise.utils.CategoryUtil;
 import model.BasicListCategory;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
@@ -35,12 +36,14 @@ public class FranchiserCategory implements Serializable{
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
     }
-	public void createCategory(ActionEvent actionEvent){
+	public void openAddCategory(ActionEvent actionEvent){
+		System.out.println("here");
 		if(selectedNode == null){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Catecory Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
 		}
-
+		RequestContext.getCurrentInstance().execute("PF('addCategory').show();");
 	}
 
 	private TreeNode getCurrentTree(){
