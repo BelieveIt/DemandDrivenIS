@@ -3,7 +3,9 @@ package dao;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.BasicListCategory;
 
@@ -34,6 +36,14 @@ public class BasicListCategoryDao implements Serializable{
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new BasicListCategoryMapper());
 	}
 
+	public void insertCategory(BasicListCategory basicListCategory){
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("CATEGORY_ID", basicListCategory.getCategoryId());
+		parameters.put("VERSION_ID", basicListCategory.getVersionId());
+		parameters.put("CATEGORY_FATHERID", basicListCategory.getCategoryFatherId());
+		parameters.put("CATEGORY_NAME", basicListCategory.getCategoryName());
+		simpleJdbcInsert.execute(parameters);
+	}
 	private static final class BasicListCategoryMapper implements RowMapper<BasicListCategory> {
 	    public BasicListCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
 	    	BasicListCategory basicListCategory = new BasicListCategory();

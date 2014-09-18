@@ -17,7 +17,7 @@ xmlns:p="http://primefaces.org/ui">
 			<ui:define name="rightContent">
 
 				<h:form id="form">
-				<p:growl id="messages" showDetail="true" />
+				<p:growl id="messages" showDetail="true" life="4000"/>
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">User Info Table</span>
     			<div class="right-content-header-buttons-panel">
@@ -32,10 +32,11 @@ xmlns:p="http://primefaces.org/ui">
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
 
-			        <!--<p:ajax event="expand" update=":form:messages" listener="#{treeEventsView.onNodeExpand}" />
+			        <!--
 			        <p:ajax event="collapse" update=":form:messages" listener="#{treeEventsView.onNodeCollapse}" />
 
 			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}"/>
@@ -44,9 +45,17 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
-				
+				</h:form>
+				<h:form id="addCategoryForm">
 				<p:dialog header="Add Category" widgetVar="addCategory" width="450">
-				    <h:outputText value="This is a Modal Dialog." />
+				    <h:panelGrid columns="2" cellpadding="5">
+			            <h:outputLabel for="categoryName" value="Category Name:" />
+			            <p:inputText id="categoryName" value="#{franchiserCategory.categoryName}" required="true" label="categoryName" />
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserCategory.addCategory}" update=":form"
+			                value="Add" />
+			            </f:facet>  
+			        </h:panelGrid>
 				</p:dialog> 
 				</h:form>
     		</ui:define>
