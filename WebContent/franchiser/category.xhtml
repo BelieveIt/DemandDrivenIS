@@ -15,7 +15,38 @@ xmlns:p="http://primefaces.org/ui">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
 			<ui:define name="rightContent">
-    			<h2>category</h2>
+
+				<h:form id="form">
+				<p:growl id="messages" showDetail="true" />
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">User Info Table</span>
+    			<div class="right-content-header-buttons-panel">
+    			<p:commandButton actionListener="#{franchiserCategory.createCategory}" update="messages"
+    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" />
+				<p:commandButton type="button" value="Delete"
+				styleClass="right-content-header-button" icon="ui-icon-calculator" />
+    			<p:commandButton type="button" value="Rename"
+				styleClass="right-content-header-button" icon="ui-icon-calculator" />
+    			</div>
+    			</div>
+				<p:growl id="treeMessages" showDetail="true" />
+			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
+			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+
+			        <!--<p:ajax event="expand" update=":form:messages" listener="#{treeEventsView.onNodeExpand}" />
+			        <p:ajax event="collapse" update=":form:messages" listener="#{treeEventsView.onNodeCollapse}" />
+
+			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+			        <p:ajax event="select" update=":form:treeMessages" listener="#{franchiserCategory.onNodeSelect}" />
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}"/>
+			        </p:treeNode>
+			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+
+				</h:form>
     		</ui:define>
     	</ui:composition>
     </h:body>

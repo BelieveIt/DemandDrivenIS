@@ -18,6 +18,30 @@
 .leftMenu{
 	width:280px;
 }
+#rightContentPanel{
+	border:0px;
+	margin:0px auto;
+	width:97%;
+	text-align:center;
+}
+.right-content-header{
+	padding:3px;
+}
+.right-content-header-text{
+	font-size:19px;
+	font-weight:bold;
+}
+.right-content-header-buttons-panel{
+	width:95%;
+	height:40px;
+	margin:0px auto;
+	border:0px;
+	padding:3px;
+}
+.right-content-header-button{
+	float:left;
+	margin-right:8px;
+}
 a.ui-menuitem-link:hover{
 background-color: #dddddd;
 background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fdfdfd),color-stop(100%,#dddddd));
@@ -30,5 +54,20 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fdfdfd', endC
 background: linear-gradient(#fdfdfd,#dddddd);
 outline: 0;
 color: #000000;
-text-shadow: 0 -1px 2px rgba(255,255,255,0.5);	
+text-shadow: 0 -1px 2px rgba(255,255,255,0.5);
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
+background-color: #7D7D7D;
+background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#7D7D7D),color-stop(100%,#7D7D7D));
+background: -webkit-linear-gradient(#7D7D7D,#7D7D7D);
+background: -moz-linear-gradient(#7D7D7D,#7D7D7D);
+background: -ms-linear-gradient(#7D7D7D,#7D7D7D);
+background: -o-linear-gradient(#7D7D7D,#7D7D7D);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7D7D7D', endColorstr='#7D7D7D');
+-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7D7D7D', endColorstr='#7D7D7D');
+background: linear-gradient(#7D7D7D,#7D7D7D);
+outline: 0;
+border: 1px solid #000;
+color: #FFF;
+text-shadow: 0 -1px 2px rgba(255,255,255,0.5);
 }
