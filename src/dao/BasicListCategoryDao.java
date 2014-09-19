@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import model.BasicListCategory;
+import model.Category;
+
+import oracle.net.aso.b;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -42,7 +46,27 @@ public class BasicListCategoryDao implements Serializable{
 		parameters.put("VERSION_ID", basicListCategory.getVersionId());
 		parameters.put("CATEGORY_FATHERID", basicListCategory.getCategoryFatherId());
 		parameters.put("CATEGORY_NAME", basicListCategory.getCategoryName());
+		parameters.put("CREATE_TIME", basicListCategory.getCreateTime());
 		simpleJdbcInsert.execute(parameters);
+	}
+	public int deleteAll(){
+		String sql = "delete from BASIC_LIST_CATEGORIES";
+		return jdbcTemplate.update(sql);
+	}
+
+	public void deleteCategory(Category category){
+		String sql = "delete from BASIC_LIST_CATEGORIES where CATEGORY_ID = :categoryId";
+		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(category);
+		namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+		return;
+	}
+
+	public int updateCategory(BasicListCategory basicListCategory){
+		String sql = "update BASIC_LIST_CATEGORIES set VERSION_ID = :versionId, " +
+				"CATEGORY_FATHERID = :categoryFatherId, CATEGORY_NAME = :categoryName " +
+				"where CATEGORY_ID = :categoryId";
+		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(basicListCategory);
+		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 	}
 	private static final class BasicListCategoryMapper implements RowMapper<BasicListCategory> {
 	    public BasicListCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -51,6 +75,7 @@ public class BasicListCategoryDao implements Serializable{
 	    	basicListCategory.setVersionId(rs.getString("VERSION_ID"));
 	    	basicListCategory.setCategoryFatherId(rs.getString("CATEGORY_FATHERID"));
 	    	basicListCategory.setCategoryName(rs.getString("CATEGORY_NAME"));
+	    	basicListCategory.setCreateTime(rs.getTimestamp("CREATE_TIME"));
 	        return basicListCategory;
 	    }
 	}

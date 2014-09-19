@@ -1,5 +1,8 @@
 package utils;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class IdentityUtil {
@@ -16,4 +19,12 @@ public class IdentityUtil {
 		}
 		return buf.toString();
 	}
+	public static String randomUUID(){
+		return randomString(10);
+	}
+	public static String randomVersionId(){
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		return formatter.format(new Date())+"_"+randomString(4);
+	}
+
 }
