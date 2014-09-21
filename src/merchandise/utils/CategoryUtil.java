@@ -12,6 +12,8 @@ public class CategoryUtil {
 public static String ORDER_BY_NAME = "name";
 public static String ORDER_BY_TIME = "time";
 public static String ROOT_FATHER_ID = "0";
+public static String ROOT_FOR_PRODUCT_ID="-1";
+public static String NOT_CLASSIFIED_FOR_PRODUCT_ID="-2";
 public static TreeNode generateTree(List<? extends Category> categories, String order, String rootCategoryId){
 	TreeNode rootNode;
 	for(Category cate : categories){
@@ -27,7 +29,27 @@ public static TreeNode generateTree(List<? extends Category> categories, String 
 	return null;
 }
 
-private static void setParentNode(TreeNode rootNode){
+public static TreeNode generateTreeForProduct(List<? extends Category> categories){
+	Category rootCategory = new Category();
+	rootCategory.setCategoryId(ROOT_FOR_PRODUCT_ID);
+	rootCategory.setCategoryName("root");
+	Category notClassifiedCategory = new Category();
+	notClassifiedCategory.setCategoryId(NOT_CLASSIFIED_FOR_PRODUCT_ID);
+	notClassifiedCategory.setCategoryName("Not Classified");
+	TreeNode rootNode = new CategoryDefaultTreeNode(rootCategory, null);
+	new CategoryDefaultTreeNode(notClassifiedCategory, rootNode);
+	for(Category cate : categories){
+		if(cate.getCategoryFatherId().equals(ROOT_FATHER_ID)){
+			 TreeNode classifiedNode = new CategoryDefaultTreeNode(cate, rootNode);
+			 generateTreeRecursion(classifiedNode, categories);
+			 ((CategoryDefaultTreeNode) classifiedNode).sortByCategoryName();
+			 return rootNode;
+		}
+	}
+	return null;
+}
+
+public static void setParentNode(TreeNode rootNode){
 	List<TreeNode> treeNodes = rootNode.getChildren();
 	for(int i = 0; i < treeNodes.size(); i++){
 		treeNodes.get(i).setParent(rootNode);
@@ -116,6 +138,17 @@ public static List<Category> getCategoriesFormTree(TreeNode rootNode){
 		categories.add((Category) treeNode.getData());
 	}
 	return categories;
+}
+
+//
+public static boolean isLeafNode(TreeNode treeNode){
+	Category category = (Category) treeNode.getData();
+	if(category.getCategoryId().equals(NOT_CLASSIFIED_FOR_PRODUCT_ID)) return true;	
+	if(treeNode.getChildCount() > 0){
+		return false;
+	}else {
+		return true;
+	}
 }
 
 private static List<TreeNode> getListFromTree(TreeNode rootNode){

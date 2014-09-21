@@ -15,7 +15,9 @@ import org.primefaces.model.TreeNode;
 @ViewScoped
 public class EventsView implements Serializable {
 
-    private TreeNode root;
+	private static final long serialVersionUID = 866520833693604420L;
+
+	private TreeNode root;
 
     private TreeNode selectedNode;
 

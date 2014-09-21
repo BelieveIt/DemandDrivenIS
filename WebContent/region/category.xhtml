@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+
+				<h:form id="buttonForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Merchandise Categories</span>
+    			</div>
+    			</h:form>
+    			<p:panel styleClass="autoHeightPanel">
+    			<div class="treeHeader">
+    			<span class="treeHeaderText">Current Local Categories</span>
+    			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
+    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}"
+		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+				<p:commandButton actionListener="#{franchiserProduct.openAddProduct}"
+		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+				<h:outputText value="(Not)Updated to the Newest" styleClass="treeHeaderTextNormal"/>
+				</div>
+
+				<h:form id="treeForm">
+    			<!-- Tree -->
+			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
+			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+			        <!--
+			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
+			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}"/>
+			        </p:treeNode>
+			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+				</h:form>
+				</p:panel>
+
+    			<p:panel styleClass="autoHeightPanel">
+    			<div class="treeHeader">
+    			<span class="treeHeaderText">Newest Categories From Franchiser</span>
+    			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
+				</div>
+				<h:form id="newTreeForm">
+    			<!-- Tree -->
+			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
+			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+			        <!--
+			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
+			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}"/>
+			        </p:treeNode>
+			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+				</h:form>
+				</p:panel>
+				<!-- BlockUI -->
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form>
+
+				
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

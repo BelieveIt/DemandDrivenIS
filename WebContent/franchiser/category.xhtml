@@ -16,26 +16,26 @@ xmlns:p="http://primefaces.org/ui">
     		</ui:define>
 			<ui:define name="rightContent">
 
-				<h:form id="mainForm">
+				<h:form id="buttonForm">
 				<p:growl id="messages" showDetail="true" life="4000"/>
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
-    			<span class="right-content-header-text">User Info Table</span>
+    			<span class="right-content-header-text">Merchandise Categories</span>
     			<div class="right-content-header-buttons-panel">
 
     			<!-- Add/Delete/Rename -->
     			<p:commandButton actionListener="#{franchiserCategory.openAddCategory}" update="messages :addCategoryForm"
-    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" />
+    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
 				<p:commandButton actionListener="#{franchiserCategory.openDeleteCategory}" update="messages :deleteCategoryForm"
-				value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" />
+				value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
     			<p:commandButton actionListener="#{franchiserCategory.openRenameCategory}" update="messages :renameCategoryForm"
-				value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" />
+				value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
 
 				<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
 
 				<!-- Expand/Collapse -->
-				<p:commandButton actionListener="#{franchiserCategory.expandAllTree}" update=":mainForm"
+				<p:commandButton actionListener="#{franchiserCategory.expandAllTree}" update=":treeForm"
 				value="Expand All" styleClass="right-content-header-button" icon="ui-icon-calculator" />
-				<p:commandButton actionListener="#{franchiserCategory.collapseAllTree}" update=":mainForm"
+				<p:commandButton actionListener="#{franchiserCategory.collapseAllTree}" update=":treeForm"
 				value="Collapse All" styleClass="right-content-header-button" icon="ui-icon-calculator" />
 
 				<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
@@ -45,14 +45,25 @@ xmlns:p="http://primefaces.org/ui">
 				value="Order By:" styleClass="right-content-header-label"/>
 		        <p:selectOneMenu id="orderSelect" value="#{franchiserCategory.order}"
 		        styleClass="right-content-header-select">
-			        <p:ajax listener="#{franchiserCategory.changeOrder}" update=":mainForm" />
+			        <p:ajax listener="#{franchiserCategory.changeOrder}" update=":treeForm" />
 		            <f:selectItem itemLabel="Category Name" itemValue="name" />
 		            <f:selectItem itemLabel="Create Time" itemValue="time" />
 		        </p:selectOneMenu>
 
+				<!-- Version -->
+				<p:outputLabel for="versionSelect"
+				value="Version:" styleClass="right-content-header-label"/>
+		        <p:selectOneMenu id="versionSelect" value="#{franchiserCategory.currentVersion}"
+		        styleClass="right-content-header-select">
+			        <p:ajax listener="#{franchiserCategory.changeVersion}" update=":treeForm :buttonForm" />
+		             <f:selectItems value="#{franchiserCategory.versionIdList}" var="version"
+                    itemLabel="#{version}" itemValue="#{version}" />
+		        </p:selectOneMenu>
     			</div>
     			</div>
-
+    			</h:form>
+    			
+				<h:form id="treeForm">
     			<!-- Tree -->
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
@@ -74,7 +85,7 @@ xmlns:p="http://primefaces.org/ui">
 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
-				trigger=":mainForm:orderSelect :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :renameCategoryForm:renameCategoryButton">
+				trigger=":buttonForm:orderSelect :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :renameCategoryForm:renameCategoryButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>
@@ -86,7 +97,7 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputLabel for="categoryName" value="Category Name:" />
 			            <p:inputText id="categoryName" value="#{franchiserCategory.categoryName}" required="true" label="categoryName" />
 			            <f:facet name="footer">
-			                <p:commandButton actionListener="#{franchiserCategory.addCategory}" update=":mainForm"
+			                <p:commandButton actionListener="#{franchiserCategory.addCategory}" update=":treeForm"
 			                id="addCategoryButton" value="Add" />
 			            </f:facet>
 			        </h:panelGrid>
@@ -106,7 +117,7 @@ xmlns:p="http://primefaces.org/ui">
 					        </p:treeNode>
 					    </p:tree>
 			            <f:facet name="footer">
-			                <p:commandButton actionListener="#{franchiserCategory.deleteCategory}" update=":mainForm"
+			                <p:commandButton actionListener="#{franchiserCategory.deleteCategory}" update=":treeForm"
 			                id="deleteCategoryButton" value="Delete" />
 			            </f:facet>
 			        </h:panelGrid>
@@ -120,7 +131,7 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputLabel for="categoryName" value="Category Name:" />
 			            <p:inputText id="categoryName" value="#{franchiserCategory.selectedNodeName}" required="true" label="categoryName" />
 			            <f:facet name="footer">
-			                <p:commandButton actionListener="#{franchiserCategory.renameCategory}" update=":mainForm"
+			                <p:commandButton actionListener="#{franchiserCategory.renameCategory}" update=":treeForm"
 			                id="renameCategoryButton" value="Rename" />
 			            </f:facet>
 			        </h:panelGrid>

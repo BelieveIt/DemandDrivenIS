@@ -3,7 +3,12 @@ import java.io.Serializable;
  
 public class Document implements Serializable, Comparable<Document> {
  
-    private String name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2934252131651646832L;
+
+	private String name;
      
     private String size;
      

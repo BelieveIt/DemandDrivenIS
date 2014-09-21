@@ -92,3 +92,49 @@ margin-right: 8px;
 .deleteCategoryPanel{
 padding:15px;
 }
+.ui-tree-container{
+text-align:left;
+}
+.autoHeightPanel{
+overflow: hidden;	
+}
+
+.floatLeft{
+float:left;
+}
+.text-align-left{
+text-align:left;
+}
+.divStyle{
+border:0px;
+padding:0px;
+}
+.width20{
+width:20%;	
+}
+.width78{
+width:78%;	
+}
+.leftTree{
+width:100%;
+}
+.noPadding{
+padding:0px;
+}
+.treeHeader{
+margin-bottom:5px;
+text-align:left;
+font-weight: bold;
+overflow:hidden;
+}
+.treeHeaderText{
+font-size: 16px;
+margin-top:3px;
+float:left;
+}
+.treeHeaderTextNormal{
+font-size: 16px;
+margin-top:3px;
+float:left;
+font-weight: normal;
+}

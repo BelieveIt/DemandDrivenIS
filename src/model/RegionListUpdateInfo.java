@@ -7,6 +7,7 @@ private String verionId;
 private Date finishedTime;
 private String regionId;
 private Integer isFinished;
+private Date createTime;
 public String getVerionId() {
 	return verionId;
 }
@@ -30,5 +31,11 @@ public Integer getIsFinished() {
 }
 public void setIsFinished(Integer isFinished) {
 	this.isFinished = isFinished;
+}
+public Date getCreateTime() {
+	return createTime;
+}
+public void setCreateTime(Date createTime) {
+	this.createTime = createTime;
 }
 }

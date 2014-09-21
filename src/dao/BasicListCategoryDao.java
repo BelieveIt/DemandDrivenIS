@@ -10,8 +10,6 @@ import java.util.Map;
 import model.BasicListCategory;
 import model.Category;
 
-import oracle.net.aso.b;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -55,16 +53,16 @@ public class BasicListCategoryDao implements Serializable{
 	}
 
 	public void deleteCategory(Category category){
-		String sql = "delete from BASIC_LIST_CATEGORIES where CATEGORY_ID = :categoryId";
+		String sql = "delete from BASIC_LIST_CATEGORIES where CATEGORY_ID = :categoryId and VERSION_ID = :versionId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(category);
 		namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 		return;
 	}
 
 	public int updateCategory(BasicListCategory basicListCategory){
-		String sql = "update BASIC_LIST_CATEGORIES set VERSION_ID = :versionId, " +
+		String sql = "update BASIC_LIST_CATEGORIES set " +
 				"CATEGORY_FATHERID = :categoryFatherId, CATEGORY_NAME = :categoryName " +
-				"where CATEGORY_ID = :categoryId";
+				"where CATEGORY_ID = :categoryId and VERSION_ID = :versionId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(basicListCategory);
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 	}

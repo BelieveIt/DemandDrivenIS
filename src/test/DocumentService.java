@@ -12,11 +12,11 @@ public class DocumentService {
         TreeNode root = new DefaultTreeNode(new Document("Files", "-", "Folder"), null);
 
         TreeNode documents = new DefaultTreeNode(new Document("Documents", "-", "Folder"), root);
-        TreeNode pictures = new DefaultTreeNode(new Document("Pictures", "-", "Folder"), root);
-        TreeNode movies = new DefaultTreeNode(new Document("Movies", "-", "Folder"), root);
+        new DefaultTreeNode(new Document("Pictures", "-", "Folder"), root);
+        new DefaultTreeNode(new Document("Movies", "-", "Folder"), root);
 
-        TreeNode work = new DefaultTreeNode(new Document("Work", "-", "Folder"), documents);
-        TreeNode primefaces = new DefaultTreeNode(new Document("PrimeFaces", "-", "Folder"), documents);
+        new DefaultTreeNode(new Document("Work", "-", "Folder"), documents);
+        new DefaultTreeNode(new Document("PrimeFaces", "-", "Folder"), documents);
         return root;
     }
 }

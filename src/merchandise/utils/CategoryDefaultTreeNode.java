@@ -21,6 +21,8 @@ public class CategoryDefaultTreeNode extends DefaultTreeNode {
 		    for (TreeNode child : this.getChildren()) {
 		      ((CategoryDefaultTreeNode) child).sortByCategoryName();
 		    }
+		    CategoryUtil.setParentNode(this);
+		    
 	}
 
 	public void sortByCreateTime() {
@@ -29,5 +31,6 @@ public class CategoryDefaultTreeNode extends DefaultTreeNode {
 	    for (TreeNode child : this.getChildren()) {
 	      ((CategoryDefaultTreeNode) child).sortByCreateTime();
 	    }
+	    CategoryUtil.setParentNode(this);
 }
 }
