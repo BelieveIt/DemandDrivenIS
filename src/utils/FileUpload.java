@@ -33,7 +33,7 @@ public class FileUpload implements Serializable{
 
 		BufferedImage src = new JpegReader().readImage(inputstreamToFile(inputStream));
 
-		ImageIO.write(src, JPG_FORMAT, new File(getImgPath() + imageId + JPG)); 
+		ImageIO.write(src, JPG_FORMAT, new File(getImgPath() + imageId + JPG));
 
         FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, message);
@@ -48,7 +48,7 @@ public class FileUpload implements Serializable{
 			return null;
 		}
     }
-	
+
 	private static File inputstreamToFile(InputStream ins) {
 		File file = new File(getImgPath()+IdentityUtil.randomUUID() + "_temp");
 		try {

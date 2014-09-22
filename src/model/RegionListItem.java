@@ -6,7 +6,7 @@ public class RegionListItem implements Serializable{
 private static final long serialVersionUID = 77385688458549152L;
 private String productId;
 private String categoryId;
-private String reginoId;
+private String regionId;
 private String versionId;
 private Integer isRegionAdd;
 private Integer isConfirmed;
@@ -23,12 +23,7 @@ public String getCategoryId() {
 public void setCategoryId(String categoryId) {
 	this.categoryId = categoryId;
 }
-public String getReginoId() {
-	return reginoId;
-}
-public void setReginoId(String reginoId) {
-	this.reginoId = reginoId;
-}
+
 public String getVersionId() {
 	return versionId;
 }
@@ -52,5 +47,11 @@ public Product getProduct() {
 }
 public void setProduct(Product product) {
 	this.product = product;
+}
+public String getRegionId() {
+	return regionId;
+}
+public void setRegionId(String regionId) {
+	this.regionId = regionId;
 }
 }

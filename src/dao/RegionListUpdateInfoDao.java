@@ -11,23 +11,33 @@ import model.RegionListUpdateInfo;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-
 import utils.DaoUtil;
 
 public class RegionListUpdateInfoDao implements Serializable{
 	private static final long serialVersionUID = 7250936813405061101L;
 	private JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert simpleJdbcInsert;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	public RegionListUpdateInfoDao(){
 		jdbcTemplate = new JdbcTemplate(DaoUtil.getDataSource());
 		simpleJdbcInsert = new SimpleJdbcInsert(DaoUtil.getDataSource())
 		.withTableName("REGION_LIST_UPDATE_INFO");
+		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(DaoUtil.getDataSource());
 	}
 
 	public List<RegionListUpdateInfo> queryRegionListUpdateInfos(){
 		String sql = "select * from REGION_LIST_UPDATE_INFO order by CREATE_TIME DESC";
 		return jdbcTemplate.query(sql, new RegionListUpdateInfoMapper());
+	}
+
+	public List<RegionListUpdateInfo> queryRegionListUpdateInfosByRegionId(String regionId){
+		String sql = "select * from REGION_LIST_UPDATE_INFO where REGION_ID = :regionId order by CREATE_TIME DESC";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("regionId", regionId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListUpdateInfoMapper());
 	}
 
 	public void insertRegionListUpdateInfo(RegionListUpdateInfo regionListUpdateInfo){
@@ -51,7 +61,7 @@ public class RegionListUpdateInfoDao implements Serializable{
 	    	regionListUpdateInfo.setVerionId(rs.getString("VERSION_ID"));
 	    	regionListUpdateInfo.setIsFinished(rs.getInt("IS_FINISHED"));
 	    	regionListUpdateInfo.setCreateTime(rs.getTimestamp("CREATE_TIME"));
-	    	regionListUpdateInfo.setFinishedTime(rs.getTimestamp("FINISHED_TIME"));	    	
+	    	regionListUpdateInfo.setFinishedTime(rs.getTimestamp("FINISHED_TIME"));
 	        return regionListUpdateInfo;
 	    }
 	}

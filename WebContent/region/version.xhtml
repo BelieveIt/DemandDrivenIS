@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+    				<h:form id="tableForm">
+					<p:dataTable id="dataTable" var="item" value="#{regionVersion.regionVersionListItems}"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.versionId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+				        <p:growl id="messages" showDetail="true" life="4000"/>
+		    			<f:facet name="header" >
+		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>
+		    			</f:facet>
+
+				        <p:column headerText="VersionId" styleClass="VersionId noPadding" id="VersionId"
+				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.versionId}">
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+				            <p:watermark for="@(.VersionId)" value="VersionId" />
+				        </p:column>
+
+						<p:column headerText="CreateTime" styleClass="CreateTime noPadding" id="CreateTime"
+				        sortBy="#{item.createTime}" filterBy="#{item.createTime}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.createTime}">
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
+				        </p:column>
+
+				        <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn" >
+			             <p:commandButton update=":tableForm" rendered="#{item.isRetrived eq 0}"
+			              icon="ui-icon-search" value="Retrive"/>
+			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1}" />
+			            </p:column>
+
+			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
+			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0}"
+			              icon="ui-icon-search" value="Go To Update"/>
+			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq -1}"
+			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1}" />
+			            </p:column>
+
+			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
+			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0}"
+			              icon="ui-icon-search" value="Go To Update"/>
+			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq -1}"
+			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1}" />
+			            </p:column>
+
+			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
+			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0}"
+			              icon="ui-icon-search" value="Confirm Finishing Update" />
+			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq -1}"
+			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
+			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 1}"
+			              icon="ui-icon-search" value="Confirmed" disabled="true"/>
+			            </p:column>
+
+			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
+			             <p:commandButton update=":tableForm"
+			              icon="ui-icon-search" value="View Diff"/>
+			            </p:column>
+				    </p:dataTable>
+					</h:form>
+					<!-- Create Version -->
+					<h:form id="createVersionForm">
+					<p:dialog header="Create Version" widgetVar="createVersion" width="400">
+					    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+				            <f:facet name="footer">
+				                <p:commandButton  update=":tableForm"
+				                id="createVersionButton" value="Confirm Creation And Send New Version To Regions" />
+				            </f:facet>
+				        </h:panelGrid>
+					</p:dialog>
+					</h:form>
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

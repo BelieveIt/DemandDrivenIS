@@ -16,12 +16,11 @@ xmlns:p="http://primefaces.org/ui">
     		</ui:define>
 			<ui:define name="rightContent">
     			<h:form id="buttonForm">
-				<p:growl id="messages" showDetail="true" life="4000"/>
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Product List</span>
     			</div>
     			</h:form>
-    			   			
+
     			<p:panel styleClass="autoHeightPanel">
     			<p:panel styleClass="floatLeft width20 divStyle">
     			<h:form id="treeForm">
@@ -41,27 +40,29 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
-				</h:form> 
+				</h:form>
 				</p:panel>
 				<p:panel styleClass="floatLeft width78 divStyle">
-				<h:form id="tableForm">				
+				<h:form id="tableForm">
+					<p:growl id="messages" showDetail="true" life="4000"/>
 					<p:dataTable id="dataTable" var="item" value="#{franchiserProduct.basicListItems}"
 				                         filteredValue="#{franchiserProduct.filteredItems}"  selection="#{franchiserProduct.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
-				        <p:growl id="messages" showDetail="true" life="4000"/> 
 		    			<f:facet name="header" >
-		    				        	
+
 		    			<div class="right-content-header-buttons-panel">
-		
+
 		    			<!-- Add/Delete -->
-		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update="messages :addProductForm"
+		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":tableForm:messages :addProductForm"
 		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
-						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update="messages"
+						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":tableForm:messages"
 						value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
-		
+						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":tableForm:messages"
+						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+
 						<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
-						
+
 						<!-- Version -->
 						<p:outputLabel for="versionSelect"
 						value="Version:" styleClass="right-content-header-label"/>
@@ -70,10 +71,10 @@ xmlns:p="http://primefaces.org/ui">
 					        <p:ajax listener="#{franchiserProduct.changeVersion}" update=":tableForm :treeForm" />
 				             <f:selectItems value="#{franchiserProduct.versionIdList}" var="version"
 		                    itemLabel="#{version}" itemValue="#{version}" />
-				        </p:selectOneMenu>		
+				        </p:selectOneMenu>
 		    			</div>
 		    			</f:facet>
-		    			
+
 					    <p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
 			            <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:125px;height:40px">
@@ -91,11 +92,11 @@ xmlns:p="http://primefaces.org/ui">
 						</p:commandButton>
 			            </div>
 			            </p:column>
-			
+
 				        <p:column headerText="Image" styleClass="searchHintClass"
 				        style="padding:0px;">
 				            <p:graphicImage library="uploadImg" name="#{item.product.image}"
-    					width="100" height="60" rendered="#{not empty item.product.image}"/>	
+    					width="100" height="60" rendered="#{not empty item.product.image}"/>
 				        </p:column>
 				        <p:column headerText="ProductId" styleClass="ProductId noPadding"
 				        sortBy="#{item.productId}" filterBy="#{item.productId}" filterMatchMode="startsWith">
@@ -118,12 +119,12 @@ xmlns:p="http://primefaces.org/ui">
 				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 				            </h:outputText>
 				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
-				        </p:column>				        				        				        				        
-				    </p:dataTable>					
+				        </p:column>
+				    </p:dataTable>
 				</h:form>
 				</p:panel>
     			</p:panel>
-    			
+
 				<!-- BlockUI -->
 				<h:form>
 				<p:blockUI
@@ -131,8 +132,8 @@ xmlns:p="http://primefaces.org/ui">
 				trigger=":addProductForm:addProductButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
-				</h:form>    
-							
+				</h:form>
+
     			<!-- Add -->
 				<h:form id="addProductForm" enctype="multipart/form-data">
 				<p:dialog header="Add Product" widgetVar="addProduct" width="650">
@@ -144,10 +145,10 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputLabel for="itemWeight" value="Weight:" />
 			            <p:inputText id="itemWeight" value="#{franchiserProduct.newProduct.itemWeight}" required="true" label="itemWeight" />
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <p:inputText id="manufacturer" value="#{franchiserProduct.newProduct.manufacturer}" required="true" label="manufacturer" />			            			            			            
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.newProduct.manufacturer}" required="true" label="manufacturer" />
 			            <h:outputLabel for="price" value="Price:" />
-			            <p:inputText id="price" value="#{franchiserProduct.newProduct.price}" required="true" label="price" />	
-			            
+			            <p:inputText id="price" value="#{franchiserProduct.newProduct.price}" required="true" label="price" />
+
 			            <h:outputLabel for="unit" value="Unit:" />
 			            <p:inputText id="unit" value="#{franchiserProduct.newProduct.unit}" required="true" label="unit" />
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
@@ -157,15 +158,15 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.newProduct.deliveryFrequency}">
 				            <f:selectItem itemLabel="Every Day" itemValue="everyday" />
 				            <f:selectItem itemLabel="Every Week" itemValue="everyweek" />
-				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />				            
+				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
 				        </p:selectOneMenu>
 				        <h:outputLabel for="image" value="Product Image:" />
 			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImage}" update="messages uploadedImg @this"
                      id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
-    					<p:growl id="messages" showDetail="true" />   
+    					<p:growl id="messages" showDetail="true" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.newProduct.image}"
-    					width="100" height="60" rendered="#{not empty franchiserProduct.newProduct.image}"/>			            			            
+    					width="100" height="60" rendered="#{not empty franchiserProduct.newProduct.image}"/>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
@@ -174,48 +175,48 @@ xmlns:p="http://primefaces.org/ui">
 			        </h:panelGrid>
 				</p:dialog>
 				</h:form>
-				
+
     			<!-- View -->
 				<h:form id="viewProductForm" enctype="multipart/form-data">
 				<p:dialog header="View Product" widgetVar="viewProduct" width="350">
 				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
  			            <h:outputLabel for="name" value="Name:" />
 			            <h:outputLabel id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}"/>
-			            
+
 			            <h:outputLabel for="createTime" value="Create Time:" />
 			            <h:outputLabel id="createTime" value="#{franchiserProduct.selectedBasicListItem.product.productCreateTime}">
 			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 			            </h:outputLabel>
-			            
+
 			            <h:outputLabel for="brand" value="Brand:" />
 			            <h:outputLabel id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" />
-			            
+
 			            <h:outputLabel for="itemWeight" value="Weight:" />
 			            <h:outputLabel id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" />
-			            
+
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />			            		
-			            	            			            
+			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />
+
 			            <h:outputLabel for="price" value="Price:" />
-			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />	
-			            
+			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />
+
 			            <h:outputLabel for="unit" value="Unit:" />
 			            <h:outputLabel id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" />
-			            
+
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
 			            <h:outputLabel id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" />
 
 						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
 				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
-				        <h:outputLabel for="image" value="Product Image:" />  
+				        <h:outputLabel for="image" value="Product Image:" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
-    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>			            			            
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
 			            </p:panel>
 			        </p:panelGrid>
 				</p:dialog>
 				</h:form>
-				
+
     			<!-- Edit -->
 				<h:form id="editProductForm" enctype="multipart/form-data">
 				<p:dialog header="Edit Product" widgetVar="editProduct" width="650">
@@ -227,10 +228,10 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputLabel for="itemWeight" value="Weight:" />
 			            <p:inputText id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" required="true" label="itemWeight" />
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <p:inputText id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" required="true" label="manufacturer" />			            			            			            
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" required="true" label="manufacturer" />
 			            <h:outputLabel for="price" value="Price:" />
-			            <p:inputText id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" required="true" label="price" />	
-			            
+			            <p:inputText id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" required="true" label="price" />
+
 			            <h:outputLabel for="unit" value="Unit:" />
 			            <p:inputText id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" required="true" label="unit" />
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
@@ -240,15 +241,15 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}">
 				            <f:selectItem itemLabel="Every Day" itemValue="everyday" />
 				            <f:selectItem itemLabel="Every Week" itemValue="everyweek" />
-				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />				            
+				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
 				        </p:selectOneMenu>
 				        <h:outputLabel for="image" value="Product Image:" />
 			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImage}" update="messages uploadedImg @this"
                      id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
-    					<p:growl id="messages" showDetail="true" />   
+    					<p:growl id="messages" showDetail="true" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
-    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>			            			            
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.editProduct}" update=":tableForm"
@@ -257,43 +258,43 @@ xmlns:p="http://primefaces.org/ui">
 			        </h:panelGrid>
 				</p:dialog>
 				</h:form>
-				
+
 				<!-- Delete Product -->
 				<h:form id="deleteProductForm" enctype="multipart/form-data">
 				<p:dialog header="Delete Product" widgetVar="deleteProduct" width="350">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 				    	 			            <h:outputLabel for="name" value="Name:" />
 			            <h:outputLabel id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}"/>
-			            
+
 			            <h:outputLabel for="createTime" value="Create Time:" />
 			            <h:outputLabel id="createTime" value="#{franchiserProduct.selectedBasicListItem.product.productCreateTime}">
 			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 			            </h:outputLabel>
-			            
+
 			            <h:outputLabel for="brand" value="Brand:" />
 			            <h:outputLabel id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" />
-			            
+
 			            <h:outputLabel for="itemWeight" value="Weight:" />
 			            <h:outputLabel id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" />
-			            
+
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />			            		
-			            	            			            
+			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />
+
 			            <h:outputLabel for="price" value="Price:" />
-			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />	
-			            
+			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />
+
 			            <h:outputLabel for="unit" value="Unit:" />
 			            <h:outputLabel id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" />
-			            
+
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
 			            <h:outputLabel id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" />
 
 						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
 				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
-				        <h:outputLabel for="image" value="Product Image:" />  
+				        <h:outputLabel for="image" value="Product Image:" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
-    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>			            			            
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.deleteProduct}" update=":tableForm"
@@ -302,14 +303,41 @@ xmlns:p="http://primefaces.org/ui">
 			        </h:panelGrid>
 				</p:dialog>
 				</h:form>
-				
+
 				<!-- Delete Products -->
-				<h:form id="deleteProductsForm" enctype="multipart/form-data">
+				<h:form id="deleteProductsForm">
 				<p:dialog header="Delete Product" widgetVar="deleteProducts" width="350">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.deleteProducts}" update=":tableForm"
 			                id="deleteProductsButton" value="Confirm Delete" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
+
+				<!-- Move Products -->
+				<h:form id="moveProductsForm">
+				<p:dialog header="Move Products" widgetVar="moveProducts" width="250">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+					    <p:tree value="#{franchiserProduct.rootNode}" var="category" selectionMode="single"
+					    selection="#{franchiserProduct.selectedNodeForMove}" styleClass="leftTree">
+					        <!--
+					        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+		<!-- 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+					        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
+					         -->
+					        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelectForMove}" update=":tableForm"/>
+					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+					            <h:outputText value="#{category.categoryName}"/>
+					        </p:treeNode>
+					        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+					            <h:outputText value="#{category.categoryName}" />
+					        </p:treeNode>
+					    </p:tree>
+					    <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.moveProducts}" update=":tableForm"
+			                id="moveProductsButton" value="Confirm Move" />
 			            </f:facet>
 			        </h:panelGrid>
 				</p:dialog>

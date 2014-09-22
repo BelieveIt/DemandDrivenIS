@@ -36,11 +36,11 @@ import dao.BasicListItemDao;
 @ViewScoped
 public class FranchiserProduct implements Serializable{
 	private static final long serialVersionUID = 1834613278230576950L;
-	
+
 	private BasicListCategoryDao categoryDao;
 	private BasicListItemDao basicListItemDao;
 	private BasicListDao basicListDao;
-	
+
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 
@@ -48,33 +48,36 @@ public class FranchiserProduct implements Serializable{
 	private BasicListItem selectedBasicListItem;
 	private List<BasicListItem> selectedItems;
 	private List<BasicListItem> filteredItems;
-	
+
 	private String currentVersion;
 	private Product newProduct;
 	private List<String> versionIdList;
+
+	private TreeNode selectedNodeForMove;
+
 	@PostConstruct
     public void init() {
 		categoryDao = new BasicListCategoryDao();
 		basicListItemDao = new BasicListItemDao();
 		basicListDao = new BasicListDao();
 		currentVersion = "head";
-		
+
 		initBasicListItemsByVersionId(currentVersion);
     }
-	
+
 	public void initBasicListItemsByVersionId(String versionId){
 		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId);
-		rootNode = CategoryUtil.generateTreeForProduct(categories);	
+		rootNode = CategoryUtil.generateTreeForProduct(categories);
 		CategoryUtil.expandAllTree(rootNode);
 		rootNode.getChildren().get(0).setSelected(true);
 		selectedNode = rootNode.getChildren().get(0);
-		
+
         List<BasicListItem> list = basicListItemDao.queryProductsByVersionId(currentVersion);
         basicListItems = ProductUtil.generateBasicListItemsBySelectedNode(list, selectedNode);
         selectedBasicListItem = null;
         selectedItems = null;
         filteredItems = null;
-        
+
         newProduct = new Product();
 		List<BasicList> basicLists = basicListDao.queryBasicLists();
 		versionIdList = new ArrayList<String>();
@@ -119,9 +122,14 @@ public class FranchiserProduct implements Serializable{
 
 	//Delete Products
 	public void openDeleteProducts(ActionEvent actionEvent){
+		if(selectedItems == null || selectedItems.size()==0){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Product Selected!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
 		RequestContext.getCurrentInstance().execute("PF('deleteProducts').show();");
 	}
-	
+
 	public void deleteProducts(ActionEvent actionEvent){
 		for(BasicListItem item : selectedItems){
 			basicListItemDao.deleteProduct(item);
@@ -129,37 +137,72 @@ public class FranchiserProduct implements Serializable{
 		deleteProductsFromTable(selectedItems);
 		RequestContext.getCurrentInstance().execute("PF('deleteProducts').hide();");
 	}
-	
+
 	//Delete Product
 	public void openDeleteProduct(ActionEvent actionEvent){
+		if(selectedBasicListItem == null){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Product Selected!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
 		RequestContext.getCurrentInstance().execute("PF('deleteProduct').show();");
 	}
-	
+
 	public void deleteProduct(ActionEvent actionEvent){
 		basicListItemDao.deleteProduct(selectedBasicListItem);
 		deleteProductFromTable(selectedBasicListItem);
 		RequestContext.getCurrentInstance().execute("PF('deleteProduct').hide();");
 	}
-	
+
 	//View Product
 	public void openViewProduct(ActionEvent actionEvent){
 		RequestContext.getCurrentInstance().execute("PF('viewProduct').show();");
 	}
-	
+
 	//Edit Product
 	public void openEditProduct(ActionEvent actionEvent){
 		RequestContext.getCurrentInstance().execute("PF('editProduct').show();");
 	}
-	
+
+	//Move to Other Category
+	public void openMoveProducts(){
+		if(selectedItems == null || selectedItems.size()==0){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Product Selected!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
+		RequestContext.getCurrentInstance().execute("PF('moveProducts').show();");
+	}
+
+	public void moveProducts(ActionEvent actionEvent){
+		if(!CategoryUtil.isLeafNode(selectedNodeForMove)){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "The Category includes categories.");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
+		Category category = (Category) selectedNodeForMove.getData();
+		for(BasicListItem basicListItem : selectedItems){
+			basicListItem.setCategoryId(category.getCategoryId());
+			basicListItemDao.updateProduct(basicListItem);
+			refreshCurrentList();
+		}
+
+		RequestContext.getCurrentInstance().execute("PF('moveProducts').hide();");
+	}
+
+	public void onNodeSelectForMove(NodeSelectEvent event) {
+        selectedNodeForMove = event.getTreeNode();
+    }
+
 	//Change Version
 	public void changeVersion(){
 		initBasicListItemsByVersionId(currentVersion);
 	}
-	
+
 	public void uploadProductImage(FileUploadEvent event){
 		newProduct.setImage(FileUpload.handleFileUpload(event));
 	}
-	
+
 	private void initTable(){
 		selectedItems = null;
 		filteredItems = null;
@@ -180,9 +223,16 @@ public class FranchiserProduct implements Serializable{
 			for(BasicListItem item : itemList){
 				basicListItems.remove(item);
 			}
-		}		
+		}
 		selectedItems = null;
 		selectedBasicListItem = null;
+	}
+	public void refreshCurrentList(){
+		List<BasicListItem> list = basicListItemDao.queryProductsByVersionId(currentVersion);
+        basicListItems = ProductUtil.generateBasicListItemsBySelectedNode(list, selectedNode);
+        selectedBasicListItem = null;
+        selectedItems = null;
+        filteredItems = null;
 	}
 	public TreeNode getRootNode() {
 		return rootNode;
@@ -251,5 +301,13 @@ public class FranchiserProduct implements Serializable{
 
 	public void setVersionIdList(List<String> versionIdList) {
 		this.versionIdList = versionIdList;
+	}
+
+	public TreeNode getSelectedNodeForMove() {
+		return selectedNodeForMove;
+	}
+
+	public void setSelectedNodeForMove(TreeNode selectedNodeForMove) {
+		this.selectedNodeForMove = selectedNodeForMove;
 	}
 }

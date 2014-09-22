@@ -11,12 +11,9 @@ import org.primefaces.context.RequestContext;
 
 
 import dao.BasicListDao;
-import dao.RegionListUpdateInfoDao;
 
 import merchandise.utils.VersionUtil;
 import model.BasicList;
-import model.RegionListUpdateInfo;
-
 @ManagedBean(name="franchiserVersion")
 @ViewScoped
 public class FranchiserVersion implements Serializable{
@@ -24,12 +21,10 @@ private static final long serialVersionUID = -3694259330226236227L;
 private List<BasicList> basicLists;
 private BasicList selectedBasicList;
 private BasicListDao basicListDao;
-private RegionListUpdateInfoDao regionListUpdateInfoDao;
 
 @PostConstruct
 public void init(){
 	basicListDao = new BasicListDao();
-	regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 	basicLists = basicListDao.queryBasicLists();
 }
 
@@ -41,13 +36,13 @@ public void openCreateVersion(){
 public void createVersion(){
 	VersionUtil.createNewBasicList();
 	basicLists = basicListDao.queryBasicLists();
-	
+
 	RequestContext.getCurrentInstance().execute("PF('createVersion').hide();");
 }
 
 //View
 public void viewVersion(){
-	
+
 }
 
 public List<BasicList> getBasicLists() {

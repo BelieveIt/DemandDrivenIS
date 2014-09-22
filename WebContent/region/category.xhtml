@@ -35,8 +35,8 @@ xmlns:p="http://primefaces.org/ui">
 
 				<h:form id="treeForm">
     			<!-- Tree -->
-			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
-			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+			    <p:tree value="#{regionCategory.rootNode}" var="category" selectionMode="single"
+			    selection="#{regionCategory.selectedNode}" orientation="horizontal">
 			        <!--
 			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
@@ -83,7 +83,7 @@ xmlns:p="http://primefaces.org/ui">
 			    </p:blockUI>
 				</h:form>
 
-				
+
     		</ui:define>
     	</ui:composition>
     </h:body>

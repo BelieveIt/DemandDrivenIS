@@ -96,7 +96,7 @@ padding:15px;
 text-align:left;
 }
 .autoHeightPanel{
-overflow: hidden;	
+overflow: hidden;
 }
 
 .floatLeft{
@@ -110,10 +110,10 @@ border:0px;
 padding:0px;
 }
 .width20{
-width:20%;	
+width:20%;
 }
 .width78{
-width:78%;	
+width:78%;
 }
 .leftTree{
 width:100%;
@@ -137,4 +137,7 @@ font-size: 16px;
 margin-top:3px;
 float:left;
 font-weight: normal;
+}
+.buttonInColumn{
+width:160px;
 }
