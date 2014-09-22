@@ -39,9 +39,9 @@ xmlns:p="http://primefaces.org/ui">
 			    selection="#{regionCategory.selectedNode}" orientation="horizontal">
 			        <!--
 			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
-			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
-			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+			        <p:ajax event="collapse" listener="#{regionCategory.onNodeCollapse}" />
+			        <p:ajax event="expand" listener="#{regionCategory.onNodeExpand}" />
+			        <p:ajax event="select" listener="#{regionCategory.onNodeSelect}" />
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}"/>
 			        </p:treeNode>

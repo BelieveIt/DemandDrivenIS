@@ -53,19 +53,52 @@ public static void createNewBasicList(){
 		basicListCategory.setVersionId(newVersionId);
 		basicListCategoryDao.insertCategory(basicListCategory);
 	}
-
 	BasicList basicList = new BasicList();
 	basicList.setCreateTime(new Date());
 	basicList.setVersionId(newVersionId);
 	basicListDao.insertBasicList(basicList);
+}
 
-	RegionDao regionDao = new RegionDao();
-	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
-	RegionListItemDao regionListItemDao = new RegionListItemDao();
-	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+public static void retriveFromFranchiser(String regionId){
+	BasicListDao basicListDao = new BasicListDao();
+	BasicListItemDao basicListItemDao = new BasicListItemDao();
+	BasicListCategoryDao basicListCategoryDao  = new BasicListCategoryDao();
+	
+	List<BasicList> basicLists = basicListDao.queryBasicLists();
+	BasicList newestBasicList = basicLists.get(0);
+	
+	List<BasicListItem> basicListItems = basicListItemDao.queryProductsByVersionId(newestBasicList.getVersionId());
+	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(newestBasicList.getVersionId());
+	
 
-	List<Region> regions = regionDao.queryRegions();
-	for(Region region : regions){
+		RegionDao regionDao = new RegionDao();
+		RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
+		RegionListItemDao regionListItemDao = new RegionListItemDao();
+		RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+		Region region = regionDao.queryRegion(regionId);
+
+		//init
+		RegionListCategoryDao categoryDao = new RegionListCategoryDao();
+		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", regionId);
+		if(categories.size() == 0){
+			for(BasicListCategory basicListCategory : basicListCategories){
+				RegionListCategory regionListCategory = new RegionListCategory();
+				regionListCategory.setRegionId(region.getRegionId());
+				setBasicListCategoryToRegion(regionListCategory, basicListCategory);
+				regionListCategory.setVersionId("head");
+				regionListCategoryDao.insertCategory(regionListCategory);
+			}
+
+			for(BasicListItem basicListItem : basicListItems){
+				RegionListItem regionListItem = new RegionListItem();
+				regionListItem.setRegionId(region.getRegionId());
+				setBasicListItemToRegion(regionListItem, basicListItem);
+				regionListItem.setVersionId("head");
+				regionListItemDao.insertProduct(regionListItem);
+			}
+		}
+		
+		//insert new version
 		for(BasicListCategory basicListCategory : basicListCategories){
 			RegionListCategory regionListCategory = new RegionListCategory();
 			regionListCategory.setRegionId(region.getRegionId());
@@ -79,15 +112,15 @@ public static void createNewBasicList(){
 			setBasicListItemToRegion(regionListItem, basicListItem);
 			regionListItemDao.insertProduct(regionListItem);
 		}
-
+				
 		RegionListUpdateInfo regionListUpdateInfo = new RegionListUpdateInfo();
-		regionListUpdateInfo.setCreateTime(basicList.getCreateTime());
+		regionListUpdateInfo.setCreateTime(newestBasicList.getCreateTime());
 		regionListUpdateInfo.setFinishedTime(null);
-		regionListUpdateInfo.setIsFinished(0);
+		regionListUpdateInfo.setIsFinished(CONFIRM_CAN_SEND);
 		regionListUpdateInfo.setRegionId(region.getRegionId());
-		regionListUpdateInfo.setVerionId(basicList.getVersionId());
+		regionListUpdateInfo.setVerionId(newestBasicList.getVersionId());
 		regionListUpdateInfoDao.insertRegionListUpdateInfo(regionListUpdateInfo);
-	}
+
 }
 
 public static Map<String,RegionListUpdateInfo> getRegionListUpdateInfoMapByRegionId(String regionId){
@@ -126,6 +159,7 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 	while (iter.hasNext()) {
 		String versionId = iter.next();
 		RegionVersionListItem regionVersionListItem = new RegionVersionListItem();
+		regionVersionListItem.setIsOutDated(1);
 		regionVersionListItem.setCreateTime(basiclistMap.get(versionId).getCreateTime());
 		regionVersionListItem.setVersionId(versionId);
 		if (regionVersionMap.containsKey(versionId)) {
@@ -155,6 +189,7 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 		}
 		regionVersionListItems.add(regionVersionListItem);
 	}
+	regionVersionListItems.get(0).setIsOutDated(0);
 	return regionVersionListItems;
 }
 

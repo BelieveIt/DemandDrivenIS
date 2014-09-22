@@ -23,69 +23,141 @@ xmlns:p="http://primefaces.org/ui">
 		    			<f:facet name="header" >
 		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>
 		    			</f:facet>
-
+		    			
+				        <p:column headerText="VersionStatus" styleClass="VersionStatus noPadding" id="VersionStatus"
+				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
+				            <h:outputText value="Outdated" rendered="#{item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
+				            <h:outputText value="Newest" rendered="#{item.isOutDated eq 0}"/>
+				            <p:watermark for="@(.VersionStatus)" value="VersionStatus" />
+				        </p:column>
+				        
 				        <p:column headerText="VersionId" styleClass="VersionId noPadding" id="VersionId"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
-				            <h:outputText value="#{item.versionId}">
-				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-				            </h:outputText>
+				            <h:outputText value="#{item.versionId}" styleClass="outdated-#{item.isOutDated}" />
 				            <p:watermark for="@(.VersionId)" value="VersionId" />
 				        </p:column>
 
 						<p:column headerText="CreateTime" styleClass="CreateTime noPadding" id="CreateTime"
 				        sortBy="#{item.createTime}" filterBy="#{item.createTime}" filterMatchMode="startsWith">
-				            <h:outputText value="#{item.createTime}">
+				            <h:outputText value="#{item.createTime}" styleClass="outdated-#{item.isOutDated}">
 				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 				            </h:outputText>
 				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
 				        </p:column>
 
-				        <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn" >
-			             <p:commandButton update=":tableForm" rendered="#{item.isRetrived eq 0}"
+				        <p:column toggleable="false"  exportable="false"  >
+			             <p:commandButton actionListener="#{regionVersion.retriveBasicList}" update=":tableForm" rendered="#{item.isRetrived eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Retrive"/>
-			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1}" />
+			             <p:commandButton actionListener="#{regionVersion.retriveBasicList}" update=":tableForm" rendered="#{item.isRetrived eq 0 and item.isOutDated eq 1}"
+			              icon="ui-icon-search" value="Retrive" disabled="true"/>
+			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 0}" />
+			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
-			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0}"
+			            <p:column toggleable="false"  exportable="false" >
+			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
+			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
+			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              
 			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq -1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1}" />
+			              
+			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 0}" />
+			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
-			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0}"
+			            <p:column toggleable="false"  exportable="false" >
+			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
+			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
+			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              
 			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq -1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1}" />
+			              
+			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 0}" />
+			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
-			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0}"
+			            <p:column toggleable="false"  exportable="false" >
+			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" />
+			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 1}"
+			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
+			              
 			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq -1}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
-			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 1}"
-			              icon="ui-icon-search" value="Confirmed" disabled="true"/>
+			              
+			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 0}"/>
+			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>			              
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" styleClass="buttonInColumn1" >
-			             <p:commandButton update=":tableForm"
-			              icon="ui-icon-search" value="View Diff"/>
+			            <p:column toggleable="false"  exportable="false"  >
+			             <p:commandButton actionListener="#{regionVersion.openViewVersionDetail}" update=":viewVersionForm"
+			              icon="ui-icon-search" value="View Diff">
+			              <f:setPropertyActionListener value="#{item}" target="#{regionVersion.selectedRegionVersionListItem}" />
+			             </p:commandButton>
 			            </p:column>
 				    </p:dataTable>
 					</h:form>
-					<!-- Create Version -->
-					<h:form id="createVersionForm">
-					<p:dialog header="Create Version" widgetVar="createVersion" width="400">
-					    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
-				            <f:facet name="footer">
-				                <p:commandButton  update=":tableForm"
-				                id="createVersionButton" value="Confirm Creation And Send New Version To Regions" />
-				            </f:facet>
-				        </h:panelGrid>
+					<!-- View Version -->
+					<h:form id="viewVersionForm">
+					<p:dialog header="View Version Diff" widgetVar="viewVersion">
+						<p:panel styleClass="autoHeightPanel divStyle">
+							<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
+							<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{regionVersion.selectedRegionVersionListItem.createTime}" style="float:left;margin-right:20px">
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+							<p:separator styleClass="forizontalSeparator"/>
+						</p:panel>
+						<p:panel styleClass="autoHeightPanel divStyle">
+							 <p:tabView>
+						        <p:tab title="Category Diff">
+						            <p:panel styleClass="autoHeightPanel divStyle">
+						            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+									<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
+								    </p:panel>
+								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
+								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+								        <!--
+								        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
+								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}"/>
+								        </p:treeNode>
+								        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}" />
+								        </p:treeNode>
+								    </p:tree>
+						            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
+						            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+									<h:outputText value="#{regionVersion.selectedRegionVersionListItemNext.versionId}" style="float:left;margin-right:20px"/>
+								    </p:panel>
+								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
+								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
+								        <!--
+								        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
+								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
+								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}"/>
+								        </p:treeNode>
+								        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}" />
+								        </p:treeNode>
+								    </p:tree>
+						        </p:tab>
+						        <p:tab title="Product Diff">
+
+						        </p:tab>
+						    </p:tabView>						
+						</p:panel>
 					</p:dialog>
 					</h:form>
     		</ui:define>

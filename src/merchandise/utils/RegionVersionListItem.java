@@ -7,6 +7,7 @@ import model.RegionListUpdateInfo;
 
 public class RegionVersionListItem implements Serializable{
 	private static final long serialVersionUID = 7853288422243264161L;
+	private Integer isOutDated;
 	private String versionId;
 	private Date createTime;
 	private Integer isRetrived;
@@ -48,5 +49,11 @@ public class RegionVersionListItem implements Serializable{
 	}
 	public void setVersionId(String versionId) {
 		this.versionId = versionId;
+	}
+	public Integer getIsOutDated() {
+		return isOutDated;
+	}
+	public void setIsOutDated(Integer isOutDated) {
+		this.isOutDated = isOutDated;
 	}
 }

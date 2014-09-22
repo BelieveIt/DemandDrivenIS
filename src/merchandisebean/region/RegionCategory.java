@@ -9,11 +9,13 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import merchandise.utils.CategoryUtil;
+import model.BasicList;
 import model.Category;
 import model.RegionListCategory;
 
 import org.primefaces.model.TreeNode;
 
+import dao.BasicListDao;
 import dao.RegionListCategoryDao;
 
 @ManagedBean(name="regionCategory")
@@ -34,6 +36,7 @@ public class RegionCategory {
 		//TODO
 		currentRegionId = "1";
 		categoryDao = new RegionListCategoryDao();
+		initByVersionId("head");
 	}
 
 	public void initByVersionId(String versionId){
@@ -47,6 +50,7 @@ public class RegionCategory {
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
 		return CategoryUtil.generateTree(categories, currentOrder, CategoryUtil.ROOT_FATHER_ID);
+
 	}
 	public TreeNode getRootNode() {
 		return rootNode;
