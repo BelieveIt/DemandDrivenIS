@@ -51,7 +51,11 @@ public class RegionListCategoryDao implements Serializable{
 		String sql = "delete from REGION_LIST_CATEGORIES";
 		return jdbcTemplate.update(sql);
 	}
-
+	public int deleteAllHeadByRegionId(String regionId, String versionId){
+		String sql = "delete from REGION_LIST_CATEGORIES where VERSION_ID = :versionId and REGION_ID = :regionId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId).addValue("regionId", regionId);
+		return namedParameterJdbcTemplate.update(sql, namedParameters);
+	}
 	public int updateCategory(RegionListCategory regionListCategory){
 		String sql = "update REGION_LIST_CATEGORIES set CATEGORY_NAME = :categoryName " +
 				"where CATEGORY_ID = :categoryId and VERSION_ID = :versionId and REGION_ID = :regionId";

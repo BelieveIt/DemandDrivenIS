@@ -59,16 +59,15 @@ xmlns:p="http://primefaces.org/ui">
 		             <f:selectItems value="#{franchiserCategory.versionIdList}" var="version"
                     itemLabel="#{version}" itemValue="#{version}" />
 		        </p:selectOneMenu>
+
     			</div>
     			</div>
     			</h:form>
-    			
-				<h:form id="treeForm">
+
     			<!-- Tree -->
+				<h:form id="treeForm">
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
-			        <!--
-			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
 			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
@@ -85,7 +84,8 @@ xmlns:p="http://primefaces.org/ui">
 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
-				trigger=":buttonForm:orderSelect :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :renameCategoryForm:renameCategoryButton">
+				trigger=":buttonForm:orderSelect :buttonForm:versionSelect
+				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :renameCategoryForm:renameCategoryButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>

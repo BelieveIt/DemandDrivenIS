@@ -19,6 +19,7 @@ import dao.RegionListUpdateInfoDao;
 import model.BasicList;
 import model.BasicListCategory;
 import model.BasicListItem;
+import model.Category;
 import model.Region;
 import model.RegionListCategory;
 import model.RegionListItem;
@@ -72,6 +73,7 @@ public static void updateToNewestBasiclist(String regionId){
 	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();
 	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(getRetrivedNewestVersionId(regionId));
 
+
 	if(categories.size() == 0){
 		for(BasicListCategory basicListCategory : basicListCategories){
 			RegionListCategory regionListCategory = new RegionListCategory();
@@ -80,6 +82,23 @@ public static void updateToNewestBasiclist(String regionId){
 			regionListCategory.setVersionId("head");
 			regionListCategoryDao.insertCategory(regionListCategory);
 		}
+	}
+
+
+	regionListCategoryDao.deleteAllHeadByRegionId(regionId,"head");
+	for(BasicListCategory basicListCategory : basicListCategories){
+		RegionListCategory categoryInRegionListHead = getIncludedInRegionHead(basicListCategory, categories);
+		if(categoryInRegionListHead!=null){
+			regionListCategoryDao.insertCategory(categoryInRegionListHead);
+		}else {
+			RegionListCategory regionListCategory = new RegionListCategory();
+			regionListCategory.setRegionId(region.getRegionId());
+			setBasicListCategoryToRegion(regionListCategory, basicListCategory);
+			regionListCategory.setVersionId("head");
+			regionListCategoryDao.insertCategory(regionListCategory);
+		}
+
+	}
 
 //		for(BasicListItem basicListItem : basicListItems){
 //			RegionListItem regionListItem = new RegionListItem();
@@ -88,8 +107,16 @@ public static void updateToNewestBasiclist(String regionId){
 //			regionListItem.setVersionId("head");
 //			regionListItemDao.insertProduct(regionListItem);
 //		}
-	}
+
 }
+
+public static RegionListCategory getIncludedInRegionHead(Category category, List<RegionListCategory> list){
+	for(RegionListCategory regionListCategory : list){
+		if(category.getCategoryId().equals(regionListCategory.getCategoryId()))return regionListCategory;
+	}
+	return null;
+}
+
 //Region retrived newest version
 public static String getRetrivedNewestVersionId(String regionId){
 	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
@@ -183,12 +210,15 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 		regionVersionListItem.setCreateTime(basiclistMap.get(versionId).getCreateTime());
 		regionVersionListItem.setVersionId(versionId);
 		if (regionVersionMap.containsKey(versionId)) {
+			//Region have the version locally
 			regionVersionListItem.setRegionListUpdateInfo(regionVersionMap.get(versionId));
 			if(regionVersionListItem.getRegionListUpdateInfo().getIsFinished().equals(new Integer(1))){
+				//UpdateInfo finished
 				regionVersionListItem.setIsRetrived(RETRIVED);
 				regionVersionListItem.setIsCategoryUpdated(CATEGORIES_UPDATED);
 				regionVersionListItem.setIsProductUpdated(PRODUCTS_UPDATED);
 			}else{
+				//UpdateInfo not finished
 				regionVersionListItem.setIsRetrived(RETRIVED);
 				Integer categoryUpdatedStatus = setCategoryUpdatedStatus(regionVersionListItem);
 				Integer productUpdatedStatus = setProductUpdatedStatus(regionVersionListItem);
@@ -200,6 +230,7 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 			}
 
 		}else {
+			//Region don't have the version locally
 			regionVersionListItem.setIsRetrived(RETRIVED_NOT);
 			regionVersionListItem.setIsCategoryUpdated(CATEGORIES_UPDATED_NOT_RETRIVED_NOT);
 			regionVersionListItem.setIsProductUpdated(PRODUCTS_UPDATED_NOT_RETRIVED_NOT);
@@ -212,14 +243,23 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 	if(regionVersionListItems.size() != 0){
 		regionVersionListItems.get(0).setIsOutDated(0);
 	}
-
 	return regionVersionListItems;
 }
 
 public static Integer setCategoryUpdatedStatus(RegionVersionListItem regionVersionListItem){
-	RegionListUpdateInfo regionListUpdateInfo = regionVersionListItem.getRegionListUpdateInfo();
-	regionVersionListItem.setIsCategoryUpdated(CATEGORIES_UPDATED);
-	return 1;
+	String regionId = regionVersionListItem.getRegionListUpdateInfo().getRegionId();
+	String basicVersionId = regionVersionListItem.getVersionId();
+	boolean result = CategoryUtil.compareLocalTreeAndBasicList(regionId, basicVersionId);
+
+	if(result){
+		regionVersionListItem.setIsCategoryUpdated(CATEGORIES_UPDATED);
+		return 1;
+	}else {
+		regionVersionListItem.setIsCategoryUpdated(CATEGORIES_UPDATED_NOT);
+		return 0;
+	}
+
+
 }
 
 public static Integer setProductUpdatedStatus(RegionVersionListItem regionVersionListItem){

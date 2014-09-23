@@ -15,45 +15,59 @@ xmlns:p="http://primefaces.org/ui">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
 			<ui:define name="rightContent">
-    				<h:form id="tableForm">				
+					<h:form id="messagesForm">
+					<p:growl id="messages" showDetail="true" life="4000"/>
+					</h:form>
+
+    				<h:form id="tableForm">
 					<p:dataTable id="dataTable" var="item" value="#{franchiserVersion.basicLists}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.versionId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
-				        <p:growl id="messages" showDetail="true" life="4000"/> 
+
 		    			<f:facet name="header" >
-		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>	        	
+		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>
 		    			<div class="right-content-header-buttons-panel">
-		
+
 		    			<!-- Create From Current -->
-		    			<p:commandButton actionListener="#{franchiserVersion.openCreateVersion}" update="messages"
+		    			<p:commandButton actionListener="#{franchiserVersion.openCreateVersion}" update=":messagesForm:messages"
 		    			value="Create New Version From 'HEAD'" styleClass="right-content-header-button" icon="ui-icon-calculator" />
 		    			</div>
 		    			</f:facet>
-		    			
+
 			            <p:column style="width:40px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:40px;height:40px">
-			             <p:commandButton actionListener="#{franchiserVersion.viewVersion}" 
+			             <p:commandButton actionListener="#{franchiserVersion.viewVersion}"
 			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" >
 			                <f:setPropertyActionListener value="#{item}" target="#{franchiserVersion.selectedVersion}" />
 			            </p:commandButton>
 			            </div>
 			            </p:column>
-			            
+
 				        <p:column headerText="VersionId" styleClass="VersionId noPadding"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
 				            <h:outputText value="#{item.versionId}" />
 				            <p:watermark for="@(.VersionId)" value="VersionId" />
 				        </p:column>
-				        
+
 				        <p:column headerText="CreateTime" styleClass="CreateTime noPadding" id="CreateTime"
 				        sortBy="#{item.createTime}" filterBy="#{item.createTime}" filterMatchMode="startsWith">
 				            <h:outputText value="#{item.createTime}">
 				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 				            </h:outputText>
 				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
-				        </p:column>					        			            			        				        				        				        
-				    </p:dataTable>					
+				        </p:column>
+				    </p:dataTable>
 					</h:form>
+
+					<!-- BlockUI -->
+					<h:form>
+					<p:blockUI
+					block=":rightContentLayout"
+					trigger=":createVersionForm:createVersionButton">
+				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+				    </p:blockUI>
+					</h:form>
+
 					<!-- Create Version -->
 					<h:form id="createVersionForm">
 					<p:dialog header="Create Version" widgetVar="createVersion" width="400">
@@ -65,6 +79,7 @@ xmlns:p="http://primefaces.org/ui">
 				        </h:panelGrid>
 					</p:dialog>
 					</h:form>
+
     		</ui:define>
     	</ui:composition>
     </h:body>

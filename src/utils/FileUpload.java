@@ -35,7 +35,7 @@ public class FileUpload implements Serializable{
 
 		ImageIO.write(src, JPG_FORMAT, new File(getImgPath() + imageId + JPG));
 
-        FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesMessage message = new FacesMessage("Succesful", "Image is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, message);
         return imageId+JPG;
 		} catch (IOException e) {

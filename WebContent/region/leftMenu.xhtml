@@ -10,12 +10,12 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
 	    <ui:composition>
+	    <h:form id="leftMenuForm">
 		<div class="ui-menu ui-widget ui-widget-content ui-corner-all ui-helper-clearfix leftMenu">
-
 		<ul class="ui-menu-list ui-helper-reset">
 		<li class="ui-widget-header ui-corner-all"><h3>Merchandise Info Management</h3></li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/region/category.xhtml">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/category.xhtml" data-badge="#{regionCategory.leftMenuUpdateAlert}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-contact"></span>
 		<span class="ui-menuitem-text">Category Management</span>
 		</a>
@@ -27,7 +27,7 @@ xmlns:p="http://primefaces.org/ui">
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all">
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/region/version.xhtml">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/region/version.xhtml" data-badge="#{regionVersion.leftMenuNewAlert}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-contact"></span>
 		<span class="ui-menuitem-text">Version Management</span>
 		</a>
@@ -35,14 +35,14 @@ xmlns:p="http://primefaces.org/ui">
 
 		<li class="ui-widget-header ui-corner-all"><h3>Product Addition Request Management</h3></li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-wide" href="#{request.contextPath}/region/product.xhtml" data-badge="new">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/region/product.xhtml" >
 		<span class="ui-menuitem-icon ui-icon ui-icon-contact"></span>
 		<span class="ui-menuitem-text">Request Management</span>
 		</a>
 		</li>
 		</ul>
-
 		</div>
+		</h:form>
 	    </ui:composition>
     </h:body>
 </html>

@@ -1,5 +1,6 @@
 package merchandisebean.region;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -7,13 +8,16 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.VersionUtil;
+import model.BasicListCategory;
 import model.Category;
 import model.RegionListCategory;
 import model.RegionListUpdateInfo;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.TreeNode;
 
 import dao.RegionListCategoryDao;
@@ -21,7 +25,9 @@ import dao.RegionListUpdateInfoDao;
 
 @ManagedBean(name="regionCategory")
 @ViewScoped
-public class RegionCategory {
+public class RegionCategory implements Serializable{
+	private static final long serialVersionUID = -7352088192758822869L;
+
 	private RegionListCategoryDao categoryDao;
 
 	private TreeNode rootNode;
@@ -36,6 +42,7 @@ public class RegionCategory {
 	private String newestStatus;
 
 	private Integer compareWithNewest;
+	private String leftMenuUpdateAlert;
 
 	private TreeNode newestRootNode;
 	@PostConstruct
@@ -60,19 +67,23 @@ public class RegionCategory {
 	}
 
 	private void doVersionCampare(){
-		if(isHeadNull() || isUpdateInfoNull()) {
+		if(isHeadNull() && isUpdateInfoNull()) {
 			compareWithNewest = -1;
+			leftMenuUpdateAlert = null;
 			return;
 		}
 		if(isHeadNull() && !isUpdateInfoNull()){
 			compareWithNewest = 0;
+			leftMenuUpdateAlert = "Update";
 			return;
 		}
 		boolean result = CategoryUtil.compareLocalTreeAndBasicList(currentRegionId, VersionUtil.getRetrivedNewestVersionId(currentRegionId));
 		if(result){
 			compareWithNewest = 1;
+			leftMenuUpdateAlert = null;
 		}else {
 			compareWithNewest = 0;
+			leftMenuUpdateAlert = "Update";
 		}
 	}
 
@@ -112,10 +123,26 @@ public class RegionCategory {
 	public void updateToNewest(){
 		if(!isUpdateInfoNull()){
 			VersionUtil.updateToNewestBasiclist(currentRegionId);
+			initRootNodeByVersionId("head");
+			doVersionCampare();
 		}
 	}
 
+	//Rename Category
+	public void openRenameCategory(ActionEvent actionEvent){
+		if(selectedNode == null){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Catecory Selected!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
+		RequestContext.getCurrentInstance().execute("PF('renameCategory').show();");
+	}
 
+	public void renameCategory(){
+		Category selectedCategory = (Category) selectedNode.getData();
+		categoryDao.updateCategory((RegionListCategory)selectedCategory);
+		RequestContext.getCurrentInstance().execute("PF('renameCategory').hide();");
+	}
 
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
@@ -193,6 +220,14 @@ public class RegionCategory {
 
 	public void setNewestRootNode(TreeNode newestRootNode) {
 		this.newestRootNode = newestRootNode;
+	}
+
+	public String getLeftMenuUpdateAlert() {
+		return leftMenuUpdateAlert;
+	}
+
+	public void setLeftMenuUpdateAlert(String leftMenuUpdateAlert) {
+		this.leftMenuUpdateAlert = leftMenuUpdateAlert;
 	}
 
 }

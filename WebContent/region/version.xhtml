@@ -15,22 +15,26 @@ xmlns:p="http://primefaces.org/ui">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
 			<ui:define name="rightContent">
+					<h:form id="messagesForm">
+					<p:growl id="messages" showDetail="true" life="4000"/>
+					</h:form>
+
+					<!-- Version List  -->
     				<h:form id="tableForm">
 					<p:dataTable id="dataTable" var="item" value="#{regionVersion.regionVersionListItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.versionId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
-				        <p:growl id="messages" showDetail="true" life="4000"/>
 		    			<f:facet name="header" >
 		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>
 		    			</f:facet>
-		    			
+
 				        <p:column headerText="VersionStatus" styleClass="VersionStatus noPadding" id="VersionStatus"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
 				            <h:outputText value="Outdated" rendered="#{item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 				            <h:outputText value="Newest" rendered="#{item.isOutDated eq 0}"/>
 				            <p:watermark for="@(.VersionStatus)" value="VersionStatus" />
 				        </p:column>
-				        
+
 				        <p:column headerText="VersionId" styleClass="VersionId noPadding" id="VersionId"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
 				            <h:outputText value="#{item.versionId}" styleClass="outdated-#{item.isOutDated}" />
@@ -45,52 +49,58 @@ xmlns:p="http://primefaces.org/ui">
 				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
 				        </p:column>
 
-				        <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton actionListener="#{regionVersion.retriveBasicList}" update=":tableForm" rendered="#{item.isRetrived eq 0 and item.isOutDated eq 0}"
-			              icon="ui-icon-search" value="Retrive"/>
-			             <p:commandButton actionListener="#{regionVersion.retriveBasicList}" update=":tableForm" rendered="#{item.isRetrived eq 0 and item.isOutDated eq 1}"
+						<!-- Retrived Status -->
+				        <p:column headerText="Version Retrived Status" toggleable="false"  exportable="false"  >
+ 			             <p:commandButton rendered="#{item.isRetrived eq 0 and item.isOutDated eq 0}"
+			              actionListener="#{regionVersion.retriveBasicList}" update=":tableForm :leftMenuForm"
+			              icon="ui-icon-search" value="Retrive" id="retrieveVersionButton"
+			              onstart="PF('blockUI').show();" oncomplete="PF('blockUI').hide();"/>
+			             <p:commandButton rendered="#{item.isRetrived eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Retrive" disabled="true"/>
 			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" >
+						<!-- Category Status -->
+			            <p:column headerText="Category Update Status" toggleable="false"  exportable="false" >
 			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
-			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
+			             <p:commandButton rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			              
-			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq -1}"
+
+			             <p:commandButton rendered="#{item.isCategoryUpdated eq -1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			              
+
 			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" >
+						<!-- Product Status -->
+			            <p:column  headerText="Product Update Status" toggleable="false"  exportable="false" >
 			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
-			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
+			             <p:commandButton rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			              
-			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq -1}"
+
+			             <p:commandButton rendered="#{item.isProductUpdated eq -1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
-			              
+
 			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
-			            <p:column toggleable="false"  exportable="false" >
+						<!-- Update Status -->
+			            <p:column headerText="Update Status" toggleable="false"  exportable="false" >
 			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" />
-			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 1}"
+			             <p:commandButton rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
-			              
-			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq -1}"
+
+			             <p:commandButton rendered="#{item.regionListUpdateInfo.isFinished eq -1}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
-			              
+
 			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 0}"/>
-			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>			              
+			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
 			            <p:column toggleable="false"  exportable="false"  >
@@ -101,6 +111,15 @@ xmlns:p="http://primefaces.org/ui">
 			            </p:column>
 				    </p:dataTable>
 					</h:form>
+
+					<!-- BlockUI -->
+					<h:form>
+					<p:blockUI widgetVar="blockUI"
+					block=":rightContentLayout">
+				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+				    </p:blockUI>
+					</h:form>
+
 					<!-- View Version -->
 					<h:form id="viewVersionForm">
 					<p:dialog header="View Version Diff" widgetVar="viewVersion">
@@ -122,8 +141,6 @@ xmlns:p="http://primefaces.org/ui">
 								    </p:panel>
 								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
-								        <!--
-								        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
 								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
 								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
@@ -140,8 +157,6 @@ xmlns:p="http://primefaces.org/ui">
 								    </p:panel>
 								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
-								        <!--
-								        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
 								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
 								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
@@ -156,7 +171,7 @@ xmlns:p="http://primefaces.org/ui">
 						        <p:tab title="Product Diff">
 
 						        </p:tab>
-						    </p:tabView>						
+						    </p:tabView>
 						</p:panel>
 					</p:dialog>
 					</h:form>

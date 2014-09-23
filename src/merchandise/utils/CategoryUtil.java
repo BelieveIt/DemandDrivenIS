@@ -165,18 +165,14 @@ public static boolean compareLocalTreeAndBasicList(String regionId, String basic
 	TreeNode rootOfRegion = generateTree(regionCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
 	List<Category> regionCategoriesByOrder = new ArrayList<Category>();
 
-	LinkedList<TreeNode> queueForRegion = new LinkedList<TreeNode>();
-	queueForRegion.offer(rootOfRegion);
-	getCategoriesByTreeOrder(regionCategoriesByOrder, queueForRegion);
+	getCategoriesByTreeOrder(regionCategoriesByOrder, rootOfRegion);
 
 	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();
 	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(basicListVersionId);
 	TreeNode rootOfFranchiser = generateTree(basicListCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
 	List<Category> franchiserCategoriesByOrder = new ArrayList<Category>();
 
-	LinkedList<TreeNode> queueForFranchiser = new LinkedList<TreeNode>();
-	queueForFranchiser.offer(rootOfFranchiser);
-	getCategoriesByTreeOrder(franchiserCategoriesByOrder, queueForFranchiser);
+	getCategoriesByTreeOrder(franchiserCategoriesByOrder, rootOfFranchiser);
 
 	if(regionCategoriesByOrder.size() != franchiserCategoriesByOrder.size()){
 		return false;
@@ -189,8 +185,9 @@ public static boolean compareLocalTreeAndBasicList(String regionId, String basic
 	return true;
 }
 
-public static void getCategoriesByTreeOrder(List<Category> categories, Queue<TreeNode> nodes){
-
+public static void getCategoriesByTreeOrder(List<Category> categories, TreeNode root){
+	LinkedList<TreeNode> nodes = new LinkedList<TreeNode>();
+	nodes.offer(root);
 	while (nodes.size() != 0) {
 		TreeNode currentNode = nodes.poll();
 		Category currentCategory = (Category) currentNode.getData();

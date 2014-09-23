@@ -1,7 +1,7 @@
-.badge-wide{
+.badge-new{
    position:relative;
 }
-.badge-wide[data-badge]:after {
+.badge-new[data-badge]:after {
    content:attr(data-badge);
    position:absolute;
    bottom:0.3em;
@@ -10,6 +10,24 @@
    background:#DD6277;
    color:white;
    width:25px;
+   height:13px;
+   text-align:center;
+   border-radius:3px;
+   box-shadow:0 0 1px #333;
+   padding-bottom: 3px;
+}
+.badge-update{
+   position:relative;
+}
+.badge-update[data-badge]:after {
+   content:attr(data-badge);
+   position:absolute;
+   bottom:0.3em;
+   right:12px;
+   font-size:10px;
+   background:#DD6277;
+   color:white;
+   width:55px;
    height:13px;
    text-align:center;
    border-radius:3px;

@@ -1,5 +1,6 @@
 package merchandisebean.region;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +18,15 @@ import merchandise.utils.VersionUtil;
 import model.RegionListUpdateInfo;
 @ManagedBean(name="regionVersion")
 @ViewScoped
-public class RegionVersion {
+public class RegionVersion implements Serializable{
+	private static final long serialVersionUID = -6525298726394719841L;
+
 	private RegionListUpdateInfoDao regionListUpdateInfoDao;
 
 	private List<RegionVersionListItem> regionVersionListItems;
 	private RegionVersionListItem selectedRegionVersionListItem;
 	private RegionVersionListItem selectedRegionVersionListItemNext;
+	private String leftMenuNewAlert;
 
 	private String currentRegionId;
 	@PostConstruct
@@ -36,13 +40,24 @@ public class RegionVersion {
 	public void initProcess(){
 		List<RegionListUpdateInfo> regionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(currentRegionId);
 		regionVersionListItems = VersionUtil.generateRegionVersionListItems(regionListUpdateInfos);
+		if(regionVersionListItems.size() != 0){
+			Integer newestVersionStatus = regionVersionListItems.get(0).getIsRetrived();
+			if(newestVersionStatus == 1){
+				leftMenuNewAlert = null;
+			}else {
+				leftMenuNewAlert = "new";
+			}
+		}else {
+			leftMenuNewAlert = null;
+		}
+
 	}
-	
+
 	public void retriveBasicList(ActionEvent actionEvent){
 		VersionUtil.retriveFromFranchiser(currentRegionId);
 		initProcess();
 	}
-	
+
 	public void openViewVersionDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
@@ -82,6 +97,14 @@ public class RegionVersion {
 	public void setSelectedRegionVersionListItemNext(
 			RegionVersionListItem selectedRegionVersionListItemNext) {
 		this.selectedRegionVersionListItemNext = selectedRegionVersionListItemNext;
+	}
+
+	public String getLeftMenuNewAlert() {
+		return leftMenuNewAlert;
+	}
+
+	public void setLeftMenuNewAlert(String leftMenuNewAlert) {
+		this.leftMenuNewAlert = leftMenuNewAlert;
 	}
 
 }

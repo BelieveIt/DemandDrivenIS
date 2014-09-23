@@ -140,11 +140,6 @@ public class FranchiserProduct implements Serializable{
 
 	//Delete Product
 	public void openDeleteProduct(ActionEvent actionEvent){
-		if(selectedBasicListItem == null){
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Product Selected!");
-	        FacesContext.getCurrentInstance().addMessage(null, message);
-	        return;
-		}
 		RequestContext.getCurrentInstance().execute("PF('deleteProduct').show();");
 	}
 
@@ -163,7 +158,10 @@ public class FranchiserProduct implements Serializable{
 	public void openEditProduct(ActionEvent actionEvent){
 		RequestContext.getCurrentInstance().execute("PF('editProduct').show();");
 	}
-
+	public void editProduct(ActionEvent actionEvent){
+		basicListItemDao.updateProduct(selectedBasicListItem);
+		RequestContext.getCurrentInstance().execute("PF('editProduct').hide();");
+	}
 	//Move to Other Category
 	public void openMoveProducts(){
 		if(selectedItems == null || selectedItems.size()==0){
@@ -199,10 +197,12 @@ public class FranchiserProduct implements Serializable{
 		initBasicListItemsByVersionId(currentVersion);
 	}
 
-	public void uploadProductImage(FileUploadEvent event){
+	public void uploadProductImageForAdd(FileUploadEvent event){
 		newProduct.setImage(FileUpload.handleFileUpload(event));
 	}
-
+	public void uploadProductImageForEdit(FileUploadEvent event){
+		selectedBasicListItem.getProduct().setImage(FileUpload.handleFileUpload(event));
+	}
 	private void initTable(){
 		selectedItems = null;
 		filteredItems = null;

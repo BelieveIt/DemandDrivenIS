@@ -15,6 +15,10 @@ xmlns:p="http://primefaces.org/ui">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
 			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
     			<h:form id="buttonForm">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Product List</span>
@@ -22,16 +26,12 @@ xmlns:p="http://primefaces.org/ui">
     			</h:form>
 
     			<p:panel styleClass="autoHeightPanel">
+
+    			<!-- Category Tree -->
     			<p:panel styleClass="floatLeft width20 divStyle">
     			<h:form id="treeForm">
-    			<!-- Tree -->
 			    <p:tree value="#{franchiserProduct.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserProduct.selectedNode}" styleClass="leftTree">
-			        <!--
-			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
-<!-- 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
-			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-			         -->
 			        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelect}" update=":tableForm"/>
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}"/>
@@ -42,9 +42,10 @@ xmlns:p="http://primefaces.org/ui">
 			    </p:tree>
 				</h:form>
 				</p:panel>
+
+    			<!-- Products List -->
 				<p:panel styleClass="floatLeft width78 divStyle">
 				<h:form id="tableForm">
-					<p:growl id="messages" showDetail="true" life="4000"/>
 					<p:dataTable id="dataTable" var="item" value="#{franchiserProduct.basicListItems}"
 				                         filteredValue="#{franchiserProduct.filteredItems}"  selection="#{franchiserProduct.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -53,12 +54,12 @@ xmlns:p="http://primefaces.org/ui">
 
 		    			<div class="right-content-header-buttons-panel">
 
-		    			<!-- Add/Delete -->
-		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":tableForm:messages :addProductForm"
+		    			<!-- Add/Delete/Move -->
+		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForm:messages :addProductForm"
 		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
-						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":tableForm:messages"
+						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":messagesForm:messages"
 						value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
-						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":tableForm:messages"
+						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":messagesForm:messages"
 						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
 
 						<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
@@ -76,27 +77,33 @@ xmlns:p="http://primefaces.org/ui">
 		    			</f:facet>
 
 					    <p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+
+					    <!-- View/Edit/Delete -->
 			            <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:125px;height:40px">
-			             <p:commandButton actionListener="#{franchiserProduct.openViewProduct}" update=":viewProductForm"
-			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" >
+			             <p:commandButton actionListener="#{franchiserProduct.openViewProduct}" update=":viewProductForm :messagesForm:messages"
+			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
-			            </p:commandButton>
-			            <p:commandButton actionListener="#{franchiserProduct.openEditProduct}" update=":editProductForm"
-			            style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-pencil" >
+			             </p:commandButton>
+			             <p:commandButton actionListener="#{franchiserProduct.openEditProduct}" update=":editProductForm :messagesForm:messages"
+			            style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-pencil" id="openEditProductButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
-			            </p:commandButton>
-						<p:commandButton actionListener="#{franchiserProduct.openDeleteProduct}" update=":deleteProductForm"
-						style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-trash" >
+			             </p:commandButton>
+						 <p:commandButton actionListener="#{franchiserProduct.openDeleteProduct}" update=":deleteProductForm :messagesForm:messages"
+						style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-trash" id="openDeleteProductButton">
 						    <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
-						</p:commandButton>
+						 </p:commandButton>
 			            </div>
 			            </p:column>
 
 				        <p:column headerText="Image" styleClass="searchHintClass"
 				        style="padding:0px;">
-				            <p:graphicImage library="uploadImg" name="#{item.product.image}"
-    					width="100" height="60" rendered="#{not empty item.product.image}"/>
+				        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+				        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+    					width="100" height="60"/>
+    					</h:outputLink>
+    					</p:lightBox>
 				        </p:column>
 				        <p:column headerText="ProductId" styleClass="ProductId noPadding"
 				        sortBy="#{item.productId}" filterBy="#{item.productId}" filterMatchMode="startsWith">
@@ -123,13 +130,15 @@ xmlns:p="http://primefaces.org/ui">
 				    </p:dataTable>
 				</h:form>
 				</p:panel>
+
     			</p:panel>
 
 				<!-- BlockUI -->
 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
-				trigger=":addProductForm:addProductButton">
+				trigger=":tableForm:dataTable:versionSelect :tableForm:dataTable:openViewProductButton :tableForm:dataTable:openEditProductButton :tableForm:dataTable:openDeleteProductButton
+				 :addProductForm:addProductButton :editProductForm:editProductButton :deleteProductForm:deleteProductButton :deleteProductsForm:deleteProductsButton :moveProductsForm:moveProductsButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>
@@ -161,12 +170,15 @@ xmlns:p="http://primefaces.org/ui">
 				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
 				        </p:selectOneMenu>
 				        <h:outputLabel for="image" value="Product Image:" />
-			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImage}" update="messages uploadedImg @this"
-                     id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
-    					<p:growl id="messages" showDetail="true" />
+			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImageForAdd}" update=":messagesForm:messages uploadedImg @this"
+                           id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.newProduct.image}">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.newProduct.image}"
     					width="100" height="60" rendered="#{not empty franchiserProduct.newProduct.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
@@ -210,8 +222,12 @@ xmlns:p="http://primefaces.org/ui">
 				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
 				        <h:outputLabel for="image" value="Product Image:" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}" title="Nature 1">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
     					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
 			            </p:panel>
 			        </p:panelGrid>
 				</p:dialog>
@@ -244,16 +260,19 @@ xmlns:p="http://primefaces.org/ui">
 				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
 				        </p:selectOneMenu>
 				        <h:outputLabel for="image" value="Product Image:" />
-			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImage}" update="messages uploadedImg @this"
+			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImageForEdit}" update=":messagesForm:messages uploadedImg @this"
                      id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
-    					<p:growl id="messages" showDetail="true" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}" title="Nature 1">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
     					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.editProduct}" update=":tableForm"
-			                id="editProductButton" value="Add" />
+			                id="editProductButton" value="Edit" />
 			            </f:facet>
 			        </h:panelGrid>
 				</p:dialog>
@@ -293,8 +312,12 @@ xmlns:p="http://primefaces.org/ui">
 				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
 				        <h:outputLabel for="image" value="Product Image:" />
     					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}">
     					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
     					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
 			            </p:panel>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.deleteProduct}" update=":tableForm"
@@ -322,11 +345,6 @@ xmlns:p="http://primefaces.org/ui">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 					    <p:tree value="#{franchiserProduct.rootNode}" var="category" selectionMode="single"
 					    selection="#{franchiserProduct.selectedNodeForMove}" styleClass="leftTree">
-					        <!--
-					        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
-		<!-- 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
-					        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-					         -->
 					        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelectForMove}" update=":tableForm"/>
 					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 					            <h:outputText value="#{category.categoryName}"/>

@@ -15,43 +15,48 @@ xmlns:p="http://primefaces.org/ui">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
 			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
 
 				<h:form id="buttonForm">
-				<p:growl id="messages" showDetail="true" life="4000"/>
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Merchandise Categories</span>
     			</div>
     			</h:form>
     			<p:panel styleClass="autoHeightPanel">
+    			<h:form id="treeFormHeader">
     			<div class="treeHeader">
     			<span class="treeHeaderText">Current Local Categories</span>
     			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
-    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" rendered="#{regionCategory.newestStatus ne null}"
+    			<p:commandButton rendered="#{regionCategory.newestStatus ne null}"
+    					actionListener="#{regionCategory.openRenameCategory}" update=":messagesForm:messages :renameCategoryForm"
 		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator"/>
-    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" rendered="#{regionCategory.newestStatus eq null}"
+    			<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 
-				<p:commandButton actionListener="#{regionCategory.updateToNewest}"  rendered="#{regionCategory.newestStatus ne null}" update=":treeForm"
-		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator"/>
-				<p:commandButton actionListener="#{regionCategory.updateToNewest}"  rendered="#{regionCategory.newestStatus eq null}"
+				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 0}"
+						actionListener="#{regionCategory.updateToNewest}" update=":treeForm :treeFormHeader :leftMenuForm"
+		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" id="updateToNewest"/>
+				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 1}"
+		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 
 				<h:outputText value="Updated to the Newest" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
 				<h:outputText value="Not Updated to the Newest" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>
 				<h:outputText value="No Data" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq -1}"/>
 				</div>
-
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left" >
 				<h:outputText value="No Local Region Data, please update the newest version from franchiser! "
     			rendered="#{regionCategory.headStatus eq null}"/>
     			</p:panel>
+				</h:form>
 
 				<h:form id="treeForm" rendered="#{regionCategory.headStatus ne null}">
     			<!-- Tree -->
 			    <p:tree value="#{regionCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{regionCategory.selectedNode}" orientation="horizontal" >
-			        <!--
-			        <p:ajax event="unselect" update=":form:messages" listener="#{treeEventsView.onNodeUnselect}" />-->
 			        <p:ajax event="collapse" listener="#{regionCategory.onNodeCollapse}" />
 			        <p:ajax event="expand" listener="#{regionCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{regionCategory.onNodeSelect}" />
@@ -73,7 +78,6 @@ xmlns:p="http://primefaces.org/ui">
     			<p:commandButton onclick="location.href='#{request.contextPath}/region/version.xhtml'"  rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Retrive New Version" styleClass="right-content-header-button floatLeft" icon="ui-icon-contact"/>
 				</div>
-
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left" >
 				<h:outputText value="Haven't retrived any version from franchiser" styleClass="floatLeft"
     			rendered="#{regionCategory.newestStatus eq null}"/>
@@ -91,15 +95,29 @@ xmlns:p="http://primefaces.org/ui">
 			    </p:tree>
 				</h:form>
 				</p:panel>
+
 				<!-- BlockUI -->
 				<h:form>
 				<p:blockUI
-				block=":rightContentLayout">
+				block=":rightContentLayout"
+				trigger=":renameCategoryForm:renameCategoryButton :treeFormHeader:updateToNewest">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>
 
-
+				<!-- Rename -->
+				<h:form id="renameCategoryForm">
+				<p:dialog header="Rename Category" widgetVar="renameCategory" width="450">
+				    <h:panelGrid columns="2" cellpadding="5">
+			            <h:outputLabel for="categoryName" value="Category Name:" />
+			            <p:inputText id="categoryName" value="#{regionCategory.selectedNodeName}" required="true" label="categoryName" />
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{regionCategory.renameCategory}" update=":treeForm"
+			                id="renameCategoryButton" value="Rename" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
     		</ui:define>
     	</ui:composition>
     </h:body>
