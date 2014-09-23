@@ -24,7 +24,7 @@ xmlns:p="http://primefaces.org/ui">
     			<span class="right-content-header-text">Merchandise Categories</span>
     			</div>
     			</h:form>
-    			<p:panel styleClass="autoHeightPanel">
+    			<p:panel styleClass="autoHeightPanel" id="currentPanel">
     			<h:form id="treeFormHeader">
     			<div class="treeHeader">
     			<span class="treeHeaderText">Current Local Categories</span>
@@ -36,16 +36,16 @@ xmlns:p="http://primefaces.org/ui">
 		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 0}"
-						actionListener="#{regionCategory.updateToNewest}" update=":treeForm :treeFormHeader :leftMenuForm"
+						actionListener="#{regionCategory.updateToNewest}" update=":currentPanel :leftMenuForm"
 		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" id="updateToNewest"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 1}"
 		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 
-				<h:outputText value="Updated to the Newest" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
-				<h:outputText value="Not Updated to the Newest" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>
-				<h:outputText value="No Data" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq -1}"/>
+				<h:outputText value="Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
+				<h:outputText value="Not Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>
+				<h:outputText value="No Data!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq -1}"/>
 				</div>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left" >
 				<h:outputText value="No Local Region Data, please update the newest version from franchiser! "

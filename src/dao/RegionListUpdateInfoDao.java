@@ -11,6 +11,7 @@ import model.RegionListUpdateInfo;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -40,10 +41,22 @@ public class RegionListUpdateInfoDao implements Serializable{
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListUpdateInfoMapper());
 	}
 
+	public RegionListUpdateInfo queryRegionListUpdateInfosByRegionIdAndVersionId(String regionId,String versionId){
+		String sql = "select * from REGION_LIST_UPDATE_INFO where REGION_ID = :regionId and VERSION_ID = :versionId order by CREATE_TIME DESC";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("regionId", regionId).addValue("versionId", versionId);
+		return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new RegionListUpdateInfoMapper());
+	}
+
+	public int updateRegionListUpdateInfo(RegionListUpdateInfo regionListUpdateInfo){
+		String sql = "update REGION_LIST_UPDATE_INFO set IS_FINISHED = :isFinished, FINISHED_TIME = :finishedTime where REGION_ID = :regionId and VERSION_ID = :versionId";
+		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(regionListUpdateInfo);
+		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+	}
+	
 	public void insertRegionListUpdateInfo(RegionListUpdateInfo regionListUpdateInfo){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("REGION_ID", regionListUpdateInfo.getRegionId());
-		parameters.put("VERSION_ID", regionListUpdateInfo.getVerionId());
+		parameters.put("VERSION_ID", regionListUpdateInfo.getVersionId());
 		parameters.put("IS_FINISHED", regionListUpdateInfo.getIsFinished());
 		parameters.put("CREATE_TIME", regionListUpdateInfo.getCreateTime());
 		parameters.put("FINISHED_TIME", regionListUpdateInfo.getFinishedTime());
@@ -58,7 +71,7 @@ public class RegionListUpdateInfoDao implements Serializable{
 	    public RegionListUpdateInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 	    	RegionListUpdateInfo regionListUpdateInfo = new RegionListUpdateInfo();
 	    	regionListUpdateInfo.setRegionId(rs.getString("REGION_ID"));
-	    	regionListUpdateInfo.setVerionId(rs.getString("VERSION_ID"));
+	    	regionListUpdateInfo.setVersionId(rs.getString("VERSION_ID"));
 	    	regionListUpdateInfo.setIsFinished(rs.getInt("IS_FINISHED"));
 	    	regionListUpdateInfo.setCreateTime(rs.getTimestamp("CREATE_TIME"));
 	    	regionListUpdateInfo.setFinishedTime(rs.getTimestamp("FINISHED_TIME"));

@@ -121,7 +121,7 @@ public static RegionListCategory getIncludedInRegionHead(Category category, List
 public static String getRetrivedNewestVersionId(String regionId){
 	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
-	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVerionId();
+	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVersionId();
 	return localNewestVersion;
 }
 
@@ -165,7 +165,7 @@ public static void retriveFromFranchiser(String regionId){
 		regionListUpdateInfo.setFinishedTime(null);
 		regionListUpdateInfo.setIsFinished(CONFIRM_CAN_SEND);
 		regionListUpdateInfo.setRegionId(region.getRegionId());
-		regionListUpdateInfo.setVerionId(newestBasicList.getVersionId());
+		regionListUpdateInfo.setVersionId(newestBasicList.getVersionId());
 		regionListUpdateInfoDao.insertRegionListUpdateInfo(regionListUpdateInfo);
 
 }
@@ -176,7 +176,7 @@ public static Map<String,RegionListUpdateInfo> getRegionListUpdateInfoMapByRegio
 	LinkedHashMap<String, RegionListUpdateInfo> map = new LinkedHashMap<String, RegionListUpdateInfo>();
 	for(RegionListUpdateInfo regionListUpdateInfo : regionListUpdateInfos){
 		if(regionListUpdateInfo.getRegionId().equals(regionId))
-			map.put(regionListUpdateInfo.getVerionId(), regionListUpdateInfo);
+			map.put(regionListUpdateInfo.getVersionId(), regionListUpdateInfo);
 	}
 	return map;
 }
@@ -199,7 +199,7 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 	Map<String,BasicList> basiclistMap = getBasicListMap();
 	Map<String,RegionListUpdateInfo> regionVersionMap = new LinkedHashMap<String, RegionListUpdateInfo>();
 	for(RegionListUpdateInfo regionListUpdateInfo : regionListUpdateInfos){
-		regionVersionMap.put(regionListUpdateInfo.getVerionId(), regionListUpdateInfo);
+		regionVersionMap.put(regionListUpdateInfo.getVersionId(), regionListUpdateInfo);
 	}
 
 	Iterator<String> iter = basiclistMap.keySet().iterator();

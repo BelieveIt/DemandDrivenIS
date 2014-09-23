@@ -63,7 +63,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Category Status -->
 			            <p:column headerText="Category Update Status" toggleable="false"  exportable="false" >
-			             <p:commandButton update=":tableForm" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
+			             <p:commandButton onclick="location.href='#{request.contextPath}/region/category.xhtml'" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
@@ -76,7 +76,7 @@ xmlns:p="http://primefaces.org/ui">
 			            </p:column>
 
 						<!-- Product Status -->
-			            <p:column  headerText="Product Update Status" toggleable="false"  exportable="false" >
+			            <p:column  headerText="Product Update Status" toggleable="false" exportable="false" >
 			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
@@ -91,8 +91,10 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Update Status -->
 			            <p:column headerText="Update Status" toggleable="false"  exportable="false" >
-			             <p:commandButton update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 0}"
-			              icon="ui-icon-search" value="Confirm Finishing Update" />
+			             <p:commandButton actionListener="#{regionVersion.openConfirmFinishingUpdate}" update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 0}"
+			              icon="ui-icon-search" value="Confirm Finishing Update" >
+			              <f:setPropertyActionListener value="#{item}" target="#{regionVersion.selectedRegionVersionListItem}" />
+			             </p:commandButton>
 			             <p:commandButton rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
 
@@ -115,9 +117,22 @@ xmlns:p="http://primefaces.org/ui">
 					<!-- BlockUI -->
 					<h:form>
 					<p:blockUI widgetVar="blockUI"
-					block=":rightContentLayout">
+					block=":rightContentLayout"
+					trigger=":confirmFinishingUpdate:confirmFinishingUpdateButton">
 				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 				    </p:blockUI>
+					</h:form>
+					
+					<!-- Finish Update Version -->
+					<h:form id="confirmFinishingUpdate">
+					<p:dialog header="Confirm Finishing Update" widgetVar="confirmFinishingUpdate" width="400">
+					    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+				            <f:facet name="footer">
+				                <p:commandButton actionListener="#{regionVersion.confirmFinishingUpdate}" update=":tableForm"
+				                id="confirmFinishingUpdateButton" value="Confirm Finishing Version Update" />
+				            </f:facet>
+				        </h:panelGrid>
+					</p:dialog>
 					</h:form>
 
 					<!-- View Version -->

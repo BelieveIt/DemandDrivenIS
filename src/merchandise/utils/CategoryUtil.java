@@ -158,13 +158,14 @@ public static boolean isLeafNode(TreeNode treeNode){
 		return true;
 	}
 }
-
+//Compare Region HEAD and version of Basic List
 public static boolean compareLocalTreeAndBasicList(String regionId, String basicListVersionId){
 	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
 	List<RegionListCategory> regionCategories = regionListCategoryDao.queryCategoriesByVersionId("head", regionId);
 	TreeNode rootOfRegion = generateTree(regionCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
 	List<Category> regionCategoriesByOrder = new ArrayList<Category>();
-
+	
+	if(rootOfRegion == null) return false;
 	getCategoriesByTreeOrder(regionCategoriesByOrder, rootOfRegion);
 
 	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();

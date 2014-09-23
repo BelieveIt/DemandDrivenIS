@@ -66,7 +66,7 @@ public class RegionCategory implements Serializable{
 		doVersionCampare();
 	}
 
-	private void doVersionCampare(){
+	public void doVersionCampare(){
 		if(isHeadNull() && isUpdateInfoNull()) {
 			compareWithNewest = -1;
 			leftMenuUpdateAlert = null;
@@ -123,6 +123,7 @@ public class RegionCategory implements Serializable{
 	public void updateToNewest(){
 		if(!isUpdateInfoNull()){
 			VersionUtil.updateToNewestBasiclist(currentRegionId);
+			headStatus = "normal";
 			initRootNodeByVersionId("head");
 			doVersionCampare();
 		}

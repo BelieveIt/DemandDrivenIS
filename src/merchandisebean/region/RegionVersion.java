@@ -1,10 +1,12 @@
 package merchandisebean.region;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
@@ -26,6 +28,9 @@ public class RegionVersion implements Serializable{
 	private List<RegionVersionListItem> regionVersionListItems;
 	private RegionVersionListItem selectedRegionVersionListItem;
 	private RegionVersionListItem selectedRegionVersionListItemNext;
+	
+	@ManagedProperty(value="#{regionCategory}")
+	private RegionCategory regionCategory;
 	private String leftMenuNewAlert;
 
 	private String currentRegionId;
@@ -56,8 +61,23 @@ public class RegionVersion implements Serializable{
 	public void retriveBasicList(ActionEvent actionEvent){
 		VersionUtil.retriveFromFranchiser(currentRegionId);
 		initProcess();
+		regionCategory.doVersionCampare();
 	}
 
+	public void openConfirmFinishingUpdate(){
+		RequestContext.getCurrentInstance().execute("PF('confirmFinishingUpdate').show();");
+	}
+	
+	public void confirmFinishingUpdate(){
+		String confirmVersionId = selectedRegionVersionListItem.getVersionId();
+		RegionListUpdateInfo regionListUpdateInfo = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionIdAndVersionId(currentRegionId, confirmVersionId);
+		regionListUpdateInfo.setIsFinished(new Integer(1));
+		regionListUpdateInfo.setCreateTime(new Date());
+		regionListUpdateInfoDao.updateRegionListUpdateInfo(regionListUpdateInfo);
+		initProcess();
+		RequestContext.getCurrentInstance().execute("PF('confirmFinishingUpdate').hide();");
+	}
+	
 	public void openViewVersionDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
@@ -105,6 +125,14 @@ public class RegionVersion implements Serializable{
 
 	public void setLeftMenuNewAlert(String leftMenuNewAlert) {
 		this.leftMenuNewAlert = leftMenuNewAlert;
+	}
+
+	public RegionCategory getRegionCategory() {
+		return regionCategory;
+	}
+
+	public void setRegionCategory(RegionCategory regionCategory) {
+		this.regionCategory = regionCategory;
 	}
 
 }
