@@ -1,10 +1,18 @@
 package merchandise.utils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
+import model.BasicListCategory;
 import model.Category;
+import model.RegionListCategory;
+
 import org.primefaces.model.TreeNode;
+
+import dao.BasicListCategoryDao;
+import dao.RegionListCategoryDao;
 
 
 public class CategoryUtil {
@@ -143,12 +151,56 @@ public static List<Category> getCategoriesFormTree(TreeNode rootNode){
 //
 public static boolean isLeafNode(TreeNode treeNode){
 	Category category = (Category) treeNode.getData();
-	if(category.getCategoryId().equals(NOT_CLASSIFIED_FOR_PRODUCT_ID)) return true;	
+	if(category.getCategoryId().equals(NOT_CLASSIFIED_FOR_PRODUCT_ID)) return true;
 	if(treeNode.getChildCount() > 0){
 		return false;
 	}else {
 		return true;
 	}
+}
+
+public static boolean compareLocalTreeAndBasicList(String regionId, String basicListVersionId){
+	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
+	List<RegionListCategory> regionCategories = regionListCategoryDao.queryCategoriesByVersionId("head", regionId);
+	TreeNode rootOfRegion = generateTree(regionCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
+	List<Category> regionCategoriesByOrder = new ArrayList<Category>();
+
+	LinkedList<TreeNode> queueForRegion = new LinkedList<TreeNode>();
+	queueForRegion.offer(rootOfRegion);
+	getCategoriesByTreeOrder(regionCategoriesByOrder, queueForRegion);
+
+	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();
+	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(basicListVersionId);
+	TreeNode rootOfFranchiser = generateTree(basicListCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
+	List<Category> franchiserCategoriesByOrder = new ArrayList<Category>();
+
+	LinkedList<TreeNode> queueForFranchiser = new LinkedList<TreeNode>();
+	queueForFranchiser.offer(rootOfFranchiser);
+	getCategoriesByTreeOrder(franchiserCategoriesByOrder, queueForFranchiser);
+
+	if(regionCategoriesByOrder.size() != franchiserCategoriesByOrder.size()){
+		return false;
+	}else {
+		for(int i = 0; i < regionCategoriesByOrder.size(); i++){
+			if(!regionCategoriesByOrder.get(i).getCategoryId().equals(franchiserCategoriesByOrder.get(i).getCategoryId()))
+				return false;
+		}
+	}
+	return true;
+}
+
+public static void getCategoriesByTreeOrder(List<Category> categories, Queue<TreeNode> nodes){
+
+	while (nodes.size() != 0) {
+		TreeNode currentNode = nodes.poll();
+		Category currentCategory = (Category) currentNode.getData();
+		categories.add(currentCategory);
+		List<TreeNode> childsOfCurrent = currentNode.getChildren();
+		for(TreeNode node : childsOfCurrent){
+			nodes.offer(node);
+		}
+	}
+
 }
 
 private static List<TreeNode> getListFromTree(TreeNode rootNode){

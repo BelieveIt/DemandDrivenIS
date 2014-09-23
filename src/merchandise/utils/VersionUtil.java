@@ -59,17 +59,58 @@ public static void createNewBasicList(){
 	basicListDao.insertBasicList(basicList);
 }
 
+public static void updateToNewestBasiclist(String regionId){
+	//init
+	RegionDao regionDao = new RegionDao();
+	Region region = regionDao.queryRegion(regionId);
+
+	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
+
+	RegionListCategoryDao categoryDao = new RegionListCategoryDao();
+	List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", regionId);
+
+	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();
+	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(getRetrivedNewestVersionId(regionId));
+
+	if(categories.size() == 0){
+		for(BasicListCategory basicListCategory : basicListCategories){
+			RegionListCategory regionListCategory = new RegionListCategory();
+			regionListCategory.setRegionId(region.getRegionId());
+			setBasicListCategoryToRegion(regionListCategory, basicListCategory);
+			regionListCategory.setVersionId("head");
+			regionListCategoryDao.insertCategory(regionListCategory);
+		}
+
+//		for(BasicListItem basicListItem : basicListItems){
+//			RegionListItem regionListItem = new RegionListItem();
+//			regionListItem.setRegionId(region.getRegionId());
+//			setBasicListItemToRegion(regionListItem, basicListItem);
+//			regionListItem.setVersionId("head");
+//			regionListItemDao.insertProduct(regionListItem);
+//		}
+	}
+}
+//Region retrived newest version
+public static String getRetrivedNewestVersionId(String regionId){
+	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
+	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVerionId();
+	return localNewestVersion;
+}
+
+
+//Retrive version from the franchiser to local
 public static void retriveFromFranchiser(String regionId){
 	BasicListDao basicListDao = new BasicListDao();
 	BasicListItemDao basicListItemDao = new BasicListItemDao();
 	BasicListCategoryDao basicListCategoryDao  = new BasicListCategoryDao();
-	
+
 	List<BasicList> basicLists = basicListDao.queryBasicLists();
 	BasicList newestBasicList = basicLists.get(0);
-	
+
 	List<BasicListItem> basicListItems = basicListItemDao.queryProductsByVersionId(newestBasicList.getVersionId());
 	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(newestBasicList.getVersionId());
-	
+
 
 		RegionDao regionDao = new RegionDao();
 		RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
@@ -77,27 +118,6 @@ public static void retriveFromFranchiser(String regionId){
 		RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 		Region region = regionDao.queryRegion(regionId);
 
-		//init
-		RegionListCategoryDao categoryDao = new RegionListCategoryDao();
-		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", regionId);
-		if(categories.size() == 0){
-			for(BasicListCategory basicListCategory : basicListCategories){
-				RegionListCategory regionListCategory = new RegionListCategory();
-				regionListCategory.setRegionId(region.getRegionId());
-				setBasicListCategoryToRegion(regionListCategory, basicListCategory);
-				regionListCategory.setVersionId("head");
-				regionListCategoryDao.insertCategory(regionListCategory);
-			}
-
-			for(BasicListItem basicListItem : basicListItems){
-				RegionListItem regionListItem = new RegionListItem();
-				regionListItem.setRegionId(region.getRegionId());
-				setBasicListItemToRegion(regionListItem, basicListItem);
-				regionListItem.setVersionId("head");
-				regionListItemDao.insertProduct(regionListItem);
-			}
-		}
-		
 		//insert new version
 		for(BasicListCategory basicListCategory : basicListCategories){
 			RegionListCategory regionListCategory = new RegionListCategory();
@@ -112,7 +132,7 @@ public static void retriveFromFranchiser(String regionId){
 			setBasicListItemToRegion(regionListItem, basicListItem);
 			regionListItemDao.insertProduct(regionListItem);
 		}
-				
+
 		RegionListUpdateInfo regionListUpdateInfo = new RegionListUpdateInfo();
 		regionListUpdateInfo.setCreateTime(newestBasicList.getCreateTime());
 		regionListUpdateInfo.setFinishedTime(null);
@@ -189,7 +209,10 @@ public static List<RegionVersionListItem> generateRegionVersionListItems(List<Re
 		}
 		regionVersionListItems.add(regionVersionListItem);
 	}
-	regionVersionListItems.get(0).setIsOutDated(0);
+	if(regionVersionListItems.size() != 0){
+		regionVersionListItems.get(0).setIsOutDated(0);
+	}
+
 	return regionVersionListItems;
 }
 

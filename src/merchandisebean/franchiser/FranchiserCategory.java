@@ -36,11 +36,11 @@ import dao.BasicListItemDao;
 @ViewScoped
 public class FranchiserCategory implements Serializable{
 	private static final long serialVersionUID = -9201081405856011379L;
-	
+
 	private BasicListDao basicListDao;
 	private BasicListCategoryDao categoryDao;
 	private BasicListItemDao basicListItemDao;
-	
+
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 	private String selectedNodeName;
@@ -50,32 +50,45 @@ public class FranchiserCategory implements Serializable{
 	private String currentVersion;
 	private String order;
 	private List<String> versionIdList;
-	
+
 	@PostConstruct
     public void init() {
 		basicListDao = new BasicListDao();
 		categoryDao = new BasicListCategoryDao();
 		basicListItemDao = new BasicListItemDao();
 		order = CategoryUtil.ORDER_BY_NAME;
+		initIfHeadNull();
 		initByVersionId("head");
     }
 
-	private void initByVersionId(String versionId){		
+	private void initIfHeadNull(){
+		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId("head");
+		if(categories.size() == 0){
+			BasicListCategory basicListCategory = new BasicListCategory();
+			basicListCategory.setCategoryFatherId(CategoryUtil.ROOT_FATHER_ID);
+			basicListCategory.setCategoryId(IdentityUtil.randomUUID());
+			basicListCategory.setCategoryName("Categories");
+			basicListCategory.setCreateTime(new Date());
+			basicListCategory.setVersionId("head");
+			categoryDao.insertCategory(basicListCategory);
+		}
+	}
+	private void initByVersionId(String versionId){
 		rootNode= getCurrentTree(order, versionId);
-		CategoryUtil.expandAllTree(rootNode);	
+		CategoryUtil.expandAllTree(rootNode);
 		selectedNode = null;
 		selectedNodeName = null;
-		
+
 		categoryName = null;
-		currentVersion = versionId;	
-		
+		currentVersion = versionId;
+
 		List<BasicList> basicLists = basicListDao.queryBasicLists();
 		versionIdList = new ArrayList<String>();
 		versionIdList.add("head");
 		for(BasicList basicList : basicLists){
 			versionIdList.add(basicList.getVersionId());
 		}
-		
+
 	}
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
@@ -147,7 +160,7 @@ public class FranchiserCategory implements Serializable{
 	public void deleteCategory(ActionEvent actionEvent){
 		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
 		List<BasicListItem> basicListItems = basicListItemDao.queryProductsByVersionId(currentVersion);
-		
+
 		for(Category category : categories){
 			List<BasicListItem> basicListItemsByCategory = ProductUtil.generateBasicListItemsByCategory(basicListItems, category);
 			for(BasicListItem basicListItem : basicListItemsByCategory){
@@ -200,7 +213,7 @@ public class FranchiserCategory implements Serializable{
 	public void changeVersion(){
 		initByVersionId(currentVersion);
 	}
-	
+
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId);
 		return CategoryUtil.generateTree(categories, currentOrder, CategoryUtil.ROOT_FATHER_ID);

@@ -9,14 +9,15 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import merchandise.utils.CategoryUtil;
-import model.BasicList;
+import merchandise.utils.VersionUtil;
 import model.Category;
 import model.RegionListCategory;
+import model.RegionListUpdateInfo;
 
 import org.primefaces.model.TreeNode;
 
-import dao.BasicListDao;
 import dao.RegionListCategoryDao;
+import dao.RegionListUpdateInfoDao;
 
 @ManagedBean(name="regionCategory")
 @ViewScoped
@@ -31,15 +32,69 @@ public class RegionCategory {
 
 	private String currentRegionId;
 
+	private String headStatus;
+	private String newestStatus;
+
+	private Integer compareWithNewest;
+
+	private TreeNode newestRootNode;
 	@PostConstruct
 	public void init(){
 		//TODO
 		currentRegionId = "1";
 		categoryDao = new RegionListCategoryDao();
-		initByVersionId("head");
+		if(isHeadNull()){
+			headStatus = null;
+		}else {
+			headStatus = "normal";
+			initRootNodeByVersionId("head");
+		}
+
+		if(isUpdateInfoNull()){
+			newestStatus = null;
+		}else {
+			initNewestRootNodeByVersionId(VersionUtil.getRetrivedNewestVersionId(currentRegionId));
+			newestStatus = "normal";
+		}
+		doVersionCampare();
 	}
 
-	public void initByVersionId(String versionId){
+	private void doVersionCampare(){
+		if(isHeadNull() || isUpdateInfoNull()) {
+			compareWithNewest = -1;
+			return;
+		}
+		if(isHeadNull() && !isUpdateInfoNull()){
+			compareWithNewest = 0;
+			return;
+		}
+		boolean result = CategoryUtil.compareLocalTreeAndBasicList(currentRegionId, VersionUtil.getRetrivedNewestVersionId(currentRegionId));
+		if(result){
+			compareWithNewest = 1;
+		}else {
+			compareWithNewest = 0;
+		}
+	}
+
+	private boolean isHeadNull(){
+		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", currentRegionId);
+		if(categories.size() == 0){
+			return true;
+		}else {
+			return false;
+		}
+	}
+	private boolean isUpdateInfoNull(){
+		RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+		List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(currentRegionId);
+		if(newestRegionListUpdateInfos.size() == 0){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public void initRootNodeByVersionId(String versionId){
 		rootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
 		CategoryUtil.expandAllTree(rootNode);
 		selectedNode = null;
@@ -47,11 +102,26 @@ public class RegionCategory {
 
 		setCurrentVersion(versionId);
 	}
+
+	public void initNewestRootNodeByVersionId(String versionId){
+		newestRootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
+		CategoryUtil.expandAllTree(newestRootNode);
+	}
+
+	//Update to Retrieved Newest Version
+	public void updateToNewest(){
+		if(!isUpdateInfoNull()){
+			VersionUtil.updateToNewestBasiclist(currentRegionId);
+		}
+	}
+
+
+
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
 		return CategoryUtil.generateTree(categories, currentOrder, CategoryUtil.ROOT_FATHER_ID);
-
 	}
+
 	public TreeNode getRootNode() {
 		return rootNode;
 	}
@@ -91,6 +161,38 @@ public class RegionCategory {
 
 	public void setCurrentVersion(String currentVersion) {
 		this.currentVersion = currentVersion;
+	}
+
+	public String getHeadStatus() {
+		return headStatus;
+	}
+
+	public void setHeadStatus(String headStatus) {
+		this.headStatus = headStatus;
+	}
+
+	public String getNewestStatus() {
+		return newestStatus;
+	}
+
+	public void setNewestStatus(String newestStatus) {
+		this.newestStatus = newestStatus;
+	}
+
+	public Integer getCompareWithNewest() {
+		return compareWithNewest;
+	}
+
+	public void setCompareWithNewest(Integer compareWithNewest) {
+		this.compareWithNewest = compareWithNewest;
+	}
+
+	public TreeNode getNewestRootNode() {
+		return newestRootNode;
+	}
+
+	public void setNewestRootNode(TreeNode newestRootNode) {
+		this.newestRootNode = newestRootNode;
 	}
 
 }
