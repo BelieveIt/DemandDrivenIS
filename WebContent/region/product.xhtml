@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
+    			<h:form id="buttonForm">
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Product2 List</span>
+    			</div>
+    			</h:form>
+
+    			<p:panel styleClass="autoHeightPanel">
+
+    			<!-- Category Tree -->
+    			<p:panel styleClass="floatLeft width20 divStyle">
+    			<h:form id="treeForm">
+			    <p:tree value="#{regionProduct.rootNode}" var="category" selectionMode="single"
+			    selection="#{regionProduct.selectedNode}" styleClass="leftTree">
+			        <p:ajax event="select" listener="#{regionProduct.onNodeSelect}" update=":tableForm"/>
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+				</h:form>
+				</p:panel>
+
+    			<!-- Products List -->
+				<p:panel styleClass="floatLeft width78 divStyle">
+				<h:form id="tableForm">
+					<p:dataTable id="dataTable" var="item" value="#{regionProduct.regionListItems}"
+				                         filteredValue="#{regionProduct.filteredItems}"  selection="#{regionProduct.selectedItems}"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+		    			<f:facet name="header" >
+
+		    			<div class="right-content-header-buttons-panel">
+
+		    			<!-- Add/Delete/Move
+		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForm:messages :addProductForm"
+		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":messagesForm:messages"
+						value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":messagesForm:messages"
+						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						-->
+						<p:commandButton actionListener="#{regionProduct.openUpdateItems}" update=":messagesForm:messages"
+						value="Update To the Newest Retrieved Version(#{regionProduct.regionListItemDiff.deletedItems.size() + regionProduct.regionListItemDiff.addedItems.size() + regionProduct.regionListItemDiff.editedItems.size()})"
+						styleClass="right-content-header-button" icon="ui-icon-calculator">
+						 </p:commandButton>
+		    			</div>
+		    			</f:facet>
+
+					    <p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+
+ 					    <!-- View/Edit/Delete -->
+			            <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:125px;height:40px">
+<!-- 			             <p:commandButton actionListener="#{franchiserProduct.openViewProduct}" update=":viewProductForm :messagesForm:messages"
+			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+			             </p:commandButton>
+			             <p:commandButton actionListener="#{franchiserProduct.openEditProduct}" update=":editProductForm :messagesForm:messages"
+			            style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-pencil" id="openEditProductButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+			             </p:commandButton>
+						 <p:commandButton actionListener="#{franchiserProduct.openDeleteProduct}" update=":deleteProductForm :messagesForm:messages"
+						style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-trash" id="openDeleteProductButton">
+						    <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+						 </p:commandButton> -->
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="Image" styleClass="searchHintClass"
+				        style="padding:0px;">
+				        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+				        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+    					width="100" height="60"/>
+    					</h:outputLink>
+    					</p:lightBox>
+				        </p:column>
+				        <p:column headerText="ProductId" styleClass="ProductId noPadding"
+				        sortBy="#{item.productId}" filterBy="#{item.productId}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.productId}" />
+				            <p:watermark for="@(.ProductId)" value="ProductId" />
+				        </p:column>
+				        <p:column headerText="Name" styleClass="Name noPadding" id="Name"
+				        sortBy="#{item.product.name}" filterBy="#{item.product.name}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.product.name}" />
+				            <p:watermark for="@(.Name)" value="Name" />
+				        </p:column>
+				        <p:column headerText="Brand" styleClass="Brand noPadding" id="Brand"
+				        sortBy="#{item.product.brand}" filterBy="#{item.product.brand}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.product.brand}" />
+				            <p:watermark for="@(.Brand)" value="Brand" />
+				        </p:column>
+				        <p:column headerText="CreateTime" styleClass="CreateTime noPadding" id="CreateTime"
+				        sortBy="#{item.product.productCreateTime}" filterBy="#{item.product.productCreateTime}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.product.productCreateTime}">
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
+				        </p:column>
+				    </p:dataTable>
+				</h:form>
+				</p:panel>
+
+    			</p:panel>
+
+				<!-- Update Items -->
+				<h:form id="updateItemsForm">
+				<p:dialog header="Compare Current Local Products with Newest Retrived Version" widgetVar="updateItems">
+					<p:panel styleClass="autoHeightPanel divStyle">
+						<h:outputText value="Newest Retrived Version's VersoinId: " style="float:left;font-weight:bold;margin-right:3px"/>
+						<h:outputText value="#{regionProduct.regionListUpdateInfo.versionId}" style="float:left;margin-right:20px"/>
+						<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+						<h:outputText value="#{regionProduct.regionListUpdateInfo.createTime}" style="float:left;margin-right:20px">
+			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			            </h:outputText>
+						<p:separator styleClass="forizontalSeparator"/>
+					</p:panel>
+
+					<p:panel styleClass="autoHeightPanel divStyle" id="updatePanel">
+						 <p:tabView>
+						 	<p:ajax event="tabChange" listener="#{regionProduct.onTabChange}"/>
+						 	<!-- Diff of Category -->
+					        <p:tab title="Deletion(#{regionProduct.regionListItemDiff.deletedItems.size()})">
+								<p:dataTable id="dataTableForDeletion" var="item" value="#{regionProduct.regionListItemDiff.deletedItems}"
+													 selection="#{regionProduct.selectedItemsForDeletion}"
+							                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+					    			<f:facet name="header" >
+
+					    			<div class="right-content-header-buttons-panel">
+									<p:commandButton actionListener="#{regionProduct.updateDeletion}" update=":updateItemsForm:updatePanel :tableForm"
+									value="Confirm And Delete From Local Region List" styleClass="right-content-header-button" icon="ui-icon-calculator">
+									 </p:commandButton>
+					    			</div>
+					    			</f:facet>
+
+									<p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+			 					    <!-- View -->
+			 					    <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+						            <div style="width:125px;height:40px">
+						             <p:commandButton
+						             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+						                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+						             </p:commandButton>
+						            </div>
+						            </p:column>
+
+							        <p:column headerText="Image" styleClass="searchHintClass"
+							        style="padding:0px;">
+							        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+			    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+							        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+			    					width="100" height="60"/>
+			    					</h:outputLink>
+			    					</p:lightBox>
+							        </p:column>
+							        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+							            <h:outputText value="#{item.productId}" />
+							        </p:column>
+							        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+							            <h:outputText value="#{item.product.name}" />
+							            <p:watermark for="@(.Name)" value="Name" />
+							        </p:column>
+							    </p:dataTable>
+					        </p:tab>
+
+					        <!-- Diff of Product -->
+					        <p:tab title="Edit">
+
+					        </p:tab>
+
+					        <p:tab title="Addition(#{regionProduct.regionListItemDiff.addedItems.size()})">
+								<p:dataTable id="dataTableForAddition" var="item" value="#{regionProduct.regionListItemDiff.addedItems}"
+													 selection="#{regionProduct.selectedItems}"
+							                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+					    			<f:facet name="header" >
+
+					    			<div class="right-content-header-buttons-panel">
+									<p:commandButton actionListener="#{regionProduct.updateAddition}" update=":updateItemsForm:updatePanel :tableForm"
+									value="Confirm And Add Into Local Region List" styleClass="right-content-header-button" icon="ui-icon-calculator">
+									 </p:commandButton>
+					    			</div>
+					    			</f:facet>
+
+									<p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+			 					    <!-- View -->
+			 					    <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+						            <div style="width:125px;height:40px">
+						             <p:commandButton
+						             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+						                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+						             </p:commandButton>
+						            </div>
+						            </p:column>
+
+							        <p:column headerText="Image" styleClass="searchHintClass"
+							        style="padding:0px;">
+							        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+			    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+							        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+			    					width="100" height="60"/>
+			    					</h:outputLink>
+			    					</p:lightBox>
+							        </p:column>
+							        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+							            <h:outputText value="#{item.productId}" />
+							        </p:column>
+							        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+							            <h:outputText value="#{item.product.name}" />
+							            <p:watermark for="@(.Name)" value="Name" />
+							        </p:column>
+							    </p:dataTable>
+					        </p:tab>
+					    </p:tabView>
+					</p:panel>
+				</p:dialog>
+				</h:form>
+
+<!-- 				BlockUI
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout"
+				trigger=":tableForm:dataTable:versionSelect :tableForm:dataTable:openViewProductButton :tableForm:dataTable:openEditProductButton :tableForm:dataTable:openDeleteProductButton
+				 :addProductForm:addProductButton :editProductForm:editProductButton :deleteProductForm:deleteProductButton :deleteProductsForm:deleteProductsButton :moveProductsForm:moveProductsButton">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form> -->
+
+<!--     			Add
+				<h:form id="addProductForm" enctype="multipart/form-data">
+				<p:dialog header="Add Product" widgetVar="addProduct" width="650">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+ 			            <h:outputLabel for="name" value="Name:" />
+			            <p:inputText id="name" value="#{franchiserProduct.newProduct.name}" required="true" label="name" />
+			            <h:outputLabel for="brand" value="Brand:" />
+			            <p:inputText id="brand" value="#{franchiserProduct.newProduct.brand}" required="true" label="brand" />
+			            <h:outputLabel for="itemWeight" value="Weight:" />
+			            <p:inputText id="itemWeight" value="#{franchiserProduct.newProduct.itemWeight}" required="true" label="itemWeight" />
+			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.newProduct.manufacturer}" required="true" label="manufacturer" />
+			            <h:outputLabel for="price" value="Price:" />
+			            <p:inputText id="price" value="#{franchiserProduct.newProduct.price}" required="true" label="price" />
+
+			            <h:outputLabel for="unit" value="Unit:" />
+			            <p:inputText id="unit" value="#{franchiserProduct.newProduct.unit}" required="true" label="unit" />
+			            <h:outputLabel for="minInventory" value="MinInventory:" />
+			            <p:inputText id="minInventory" value="#{franchiserProduct.newProduct.minInventory}" required="true" label="minInventory" />
+
+						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.newProduct.deliveryFrequency}">
+				            <f:selectItem itemLabel="Every Day" itemValue="everyday" />
+				            <f:selectItem itemLabel="Every Week" itemValue="everyweek" />
+				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
+				        </p:selectOneMenu>
+				        <h:outputLabel for="image" value="Product Image:" />
+			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImageForAdd}" update=":messagesForm:messages uploadedImg @this"
+                           id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+    					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.newProduct.image}">
+    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.newProduct.image}"
+    					width="100" height="60" rendered="#{not empty franchiserProduct.newProduct.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
+			            </p:panel>
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
+			                id="addProductButton" value="Add" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
+
+    			View
+				<h:form id="viewProductForm" enctype="multipart/form-data">
+				<p:dialog header="View Product" widgetVar="viewProduct" width="350">
+				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+ 			            <h:outputLabel for="name" value="Name:" />
+			            <h:outputLabel id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}"/>
+
+			            <h:outputLabel for="createTime" value="Create Time:" />
+			            <h:outputLabel id="createTime" value="#{franchiserProduct.selectedBasicListItem.product.productCreateTime}">
+			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			            </h:outputLabel>
+
+			            <h:outputLabel for="brand" value="Brand:" />
+			            <h:outputLabel id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" />
+
+			            <h:outputLabel for="itemWeight" value="Weight:" />
+			            <h:outputLabel id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" />
+
+			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />
+
+			            <h:outputLabel for="price" value="Price:" />
+			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />
+
+			            <h:outputLabel for="unit" value="Unit:" />
+			            <h:outputLabel id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" />
+
+			            <h:outputLabel for="minInventory" value="MinInventory:" />
+			            <h:outputLabel id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" />
+
+						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
+				        <h:outputLabel for="image" value="Product Image:" />
+    					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}" title="Nature 1">
+    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
+			            </p:panel>
+			        </p:panelGrid>
+				</p:dialog>
+				</h:form>
+
+    			Edit
+				<h:form id="editProductForm" enctype="multipart/form-data">
+				<p:dialog header="Edit Product" widgetVar="editProduct" width="650">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+ 			            <h:outputLabel for="name" value="Name:" />
+			            <p:inputText id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}" required="true" label="name" />
+			            <h:outputLabel for="brand" value="Brand:" />
+			            <p:inputText id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" required="true" label="brand" />
+			            <h:outputLabel for="itemWeight" value="Weight:" />
+			            <p:inputText id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" required="true" label="itemWeight" />
+			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" required="true" label="manufacturer" />
+			            <h:outputLabel for="price" value="Price:" />
+			            <p:inputText id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" required="true" label="price" />
+
+			            <h:outputLabel for="unit" value="Unit:" />
+			            <p:inputText id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" required="true" label="unit" />
+			            <h:outputLabel for="minInventory" value="MinInventory:" />
+			            <p:inputText id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" required="true" label="minInventory" />
+
+						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}">
+				            <f:selectItem itemLabel="Every Day" itemValue="everyday" />
+				            <f:selectItem itemLabel="Every Week" itemValue="everyweek" />
+				            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
+				        </p:selectOneMenu>
+				        <h:outputLabel for="image" value="Product Image:" />
+			            <p:fileUpload fileUploadListener="#{franchiserProduct.uploadProductImageForEdit}" update=":messagesForm:messages uploadedImg @this"
+                     id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+    					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}" title="Nature 1">
+    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
+			            </p:panel>
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.editProduct}" update=":tableForm"
+			                id="editProductButton" value="Edit" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
+
+				Delete Product
+				<h:form id="deleteProductForm" enctype="multipart/form-data">
+				<p:dialog header="Delete Product" widgetVar="deleteProduct" width="350">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+				    	 			            <h:outputLabel for="name" value="Name:" />
+			            <h:outputLabel id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}"/>
+
+			            <h:outputLabel for="createTime" value="Create Time:" />
+			            <h:outputLabel id="createTime" value="#{franchiserProduct.selectedBasicListItem.product.productCreateTime}">
+			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			            </h:outputLabel>
+
+			            <h:outputLabel for="brand" value="Brand:" />
+			            <h:outputLabel id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" />
+
+			            <h:outputLabel for="itemWeight" value="Weight:" />
+			            <h:outputLabel id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" />
+
+			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+			            <h:outputLabel id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" />
+
+			            <h:outputLabel for="price" value="Price:" />
+			            <h:outputLabel id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" />
+
+			            <h:outputLabel for="unit" value="Unit:" />
+			            <h:outputLabel id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" />
+
+			            <h:outputLabel for="minInventory" value="MinInventory:" />
+			            <h:outputLabel id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" />
+
+						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+				        <h:outputLabel id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}" />
+				        <h:outputLabel for="image" value="Product Image:" />
+    					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}">
+    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
+    					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
+			            </p:panel>
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.deleteProduct}" update=":tableForm"
+			                id="deleteProductButton" value="Confirm Delete" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
+
+				Delete Products
+				<h:form id="deleteProductsForm">
+				<p:dialog header="Delete Product" widgetVar="deleteProducts" width="350">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+			            <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.deleteProducts}" update=":tableForm"
+			                id="deleteProductsButton" value="Confirm Delete" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form>
+
+				Move Products
+				<h:form id="moveProductsForm">
+				<p:dialog header="Move Products" widgetVar="moveProducts" width="250">
+				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+					    <p:tree value="#{franchiserProduct.rootNode}" var="category" selectionMode="single"
+					    selection="#{franchiserProduct.selectedNodeForMove}" styleClass="leftTree">
+					        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelectForMove}" update=":tableForm"/>
+					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+					            <h:outputText value="#{category.categoryName}" />
+					        </p:treeNode>
+					    </p:tree>
+					    <f:facet name="footer">
+			                <p:commandButton actionListener="#{franchiserProduct.moveProducts}" update=":tableForm"
+			                id="moveProductsButton" value="Confirm Move" />
+			            </f:facet>
+			        </h:panelGrid>
+				</p:dialog>
+				</h:form> -->
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>
