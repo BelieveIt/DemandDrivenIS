@@ -56,6 +56,14 @@ xmlns:p="http://primefaces.org/ui">
 				            </h:outputText>
 				            <p:watermark for="@(.CreateTime)" value="CreateTime" />
 				        </p:column>
+
+						<!-- View Diff -->
+			            <p:column toggleable="false"  exportable="false"  >
+			             <p:commandButton action="#{franchiserVersion.openViewVersionDetail}" update=":viewVersionForm"
+			              icon="ui-icon-search" value="View Diff">
+			              <f:setPropertyActionListener value="#{item}" target="#{franchiserVersion.selectedBasicList}" />
+			             </p:commandButton>
+			            </p:column>
 				    </p:dataTable>
 					</h:form>
 
@@ -80,6 +88,51 @@ xmlns:p="http://primefaces.org/ui">
 					</p:dialog>
 					</h:form>
 
+					<!-- View Version -->
+					<h:form id="viewVersionForm">
+					<p:dialog header="View Version Diff" widgetVar="viewVersion">
+						<p:panel styleClass="autoHeightPanel divStyle">
+							<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
+							<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.selectedBasicList.createTime}" style="float:left;margin-right:20px">
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+							<p:separator styleClass="forizontalSeparator"/>
+						</p:panel>
+
+						<p:panel styleClass="autoHeightPanel divStyle">
+							 <p:tabView>
+							 	<!-- Diff of Category -->
+						        <p:tab title="Category Diff">
+						            <p:panel styleClass="autoHeightPanel divStyle">
+						            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+									<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
+								    </p:panel>
+								    <p:tree value="#{franchiserVersion.viewRoot}" var="category" orientation="horizontal">
+								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}"/>
+								        </p:treeNode>
+								    </p:tree>
+						            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
+						            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+									<h:outputText value="#{franchiserVersion.selectedBasicListNext.versionId}" style="float:left;margin-right:20px"/>
+								    </p:panel>
+								    <p:tree value="#{franchiserVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
+								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+								            <h:outputText value="#{category.categoryName}"/>
+								        </p:treeNode>
+								    </p:tree>
+						        </p:tab>
+
+						        <!-- Diff of Product -->
+						        <p:tab title="Product Diff">
+
+						        </p:tab>
+						    </p:tabView>
+						</p:panel>
+					</p:dialog>
+					</h:form>
     		</ui:define>
     	</ui:composition>
     </h:body>

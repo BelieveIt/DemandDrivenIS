@@ -77,7 +77,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Product Status -->
 			            <p:column  headerText="Product Update Status" toggleable="false" exportable="false" >
-			             <p:commandButton update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
+			             <p:commandButton onclick="location.href='#{request.contextPath}/region/product.xhtml'" update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-search" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
@@ -105,8 +105,9 @@ xmlns:p="http://primefaces.org/ui">
 			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
 
+						<!-- View Diff -->
 			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton actionListener="#{regionVersion.openViewVersionDetail}" update=":viewVersionForm"
+			             <p:commandButton action="#{regionVersion.openViewVersionDetail}" update=":viewVersionForm"
 			              icon="ui-icon-search" value="View Diff">
 			              <f:setPropertyActionListener value="#{item}" target="#{regionVersion.selectedRegionVersionListItem}" />
 			             </p:commandButton>
@@ -122,7 +123,7 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 				    </p:blockUI>
 					</h:form>
-					
+
 					<!-- Finish Update Version -->
 					<h:form id="confirmFinishingUpdate">
 					<p:dialog header="Confirm Finishing Update" widgetVar="confirmFinishingUpdate" width="400">
@@ -147,44 +148,69 @@ xmlns:p="http://primefaces.org/ui">
 				            </h:outputText>
 							<p:separator styleClass="forizontalSeparator"/>
 						</p:panel>
+
 						<p:panel styleClass="autoHeightPanel divStyle">
 							 <p:tabView>
+							 	<!-- Diff of Category -->
 						        <p:tab title="Category Diff">
 						            <p:panel styleClass="autoHeightPanel divStyle">
 						            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 									<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
 								    </p:panel>
-								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
-								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
-								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
-								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+								    <p:tree value="#{regionVersion.viewRoot}" var="category" orientation="horizontal">
 								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 								            <h:outputText value="#{category.categoryName}"/>
-								        </p:treeNode>
-								        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								            <h:outputText value="#{category.categoryName}" />
 								        </p:treeNode>
 								    </p:tree>
 						            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
 						            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 									<h:outputText value="#{regionVersion.selectedRegionVersionListItemNext.versionId}" style="float:left;margin-right:20px"/>
 								    </p:panel>
-								    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
-								    selection="#{franchiserCategory.selectedNode}" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
-								        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
-								        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-								        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+								    <p:tree value="#{regionVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
 								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 								            <h:outputText value="#{category.categoryName}"/>
 								        </p:treeNode>
-								        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								            <h:outputText value="#{category.categoryName}" />
-								        </p:treeNode>
 								    </p:tree>
 						        </p:tab>
-						        <p:tab title="Product Diff">
 
+						        <!-- Diff of Product -->
+						        <p:tab title="Product Diff">
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Deletion: <h:outputText value="#{regionVersion.basicListDiff.deletedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							            <p:commandButton
+							              icon="ui-icon-search" value="Retrive" disabled="true"/>
+							            </p:panel>
+									</p:panel>
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Edit: <h:outputText value="#{regionVersion.basicListDiff.editedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							            <p:commandButton
+							              icon="ui-icon-search" value="Retrive" disabled="true"/>
+							            </p:panel>
+									</p:panel>
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Addition: <h:outputText value="#{regionVersion.basicListDiff.addedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							            <p:commandButton
+							              icon="ui-icon-search" value="Retrive" disabled="true"/>
+							            </p:panel>
+									</p:panel>
 						        </p:tab>
 						    </p:tabView>
 						</p:panel>

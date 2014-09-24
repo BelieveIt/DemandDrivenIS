@@ -16,12 +16,14 @@ import dao.RegionListCategoryDao;
 
 
 public class CategoryUtil {
-//Generate tree from Category List
+
 public static String ORDER_BY_NAME = "name";
 public static String ORDER_BY_TIME = "time";
 public static String ROOT_FATHER_ID = "0";
 public static String ROOT_FOR_PRODUCT_ID="-1";
 public static String NOT_CLASSIFIED_FOR_PRODUCT_ID="-2";
+
+//Generate Vertical Tree from Category List
 public static TreeNode generateTree(List<? extends Category> categories, String order, String rootCategoryId){
 	TreeNode rootNode;
 	for(Category cate : categories){
@@ -37,6 +39,7 @@ public static TreeNode generateTree(List<? extends Category> categories, String 
 	return null;
 }
 
+//Generate Left Menu Tree from Category List
 public static TreeNode generateTreeForProduct(List<? extends Category> categories){
 	Category rootCategory = new Category();
 	rootCategory.setCategoryId(ROOT_FOR_PRODUCT_ID);
@@ -57,21 +60,12 @@ public static TreeNode generateTreeForProduct(List<? extends Category> categorie
 	return null;
 }
 
+//Set Parent for Every Node
 public static void setParentNode(TreeNode rootNode){
 	List<TreeNode> treeNodes = rootNode.getChildren();
 	for(int i = 0; i < treeNodes.size(); i++){
 		treeNodes.get(i).setParent(rootNode);
 		setParentNode(treeNodes.get(i));
-	}
-}
-
-private static void generateTreeRecursion(TreeNode node, List<? extends Category> categories){
-	for (Category cate : categories) {
-		if(cate.getCategoryFatherId().equals(((Category) node.getData()).getCategoryId())){
-			TreeNode newNode = new CategoryDefaultTreeNode(cate, node);
-			newNode.setParent(node);
-			generateTreeRecursion(newNode, categories);
-		}
 	}
 }
 
@@ -96,6 +90,20 @@ public static void expandTree(TreeNode rootNode, ArrayList<String> expandIds){
 		if(expandIds.contains(currentCategory.getCategoryId())){
 			node.setExpanded(true);
 		}
+	}
+}
+
+public static void expandAllTree(TreeNode rootNode){
+	List<TreeNode> treeNodes = getListFromTree(rootNode);
+	for(TreeNode node : treeNodes){
+			node.setExpanded(true);
+	}
+}
+
+public static void collapseAllTree(TreeNode rootNode){
+	List<TreeNode> treeNodes = getListFromTree(rootNode);
+	for(TreeNode node : treeNodes){
+			node.setExpanded(false);
 	}
 }
 
@@ -124,31 +132,7 @@ public static TreeNode restoreTreeStatus(TreeNode oldRootTree, TreeNode newRootT
 	return newRootTree;
 }
 
-public static void expandAllTree(TreeNode rootNode){
-	List<TreeNode> treeNodes = getListFromTree(rootNode);
-	for(TreeNode node : treeNodes){
-			node.setExpanded(true);
-	}
-}
-
-public static void collapseAllTree(TreeNode rootNode){
-	List<TreeNode> treeNodes = getListFromTree(rootNode);
-	for(TreeNode node : treeNodes){
-			node.setExpanded(false);
-	}
-}
-
-public static List<Category> getCategoriesFormTree(TreeNode rootNode){
-	List<TreeNode> list = new ArrayList<TreeNode>();
-	visitNode(rootNode, list);
-	List<Category> categories = new ArrayList<Category>();
-	for(TreeNode treeNode : list){
-		categories.add((Category) treeNode.getData());
-	}
-	return categories;
-}
-
-//
+//Check isLeafNode
 public static boolean isLeafNode(TreeNode treeNode){
 	Category category = (Category) treeNode.getData();
 	if(category.getCategoryId().equals(NOT_CLASSIFIED_FOR_PRODUCT_ID)) return true;
@@ -158,13 +142,14 @@ public static boolean isLeafNode(TreeNode treeNode){
 		return true;
 	}
 }
+
 //Compare Region HEAD and version of Basic List
 public static boolean compareLocalTreeAndBasicList(String regionId, String basicListVersionId){
 	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
 	List<RegionListCategory> regionCategories = regionListCategoryDao.queryCategoriesByVersionId("head", regionId);
 	TreeNode rootOfRegion = generateTree(regionCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
 	List<Category> regionCategoriesByOrder = new ArrayList<Category>();
-	
+
 	if(rootOfRegion == null) return false;
 	getCategoriesByTreeOrder(regionCategoriesByOrder, rootOfRegion);
 
@@ -186,6 +171,18 @@ public static boolean compareLocalTreeAndBasicList(String regionId, String basic
 	return true;
 }
 
+//Get All Categories in Tree without Order
+public static List<Category> getCategoriesFormTree(TreeNode rootNode){
+	List<TreeNode> list = new ArrayList<TreeNode>();
+	visitNode(rootNode, list);
+	List<Category> categories = new ArrayList<Category>();
+	for(TreeNode treeNode : list){
+		categories.add((Category) treeNode.getData());
+	}
+	return categories;
+}
+
+//Get All Categories in Tree by Name Order
 public static void getCategoriesByTreeOrder(List<Category> categories, TreeNode root){
 	LinkedList<TreeNode> nodes = new LinkedList<TreeNode>();
 	nodes.offer(root);
@@ -198,9 +195,9 @@ public static void getCategoriesByTreeOrder(List<Category> categories, TreeNode 
 			nodes.offer(node);
 		}
 	}
-
 }
 
+//Get All Tree Node in Tree
 private static List<TreeNode> getListFromTree(TreeNode rootNode){
 	List<TreeNode> list = new ArrayList<TreeNode>();
 	visitNode(rootNode, list);
@@ -213,7 +210,15 @@ private static void visitNode(TreeNode rootNode, List<TreeNode> list){
 		visitNode(treeNodes.get(i), list);
 	}
 }
-
+private static void generateTreeRecursion(TreeNode node, List<? extends Category> categories){
+	for (Category cate : categories) {
+		if(cate.getCategoryFatherId().equals(((Category) node.getData()).getCategoryId())){
+			TreeNode newNode = new CategoryDefaultTreeNode(cate, node);
+			newNode.setParent(node);
+			generateTreeRecursion(newNode, categories);
+		}
+	}
+}
 public static void addNode(){
 
 }

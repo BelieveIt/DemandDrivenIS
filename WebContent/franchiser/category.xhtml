@@ -72,9 +72,6 @@ xmlns:p="http://primefaces.org/ui">
 			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-			            <h:outputText value="#{category.categoryName}"/>
-			        </p:treeNode>
-			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
@@ -111,9 +108,6 @@ xmlns:p="http://primefaces.org/ui">
 					    <p:tree value="#{franchiserCategory.selectedNodeTreeRoot}" var="category" orientation="horizontal">
 					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 					            <h:outputText value="#{category.categoryName}"/>
-					        </p:treeNode>
-					        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-					            <h:outputText value="#{category.categoryName}" />
 					        </p:treeNode>
 					    </p:tree>
 			            <f:facet name="footer">

@@ -8,23 +8,34 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.TreeNode;
 
 
+import dao.BasicListCategoryDao;
 import dao.BasicListDao;
 
+import merchandise.utils.CategoryUtil;
 import merchandise.utils.VersionUtil;
 import model.BasicList;
+import model.BasicListCategory;
 @ManagedBean(name="franchiserVersion")
 @ViewScoped
 public class FranchiserVersion implements Serializable{
 private static final long serialVersionUID = -3694259330226236227L;
 private List<BasicList> basicLists;
 private BasicList selectedBasicList;
+private BasicList selectedBasicListNext;
+
+private TreeNode viewRoot;
+private TreeNode viewRootNext;
+
 private BasicListDao basicListDao;
+private BasicListCategoryDao basicListCategoryDao;
 
 @PostConstruct
 public void init(){
 	basicListDao = new BasicListDao();
+	basicListCategoryDao = new BasicListCategoryDao();
 	basicLists = basicListDao.queryBasicLists();
 }
 
@@ -40,9 +51,29 @@ public void createVersion(){
 	RequestContext.getCurrentInstance().execute("PF('createVersion').hide();");
 }
 
-//View
-public void viewVersion(){
+public void openViewVersionDetail(){
+	List<BasicListCategory> categories1 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicList.getVersionId());
+	viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+	CategoryUtil.expandAllTree(viewRoot);
 
+	int index = -1;
+	for(int i = 0; i < basicLists.size(); i++){
+		if(basicLists.get(i).getVersionId().equals(selectedBasicList.getVersionId())){
+			index = i;
+		}
+	}
+	if(index+1 >= basicLists.size()){
+		selectedBasicListNext = null;
+		viewRootNext = null;
+		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
+		return;
+	}else {
+		selectedBasicListNext = basicLists.get(index+1);
+	}
+	List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
+	viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+	CategoryUtil.expandAllTree(viewRootNext);
+	RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 }
 
 public List<BasicList> getBasicLists() {
@@ -59,6 +90,30 @@ public BasicList getSelectedBasicList() {
 
 public void setSelectedBasicList(BasicList selectedBasicList) {
 	this.selectedBasicList = selectedBasicList;
+}
+
+public BasicList getSelectedBasicListNext() {
+	return selectedBasicListNext;
+}
+
+public void setSelectedBasicListNext(BasicList selectedBasicListNext) {
+	this.selectedBasicListNext = selectedBasicListNext;
+}
+
+public TreeNode getViewRoot() {
+	return viewRoot;
+}
+
+public void setViewRoot(TreeNode viewRoot) {
+	this.viewRoot = viewRoot;
+}
+
+public TreeNode getViewRootNext() {
+	return viewRootNext;
+}
+
+public void setViewRootNext(TreeNode viewRootNext) {
+	this.viewRootNext = viewRootNext;
 }
 
 }

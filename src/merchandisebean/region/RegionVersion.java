@@ -11,12 +11,18 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.TreeNode;
 
+import dao.BasicListCategoryDao;
 import dao.RegionListUpdateInfoDao;
 
 
+import merchandise.utils.BasicListItemDiff;
+import merchandise.utils.CategoryUtil;
+import merchandise.utils.ProductUtil;
 import merchandise.utils.RegionVersionListItem;
 import merchandise.utils.VersionUtil;
+import model.BasicListCategory;
 import model.RegionListUpdateInfo;
 @ManagedBean(name="regionVersion")
 @ViewScoped
@@ -24,14 +30,22 @@ public class RegionVersion implements Serializable{
 	private static final long serialVersionUID = -6525298726394719841L;
 
 	private RegionListUpdateInfoDao regionListUpdateInfoDao;
+	private BasicListCategoryDao basicListCategoryDao;
 
 	private List<RegionVersionListItem> regionVersionListItems;
 	private RegionVersionListItem selectedRegionVersionListItem;
 	private RegionVersionListItem selectedRegionVersionListItemNext;
-	
+
+	private TreeNode viewRoot;
+	private TreeNode viewRootNext;
+
 	@ManagedProperty(value="#{regionCategory}")
 	private RegionCategory regionCategory;
+	@ManagedProperty(value="#{regionProduct}")
+	private RegionProduct regionProduct;
 	private String leftMenuNewAlert;
+
+	private BasicListItemDiff basicListDiff;
 
 	private String currentRegionId;
 	@PostConstruct
@@ -39,6 +53,7 @@ public class RegionVersion implements Serializable{
 		//TODO
 		currentRegionId = "1";
 		regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+		basicListCategoryDao = new BasicListCategoryDao();
 		initProcess();
 	}
 
@@ -57,17 +72,18 @@ public class RegionVersion implements Serializable{
 		}
 
 	}
-
+	//Retrieve
 	public void retriveBasicList(ActionEvent actionEvent){
 		VersionUtil.retriveFromFranchiser(currentRegionId);
 		initProcess();
 		regionCategory.doVersionCampare();
+		regionProduct.initRegionListItemDiff();
 	}
 
+	//Confirm
 	public void openConfirmFinishingUpdate(){
 		RequestContext.getCurrentInstance().execute("PF('confirmFinishingUpdate').show();");
 	}
-	
 	public void confirmFinishingUpdate(){
 		String confirmVersionId = selectedRegionVersionListItem.getVersionId();
 		RegionListUpdateInfo regionListUpdateInfo = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionIdAndVersionId(currentRegionId, confirmVersionId);
@@ -77,8 +93,29 @@ public class RegionVersion implements Serializable{
 		initProcess();
 		RequestContext.getCurrentInstance().execute("PF('confirmFinishingUpdate').hide();");
 	}
-	
+
+	//View
 	public void openViewVersionDetail(){
+		int index = -1;
+		for(int i = 0; i < regionVersionListItems.size(); i++){
+			if(regionVersionListItems.get(i).getVersionId().equals(selectedRegionVersionListItem.getVersionId())){
+				index = i;
+			}
+		}
+		if(index+1 >= regionVersionListItems.size()){
+			selectedRegionVersionListItemNext = null;
+		}else {
+			selectedRegionVersionListItemNext = regionVersionListItems.get(index+1);
+		}
+		List<BasicListCategory> categories1 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItem.getVersionId());
+		viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+		CategoryUtil.expandAllTree(viewRoot);
+
+		List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItemNext.getVersionId());
+		viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+		CategoryUtil.expandAllTree(viewRootNext);
+
+		basicListDiff = ProductUtil.generateBasicListDiff(selectedRegionVersionListItemNext.getVersionId(), selectedRegionVersionListItem.getVersionId());
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
 
@@ -97,17 +134,6 @@ public class RegionVersion implements Serializable{
 	public void setSelectedRegionVersionListItem(
 			RegionVersionListItem selectedRegionVersionListItem) {
 		this.selectedRegionVersionListItem = selectedRegionVersionListItem;
-		int index = -1;
-		for(int i = 0; i < regionVersionListItems.size(); i++){
-			if(regionVersionListItems.get(i).getVersionId().equals(selectedRegionVersionListItem.getVersionId())){
-				index = i;
-			}
-		}
-		if(index+1 >= regionVersionListItems.size()){
-			selectedRegionVersionListItemNext = null;
-		}else {
-			selectedRegionVersionListItemNext = regionVersionListItems.get(index+1);
-		}
 	}
 
 	public RegionVersionListItem getSelectedRegionVersionListItemNext() {
@@ -133,6 +159,54 @@ public class RegionVersion implements Serializable{
 
 	public void setRegionCategory(RegionCategory regionCategory) {
 		this.regionCategory = regionCategory;
+	}
+
+	public TreeNode getViewRoot() {
+		return viewRoot;
+	}
+
+	public void setViewRoot(TreeNode viewRoot) {
+		this.viewRoot = viewRoot;
+	}
+
+	public TreeNode getViewRootNext() {
+		return viewRootNext;
+	}
+
+	public void setViewRootNext(TreeNode viewRootNext) {
+		this.viewRootNext = viewRootNext;
+	}
+
+	public BasicListCategoryDao getBasicListCategoryDao() {
+		return basicListCategoryDao;
+	}
+
+	public void setBasicListCategoryDao(BasicListCategoryDao basicListCategoryDao) {
+		this.basicListCategoryDao = basicListCategoryDao;
+	}
+
+	public BasicListItemDiff getBasicListDiff() {
+		return basicListDiff;
+	}
+
+	public void setBasicListDiff(BasicListItemDiff basicListDiff) {
+		this.basicListDiff = basicListDiff;
+	}
+
+	public RegionProduct getRegionProduct() {
+		return regionProduct;
+	}
+
+	public void setRegionProduct(RegionProduct regionProduct) {
+		this.regionProduct = regionProduct;
+	}
+
+	public String getCurrentRegionId() {
+		return currentRegionId;
+	}
+
+	public void setCurrentRegionId(String currentRegionId) {
+		this.currentRegionId = currentRegionId;
 	}
 
 }

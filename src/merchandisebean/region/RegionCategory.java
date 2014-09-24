@@ -122,7 +122,7 @@ public class RegionCategory implements Serializable{
 	//Update to Retrieved Newest Version
 	public void updateToNewest(){
 		if(!isUpdateInfoNull()){
-			VersionUtil.updateToNewestBasiclist(currentRegionId);
+			VersionUtil.updateToNewestBasiclistCategory(currentRegionId);
 			headStatus = "normal";
 			initRootNodeByVersionId("head");
 			doVersionCampare();

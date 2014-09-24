@@ -37,11 +37,11 @@ xmlns:p="http://primefaces.org/ui">
 
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 0}"
 						actionListener="#{regionCategory.updateToNewest}" update=":currentPanel :leftMenuForm"
-		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" id="updateToNewest"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" id="updateToNewest"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 1}"
-		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
-		    			value="Update to Newest Version From Franchiser" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
 
 				<h:outputText value="Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
 				<h:outputText value="Not Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>
@@ -61,9 +61,6 @@ xmlns:p="http://primefaces.org/ui">
 			        <p:ajax event="expand" listener="#{regionCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{regionCategory.onNodeSelect}" />
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-			            <h:outputText value="#{category.categoryName}"/>
-			        </p:treeNode>
-			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
@@ -87,9 +84,6 @@ xmlns:p="http://primefaces.org/ui">
     			<!-- Tree -->
 			    <p:tree value="#{regionCategory.newestRootNode}" var="category" orientation="horizontal">
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-			            <h:outputText value="#{category.categoryName}"/>
-			        </p:treeNode>
-			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>

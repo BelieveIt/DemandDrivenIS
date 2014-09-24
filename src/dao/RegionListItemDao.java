@@ -9,6 +9,8 @@ import java.util.Map;
 import model.Product;
 import model.RegionListItem;
 
+import oracle.net.aso.r;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -36,7 +38,11 @@ public class RegionListItemDao implements Serializable{
 		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId);
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListItemMapper());
 	}
-
+	public List<RegionListItem> queryProductsByVersionIdAndRegionId(String regionId, String versionId){
+		String sql = "select * from REGION_LIST_PRODUCTS where REGION_ID = :regionId and VERSION_ID = :versionId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId).addValue("regionId", regionId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListItemMapper());
+	}
 	public void insertProduct(RegionListItem regionListItem){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("PRODUCT_ID", regionListItem.getProductId());

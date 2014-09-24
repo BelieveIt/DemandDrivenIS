@@ -21,7 +21,7 @@ xmlns:p="http://primefaces.org/ui">
 
     			<h:form id="buttonForm">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
-    			<span class="right-content-header-text">Product List</span>
+    			<span class="right-content-header-text">Product2 List</span>
     			</div>
     			</h:form>
 
@@ -34,9 +34,6 @@ xmlns:p="http://primefaces.org/ui">
 			    selection="#{franchiserProduct.selectedNode}" styleClass="leftTree">
 			        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelect}" update=":tableForm"/>
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-			            <h:outputText value="#{category.categoryName}"/>
-			        </p:treeNode>
-			        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
@@ -347,9 +344,6 @@ xmlns:p="http://primefaces.org/ui">
 					    selection="#{franchiserProduct.selectedNodeForMove}" styleClass="leftTree">
 					        <p:ajax event="select" listener="#{franchiserProduct.onNodeSelectForMove}" update=":tableForm"/>
 					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-					            <h:outputText value="#{category.categoryName}"/>
-					        </p:treeNode>
-					        <p:treeNode type="category" expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 					            <h:outputText value="#{category.categoryName}" />
 					        </p:treeNode>
 					    </p:tree>
