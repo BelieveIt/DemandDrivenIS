@@ -53,11 +53,11 @@ xmlns:p="http://primefaces.org/ui">
 
 		    			<!-- Add/Delete/Move -->
 		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForm:messages :addProductForm"
-		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-plus" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
 						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":messagesForm:messages"
-						value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						value="Delete" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
 						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":messagesForm:messages"
-						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-arrowreturnthick-1-w" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
 
 						<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
 
@@ -262,7 +262,7 @@ xmlns:p="http://primefaces.org/ui">
     					<p:panel id="uploadedImg" styleClass="divStyle">
     					<p:lightBox styleClass="imagebox">
     					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserProduct.selectedBasicListItem.product.image}" title="Nature 1">
-    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}"
+    					<p:graphicImage library="uploadImg" name="#{franchiserProduct.selectedBasicListItem.product.image}" 
     					width="100" height="60" rendered="#{not empty franchiserProduct.selectedBasicListItem.product.image}"/>
     					</h:outputLink>
     					</p:lightBox>

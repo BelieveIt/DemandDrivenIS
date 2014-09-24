@@ -145,6 +145,12 @@ public static void retriveFromFranchiser(String regionId){
 			setBasicListItemToRegion(regionListItem, basicListItem);
 			regionListItemDao.insertProduct(regionListItem);
 		}
+		//set product head not confirmed
+		List<RegionListItem> regionListItems = regionListItemDao.queryProductsByVersionIdAndRegionId(regionId,"head");
+		for(RegionListItem regionListItem : regionListItems){
+			regionListItem.setIsConfirmed(0);
+			regionListItemDao.updateProduct(regionListItem);
+		}
 
 		RegionListUpdateInfo regionListUpdateInfo = new RegionListUpdateInfo();
 		regionListUpdateInfo.setCreateTime(newestBasicList.getCreateTime());
@@ -247,6 +253,15 @@ public static String getRetrivedNewestVersionId(String regionId){
 	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
 	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVersionId();
 	return localNewestVersion;
+}
+//Region retrieved newest finished versionId
+public static String getRetrivedNewestFinishedVersionId(String regionId){
+	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
+	for(RegionListUpdateInfo regionListUpdateInfo : newestRegionListUpdateInfos){
+		if(regionListUpdateInfo.getIsFinished().equals(new Integer(1)))return regionListUpdateInfo.getVersionId();
+	}
+	return null;
 }
 
 public static Map<String,RegionListUpdateInfo> getRegionListUpdateInfoMapByRegionId(String regionId){

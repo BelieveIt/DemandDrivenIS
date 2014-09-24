@@ -43,6 +43,11 @@ public class RegionListItemDao implements Serializable{
 		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId).addValue("regionId", regionId);
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListItemMapper());
 	}
+	public RegionListItem queryProductByVersionIdAndRegionId(String regionId, String versionId,String productId){
+		String sql = "select * from REGION_LIST_PRODUCTS where REGION_ID = :regionId and VERSION_ID = :versionId and PRODUCT_ID = :productId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId).addValue("regionId", regionId).addValue("productId", productId);
+		return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new RegionListItemMapper());
+	}
 	public void insertProduct(RegionListItem regionListItem){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("PRODUCT_ID", regionListItem.getProductId());

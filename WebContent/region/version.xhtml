@@ -53,10 +53,10 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:column headerText="Version Retrived Status" toggleable="false"  exportable="false"  >
  			             <p:commandButton rendered="#{item.isRetrived eq 0 and item.isOutDated eq 0}"
 			              actionListener="#{regionVersion.retriveBasicList}" update=":tableForm :leftMenuForm"
-			              icon="ui-icon-search" value="Retrive" id="retrieveVersionButton"
+			              icon="ui-icon-arrowthickstop-1-s" value="Retrive" id="retrieveVersionButton"
 			              onstart="PF('blockUI').show();" oncomplete="PF('blockUI').hide();"/>
 			             <p:commandButton rendered="#{item.isRetrived eq 0 and item.isOutDated eq 1}"
-			              icon="ui-icon-search" value="Retrive" disabled="true"/>
+			              icon="ui-icon-arrowthickstop-1-s" value="Retrive" disabled="true"/>
 			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Retrived" rendered="#{item.isRetrived eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
 			            </p:column>
@@ -64,12 +64,12 @@ xmlns:p="http://primefaces.org/ui">
 						<!-- Category Status -->
 			            <p:column headerText="Category Update Status" toggleable="false"  exportable="false" >
 			             <p:commandButton onclick="location.href='#{request.contextPath}/region/category.xhtml'" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
-			              icon="ui-icon-search" value="Go To Update"/>
+			              icon="ui-icon-extlink" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
-			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
 
 			             <p:commandButton rendered="#{item.isCategoryUpdated eq -1}"
-			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
 
 			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Updated" rendered="#{item.isCategoryUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
@@ -78,12 +78,12 @@ xmlns:p="http://primefaces.org/ui">
 						<!-- Product Status -->
 			            <p:column  headerText="Product Update Status" toggleable="false" exportable="false" >
 			             <p:commandButton onclick="location.href='#{request.contextPath}/region/product.xhtml'" update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
-			              icon="ui-icon-search" value="Go To Update"/>
+			              icon="ui-icon-extlink" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
-			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
 
 			             <p:commandButton rendered="#{item.isProductUpdated eq -1}"
-			              icon="ui-icon-search" value="Go To Update" disabled="true"/>
+			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
 
 			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 0}" />
 			             <h:outputText value="Updated" rendered="#{item.isProductUpdated eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>
@@ -92,14 +92,14 @@ xmlns:p="http://primefaces.org/ui">
 						<!-- Update Status -->
 			            <p:column headerText="Update Status" toggleable="false"  exportable="false" >
 			             <p:commandButton actionListener="#{regionVersion.openConfirmFinishingUpdate}" update=":tableForm" rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 0}"
-			              icon="ui-icon-search" value="Confirm Finishing Update" >
+			              icon="ui-icon-check" value="Confirm Finishing Update" >
 			              <f:setPropertyActionListener value="#{item}" target="#{regionVersion.selectedRegionVersionListItem}" />
 			             </p:commandButton>
 			             <p:commandButton rendered="#{item.regionListUpdateInfo.isFinished eq 0 and item.isOutDated eq 1}"
-			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
+			              icon="ui-icon-check" value="Confirm Finishing Update" disabled="true" />
 
 			             <p:commandButton rendered="#{item.regionListUpdateInfo.isFinished eq -1}"
-			              icon="ui-icon-search" value="Confirm Finishing Update" disabled="true" />
+			              icon="ui-icon-check" value="Confirm Finishing Update" disabled="true" />
 
 			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 0}"/>
 			             <h:outputText value="Confirmed" rendered="#{item.regionListUpdateInfo.isFinished eq 1 and item.isOutDated eq 1}" styleClass="outdated-#{item.isOutDated}"/>

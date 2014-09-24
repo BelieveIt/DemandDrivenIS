@@ -31,17 +31,17 @@ xmlns:p="http://primefaces.org/ui">
     			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
     			<p:commandButton rendered="#{regionCategory.newestStatus ne null}"
     					actionListener="#{regionCategory.openRenameCategory}" update=":messagesForm:messages :renameCategoryForm"
-		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator"/>
+		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-pencil"/>
     			<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
-		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-pencil" disabled="true"/>
 
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 0}"
 						actionListener="#{regionCategory.updateToNewest}" update=":currentPanel :leftMenuForm"
-		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" id="updateToNewest"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" id="updateToNewest"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 1}"
-		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" disabled="true"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
-		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-calculator" disabled="true"/>
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" disabled="true"/>
 
 				<h:outputText value="Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
 				<h:outputText value="Not Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>

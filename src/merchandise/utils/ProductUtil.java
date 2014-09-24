@@ -93,7 +93,24 @@ public class ProductUtil {
 			}
 		}
 		HashMap<String, RegionListItem> oldMap = convertToMapForRegionListItem(headRegionListItems);
+		
+		
+		String lastUpdated = VersionUtil.getRetrivedNewestFinishedVersionId(regionId);
+		HashMap<String, RegionListItem> oldMapForHeadMirror;
+		if(lastUpdated != null){
+			List<RegionListItem> allHeadRegionListItemsForHeadMirror = regionListItemDao.queryProductsByVersionIdAndRegionId(regionId, lastUpdated);
+			List<RegionListItem> headRegionListItemsForHeadMirror = new ArrayList<RegionListItem>();
+			for(RegionListItem regionListItem : allHeadRegionListItemsForHeadMirror){
+				if(regionListItem.getIsRegionAdd()==null || !regionListItem.getIsRegionAdd().equals(new Integer(1))){
+					headRegionListItemsForHeadMirror.add(regionListItem);
+				}
+			}
+			oldMapForHeadMirror = convertToMapForRegionListItem(headRegionListItemsForHeadMirror);
+		}else{
+			oldMapForHeadMirror = null;
+		}
 
+		
 		List<RegionListItem> newestRetrivedItems = regionListItemDao.queryProductsByVersionIdAndRegionId(regionId, VersionUtil.getRetrivedNewestVersionId(regionId));
 		HashMap<String, RegionListItem> newMap = convertToMapForRegionListItem(newestRetrivedItems);
 
@@ -104,8 +121,15 @@ public class ProductUtil {
 			String currentId = regionListItem.getProductId();
 			if(!oldMap.containsKey(currentId))
 				regionListItemDiff.getAddedItems().add(regionListItem);
-			if(oldMap.containsKey(currentId) && !checkProductDiff(regionListItem.getProduct(), oldMap.get(currentId).getProduct()))
-				regionListItemDiff.getEditedItems().add(regionListItem);
+			
+			if(oldMapForHeadMirror==null || oldMapForHeadMirror.get(currentId)==null){
+				if(oldMap.containsKey(currentId) && !checkProductDiff(regionListItem.getProduct(), oldMap.get(currentId).getProduct()) && oldMap.get(currentId).getIsConfirmed().equals(new Integer(0)))
+					regionListItemDiff.getEditedItems().add(regionListItem);
+			}else {
+				if(oldMap.containsKey(currentId) && !checkProductDiff(regionListItem.getProduct(), oldMapForHeadMirror.get(currentId).getProduct()) && oldMap.get(currentId).getIsConfirmed().equals(new Integer(0)))
+					regionListItemDiff.getEditedItems().add(regionListItem);
+			}
+
 		}
 		return regionListItemDiff;
 	}
@@ -120,7 +144,8 @@ public class ProductUtil {
 	public static boolean checkProductDiff(Product productA, Product productB){
 		if(!productA.getBrand().equals(productB.getBrand()))return false;
 		if(!productA.getDeliveryFrequency().equals(productB.getDeliveryFrequency()))return false;
-		if(!productA.getImage().equals(productB.getImage()))return false;
+		if((productA.getImage()==null&&productB.getImage()!=null))return false;
+		if(productA.getImage()!=null && !productA.getImage().equals(productB.getImage()))return false;
 		if(!productA.getItemWeight().equals(productB.getItemWeight()))return false;
 		if(!productA.getManufacturer().equals(productB.getManufacturer()))return false;
 		if(!productA.getMinInventory().equals(productB.getMinInventory()))return false;

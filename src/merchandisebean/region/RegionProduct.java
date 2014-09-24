@@ -18,9 +18,12 @@ import model.RegionListItem;
 import model.RegionListUpdateInfo;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.TreeNode;
+
+import utils.FileUpload;
 
 import dao.RegionListCategoryDao;
 import dao.RegionListItemDao;
@@ -49,10 +52,13 @@ public class RegionProduct implements Serializable{
 	private Product newProduct;
 
 	private RegionListItemDiff regionListItemDiff;
-	private List<RegionListItem> selectedItemsForAddtion;
+	private List<RegionListItem> selectedItemsForAddition;
 	private List<RegionListItem> selectedItemsForEdit;
 	private List<RegionListItem> selectedItemsForDeletion;
 
+	private RegionListItem selectedForEdit;
+	private RegionListItem selectedForEditHead;
+	
 	private String leftMenuUpdateAlert;
 	@PostConstruct
     public void init() {
@@ -63,7 +69,7 @@ public class RegionProduct implements Serializable{
 		regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 
 		List<RegionListUpdateInfo> regionListUpdateInfos= regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(currentRegionId);
-		regionListUpdateInfo = regionListUpdateInfos.get(0);
+		if(regionListUpdateInfos!=null && regionListUpdateInfos.size()!=0)regionListUpdateInfo = regionListUpdateInfos.get(0);
 		initRegionListItemsByVersionId("head");
 		initRegionListItemDiff();
     }
@@ -71,12 +77,15 @@ public class RegionProduct implements Serializable{
 	public void initRegionListItemsByVersionId(String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
-		CategoryUtil.expandAllTree(rootNode);
-		rootNode.getChildren().get(0).setSelected(true);
-		selectedNode = rootNode.getChildren().get(0);
+		if(rootNode !=null){
+			CategoryUtil.expandAllTree(rootNode);
+			rootNode.getChildren().get(0).setSelected(true);
+			selectedNode = rootNode.getChildren().get(0);
 
-        List<RegionListItem> list = regionListItemDao.queryProductsByVersionIdAndRegionId(currentRegionId, versionId);
-        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode);
+	        List<RegionListItem> list = regionListItemDao.queryProductsByVersionIdAndRegionId(currentRegionId, versionId);
+	        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode);
+		}
+
         selectedRegionListItem = null;
         selectedItems = null;
         filteredItems = null;
@@ -106,7 +115,7 @@ public class RegionProduct implements Serializable{
 	}
 
 	public void updateDeletion(){
-		if(selectedItemsForDeletion.size() == 0){
+		if(selectedItemsForDeletion == null || selectedItemsForDeletion.size() == 0){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Item Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
@@ -120,12 +129,12 @@ public class RegionProduct implements Serializable{
 	}
 
 	public void updateAddition(){
-		if(selectedItemsForAddtion.size() == 0){
+		if(selectedItemsForAddition == null || selectedItemsForAddition.size() == 0){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Item Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
 		}
-		for(RegionListItem regionListItem : selectedItemsForAddtion){
+		for(RegionListItem regionListItem : selectedItemsForAddition){
 			regionListItem.setVersionId("head");
 			regionListItemDao.insertProduct(regionListItem);
 		}
@@ -134,7 +143,43 @@ public class RegionProduct implements Serializable{
 		initRegionListItemDiff();
 	}
 
+	public void updateEdit(){
+		if(selectedItemsForEdit == null || selectedItemsForEdit.size() == 0){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Item Selected!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
+		for(RegionListItem regionListItem : selectedItemsForEdit){
+			regionListItem.setVersionId("head");
+			regionListItem.setIsConfirmed(1);
+			regionListItemDao.updateProduct(regionListItem);
+		}
+
+		initRegionListItemsByVersionId("head");
+		initRegionListItemDiff();
+	}
+	
+	public void openEditConfirm(){
+		String editProductId = selectedForEdit.getProductId();
+		selectedForEditHead = regionListItemDao.queryProductByVersionIdAndRegionId(currentRegionId, "head", editProductId);
+		RequestContext.getCurrentInstance().execute("PF('editConfirm').show();");
+	}
+	
+	public void editConfirm(){
+		selectedForEditHead.setVersionId("head");
+		selectedForEditHead.setIsConfirmed(1);
+		regionListItemDao.updateProduct(selectedForEditHead);
+		initRegionListItemsByVersionId("head");
+		initRegionListItemDiff();
+		RequestContext.getCurrentInstance().execute("PF('editConfirm').hide();");
+	}
+	
+	public void uploadProductImageForEditConfirm(FileUploadEvent event){
+		selectedForEditHead.getProduct().setImage(FileUpload.handleFileUpload(event));
+	}
+	
 	public void initRegionListItemDiff(){
+		if(rootNode == null) return;
 		regionListItemDiff = ProductUtil.generateRegionListItemDiffForHead(currentRegionId);
 		if(regionListItemDiff.getAddedItems().size() + regionListItemDiff.getDeletedItems().size() + regionListItemDiff.getEditedItems().size() > 0){
 			leftMenuUpdateAlert = "Update";
@@ -210,12 +255,12 @@ public class RegionProduct implements Serializable{
 		this.regionListItemDiff = regionListItemDiff;
 	}
 
-	public List<RegionListItem> getSelectedItemsForAddtion() {
-		return selectedItemsForAddtion;
+	public List<RegionListItem> getSelectedItemsForAddition() {
+		return selectedItemsForAddition;
 	}
 
-	public void setSelectedItemsForAddtion(List<RegionListItem> selectedItemsForAddtion) {
-		this.selectedItemsForAddtion = selectedItemsForAddtion;
+	public void setSelectedItemsForAddition(List<RegionListItem> selectedItemsForAddtion) {
+		this.selectedItemsForAddition = selectedItemsForAddtion;
 	}
 
 	public List<RegionListItem> getSelectedItemsForEdit() {
@@ -240,5 +285,21 @@ public class RegionProduct implements Serializable{
 
 	public void setLeftMenuUpdateAlert(String leftMenuUpdateAlert) {
 		this.leftMenuUpdateAlert = leftMenuUpdateAlert;
+	}
+
+	public RegionListItem getSelectedForEdit() {
+		return selectedForEdit;
+	}
+
+	public void setSelectedForEdit(RegionListItem selectedForEdit) {
+		this.selectedForEdit = selectedForEdit;
+	}
+
+	public RegionListItem getSelectedForEditHead() {
+		return selectedForEditHead;
+	}
+
+	public void setSelectedForEditHead(RegionListItem selectedForEditHead) {
+		this.selectedForEditHead = selectedForEditHead;
 	}
 }

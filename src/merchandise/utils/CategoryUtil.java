@@ -204,6 +204,7 @@ private static List<TreeNode> getListFromTree(TreeNode rootNode){
 	return list;
 }
 private static void visitNode(TreeNode rootNode, List<TreeNode> list){
+	if(rootNode==null)return;
 	list.add(rootNode);
 	List<TreeNode> treeNodes = rootNode.getChildren();
 	for(int i = 0; i < treeNodes.size(); i++){
