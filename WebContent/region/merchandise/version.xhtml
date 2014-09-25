@@ -123,87 +123,9 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 				    </p:blockUI>
 					</h:form>
-
-					<!-- Finish Update Version -->
-					<h:form id="confirmFinishingUpdate">
-					<p:dialog header="Confirm Finishing Update" widgetVar="confirmFinishingUpdate" width="400">
-					    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
-				            <f:facet name="footer">
-				                <p:commandButton actionListener="#{regionVersion.confirmFinishingUpdate}" update=":tableForm"
-				                id="confirmFinishingUpdateButton" value="Confirm Finishing Version Update" />
-				            </f:facet>
-				        </h:panelGrid>
-					</p:dialog>
-					</h:form>
-
-					<!-- View Version -->
-					<h:form id="viewVersionForm">
-					<p:dialog header="View Version Diff" widgetVar="viewVersion">
-						<p:panel styleClass="autoHeightPanel divStyle">
-							<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
-							<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
-							<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
-							<h:outputText value="#{regionVersion.selectedRegionVersionListItem.createTime}" style="float:left;margin-right:20px">
-				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-				            </h:outputText>
-							<p:separator styleClass="forizontalSeparator"/>
-						</p:panel>
-
-						<p:panel styleClass="autoHeightPanel divStyle">
-							 <p:tabView>
-							 	<!-- Diff of Category -->
-						        <p:tab title="Category Diff">
-						            <p:panel styleClass="autoHeightPanel divStyle">
-						            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
-									<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
-								    </p:panel>
-								    <p:tree value="#{regionVersion.viewRoot}" var="category" orientation="horizontal">
-								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								            <h:outputText value="#{category.categoryName}"/>
-								        </p:treeNode>
-								    </p:tree>
-						            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
-						            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
-									<h:outputText value="#{regionVersion.selectedRegionVersionListItemNext.versionId}" style="float:left;margin-right:20px"/>
-								    </p:panel>
-								    <p:tree value="#{regionVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
-								        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								            <h:outputText value="#{category.categoryName}"/>
-								        </p:treeNode>
-								    </p:tree>
-						        </p:tab>
-
-						        <!-- Diff of Product -->
-						        <p:tab title="Product Diff">
-									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										Deletion: <h:outputText value="#{regionVersion.basicListDiff.deletedItems.size()}"/>
-										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:separator styleClass="forizontalSeparator"/>
-										</p:panel>
-									</p:panel>
-									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										Edit: <h:outputText value="#{regionVersion.basicListDiff.editedItems.size()}"/>
-										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:separator styleClass="forizontalSeparator"/>
-										</p:panel>
-									</p:panel>
-									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										Addition: <h:outputText value="#{regionVersion.basicListDiff.addedItems.size()}"/>
-										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-										<p:separator styleClass="forizontalSeparator"/>
-										</p:panel>
-									</p:panel>
-						        </p:tab>
-						    </p:tabView>
-						</p:panel>
-					</p:dialog>
-					</h:form>
+					
+					<!-- Dialogs -->
+					<ui:include src="versionDialog.xhtml" />
     		</ui:define>
     	</ui:composition>
     </h:body>

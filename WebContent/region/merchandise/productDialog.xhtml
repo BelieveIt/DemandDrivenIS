@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+		<!-- Update Items -->
+		<h:form id="updateItemsForm">
+		<p:dialog header="Compare Current Local Products with Newest Retrived Version" widgetVar="updateItems">
+			<p:panel styleClass="autoHeightPanel divStyle">
+				<h:outputText value="Newest Retrived Version's VersoinId: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{regionProduct.regionListUpdateInfo.versionId}" style="float:left;margin-right:20px"/>
+				<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{regionProduct.regionListUpdateInfo.createTime}" style="float:left;margin-right:20px">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputText>
+				<p:separator styleClass="forizontalSeparator"/>
+			</p:panel>
+
+			<p:panel styleClass="autoHeightPanel divStyle" id="updatePanel">
+				 <p:tabView>
+				 	<p:ajax event="tabChange" listener="#{regionProduct.onTabChange}"/>
+				 	<!-- Confirm Deletion -->
+			        <p:tab title="Deletion(#{regionProduct.regionListItemDiff.deletedItems.size()})">
+						<p:dataTable id="dataTableForDeletion" var="item" value="#{regionProduct.regionListItemDiff.deletedItems}"
+											 selection="#{regionProduct.selectedItemsForDeletion}"
+					                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+			    			<f:facet name="header" >
+
+			    			<div class="right-content-header-buttons-panel">
+							<p:commandButton actionListener="#{regionProduct.updateDeletion}" update=":updateItemsForm:updatePanel :tableForm :messagesForm :leftMenuForm"
+							value="Confirm Update(Delete From Local Region List)" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n">
+							 </p:commandButton>
+			    			</div>
+			    			</f:facet>
+
+							<p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+	 					    <!-- View -->
+	 					    <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+				            <div style="width:125px;height:40px">
+				             <p:commandButton action="#{regionProduct.viewItemDetail}"
+				             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+				                <f:setPropertyActionListener value="#{item}" target="#{regionProduct.selectedViewItem}" />
+				             </p:commandButton>
+				            </div>
+				            </p:column>
+
+					        <p:column headerText="Image" styleClass="searchHintClass"
+					        style="padding:0px;">
+					        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+	    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+					        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+					        </p:column>
+					        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+					            <h:outputText value="#{item.productId}" />
+					        </p:column>
+					        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+					            <h:outputText value="#{item.product.name}" />
+					            <p:watermark for="@(.Name)" value="Name" />
+					        </p:column>
+					    </p:dataTable>
+			        </p:tab>
+
+			        <!-- Confirm Edit -->
+			        <p:tab title="Edit(#{regionProduct.regionListItemDiff.editedItems.size()})">
+						<p:dataTable id="dataTableForEdit" var="item" value="#{regionProduct.regionListItemDiff.editedItems}"
+											 selection="#{regionProduct.selectedItemsForEdit}"
+					                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+			    			<f:facet name="header" >
+
+			    			<div class="right-content-header-buttons-panel">
+							<p:commandButton actionListener="#{regionProduct.updateEdit}" update=":updateItemsForm:updatePanel :tableForm :messagesForm :leftMenuForm"
+							value="Confirm Update(Without Comparision and Use Newest Retrieved)" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n">
+							 </p:commandButton>
+			    			</div>
+			    			</f:facet>
+
+							<p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+	 					    <!-- View -->
+	 					    <p:column style="width:125px;text-align: center" toggleable="false"  exportable="false">
+				            <div style="width:125px;height:40px">
+				             <p:commandButton action="#{regionProduct.openEditConfirm}" update=":editConfirmForm" value="Comparision and Update"
+				             style="float:left;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+				                <f:setPropertyActionListener value="#{item}" target="#{regionProduct.selectedForEdit}" />
+				             </p:commandButton>
+				            </div>
+				            </p:column>
+
+					        <p:column headerText="Image" styleClass="searchHintClass"
+					        style="padding:0px;">
+					        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+	    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+					        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+					        </p:column>
+					        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+					            <h:outputText value="#{item.productId}" />
+					        </p:column>
+					        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+					            <h:outputText value="#{item.product.name}" />
+					            <p:watermark for="@(.Name)" value="Name" />
+					        </p:column>
+					    </p:dataTable>
+			        </p:tab>
+					<!-- Confirm Addition -->
+			        <p:tab title="Addition(#{regionProduct.regionListItemDiff.addedItems.size()})">
+						<p:dataTable id="dataTableForAddition" var="item" value="#{regionProduct.regionListItemDiff.addedItems}"
+											 selection="#{regionProduct.selectedItemsForAddition}"
+					                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+			    			<f:facet name="header" >
+
+			    			<div class="right-content-header-buttons-panel">
+							<p:commandButton actionListener="#{regionProduct.updateAddition}" update=":updateItemsForm:updatePanel :tableForm :messagesForm :leftMenuForm"
+							value="Confirm Update(Add Into Local Region List)" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n">
+							 </p:commandButton>
+			    			</div>
+			    			</f:facet>
+
+							<p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
+	 					    <!-- View -->
+	 					    <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+				            <div style="width:125px;height:40px">
+				             <p:commandButton
+				             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+				             </p:commandButton>
+				            </div>
+				            </p:column>
+
+					        <p:column headerText="Image" styleClass="searchHintClass"
+					        style="padding:0px;">
+					        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+	    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+					        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+					        </p:column>
+					        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+					            <h:outputText value="#{item.productId}" />
+					        </p:column>
+					        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+					            <h:outputText value="#{item.product.name}" />
+					            <p:watermark for="@(.Name)" value="Name" />
+					        </p:column>
+					    </p:dataTable>
+			        </p:tab>
+			    </p:tabView>
+			</p:panel>
+		</p:dialog>
+		</h:form>
+
+  		<!-- Edit Confirm -->
+		<h:form id="editConfirmForm" enctype="multipart/form-data">
+		<p:dialog header="Current Local Compared with Newest Retrieved " widgetVar="editConfirm" width="800">
+			<p:panel styleClass="autoHeightPanel divStyle">
+			<p:panel  header="Current Local Products" style="float:left;width:360px;margin-right:20px;">
+		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		            <h:outputLabel for="name" value="Name:" />
+	            <p:inputText id="name" value="#{regionProduct.selectedForEditHead.product.name}" required="true" label="name" />
+	            <h:outputLabel for="brand" value="Brand:" />
+	            <p:inputText id="brand" value="#{regionProduct.selectedForEditHead.product.brand}" required="true" label="brand" />
+	            <h:outputLabel for="itemWeight" value="Weight:" />
+	            <p:inputText id="itemWeight" value="#{regionProduct.selectedForEditHead.product.itemWeight}" required="true" label="itemWeight" />
+	            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+	            <p:inputText id="manufacturer" value="#{regionProduct.selectedForEditHead.product.manufacturer}" required="true" label="manufacturer" />
+	            <h:outputLabel for="price" value="Price:" />
+	            <p:inputText id="price" value="#{regionProduct.selectedForEditHead.product.price}" required="true" label="price" />
+
+	            <h:outputLabel for="unit" value="Unit:" />
+	            <p:inputText id="unit" value="#{regionProduct.selectedForEditHead.product.unit}" required="true" label="unit" />
+	            <h:outputLabel for="minInventory" value="MinInventory:" />
+	            <p:inputText id="minInventory" value="#{regionProduct.selectedForEditHead.product.minInventory}" required="true" label="minInventory" />
+
+				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+		        <p:selectOneMenu id="deliveryFrequency" value="#{regionProduct.selectedForEditHead.product.deliveryFrequency}">
+		            <f:selectItem itemLabel="Every Day" itemValue="everyday" />
+		            <f:selectItem itemLabel="Every Week" itemValue="everyweek" />
+		            <f:selectItem itemLabel="Every Month" itemValue="everymonth" />
+		        </p:selectOneMenu>
+		        <h:outputLabel for="image" value="Product Image:" />
+	            <p:fileUpload fileUploadListener="#{regionProduct.uploadProductImageForEditConfirm}" update=":messagesForm:messages uploadedImg @this"
+                   id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" auto="true"/>
+  					<p:panel id="uploadedImg" styleClass="divStyle">
+  					<p:lightBox styleClass="imagebox">
+  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedForEditHead.product.image}" title="Nature 1">
+  					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedForEditHead.product.image}"
+  					width="100" height="60" rendered="#{not empty regionProduct.selectedForEditHead.product.image}"/>
+  					</h:outputLink>
+  					</p:lightBox>
+	            </p:panel>
+	            <f:facet name="footer">
+	                <p:commandButton actionListener="#{regionProduct.editConfirm}" update=":updateItemsForm:updatePanel :tableForm :messagesForm :leftMenuForm"
+	                id="editProductButton" value="Confirm and Update" />
+	            </f:facet>
+	        </p:panelGrid>
+	        </p:panel>
+	        
+	        <p:panel header="Newest Retrieved:#{regionProduct.selectedForEdit.versionId}" style="float:left;width:320px">
+		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		            <h:outputLabel for="name2" value="Name:" />
+	            <h:outputLabel id="name2" value="#{regionProduct.selectedForEdit.product.name}"/>
+
+	            <h:outputLabel for="createTime2" value="Create Time:" />
+	            <h:outputLabel id="createTime2" value="#{regionProduct.selectedForEdit.product.productCreateTime}">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputLabel>
+
+	            <h:outputLabel for="brand2" value="Brand:" />
+	            <h:outputLabel id="brand2" value="#{regionProduct.selectedForEdit.product.brand}" />
+
+	            <h:outputLabel for="itemWeight2" value="Weight:" />
+	            <h:outputLabel id="itemWeight2" value="#{regionProduct.selectedForEdit.product.itemWeight}" />
+
+	            <h:outputLabel for="manufacturer2" value="Manufacturer:" />
+	            <h:outputLabel id="manufacturer2" value="#{regionProduct.selectedForEdit.product.manufacturer}" />
+
+	            <h:outputLabel for="price2" value="Price:" />
+	            <h:outputLabel id="price2" value="#{regionProduct.selectedForEdit.product.price}" />
+
+	            <h:outputLabel for="unit2" value="Unit:" />
+	            <h:outputLabel id="unit2" value="#{regionProduct.selectedForEdit.product.unit}" />
+
+	            <h:outputLabel for="minInventory2" value="MinInventory:" />
+	            <h:outputLabel id="minInventory2" value="#{regionProduct.selectedForEdit.product.minInventory}" />
+
+				<h:outputLabel for="deliveryFrequency2" value="Delivery Frequency:" />
+		        <h:outputLabel id="deliveryFrequency2" value="#{regionProduct.selectedForEdit.product.deliveryFrequency}" />
+		        <h:outputLabel for="image2" value="Product Image:" />
+  					<p:panel id="uploadedImg2" styleClass="divStyle">
+  					<p:lightBox styleClass="imagebox">
+  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedForEdit.product.image}" title="Nature 1">
+  					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedForEdit.product.image}"
+  					width="100" height="60" rendered="#{not empty regionProduct.selectedForEdit.product.image}"/>
+  					</h:outputLink>
+  					</p:lightBox>
+	            </p:panel>
+	        </p:panelGrid>
+	        </p:panel>
+	        </p:panel>
+		</p:dialog>
+		</h:form>
+
+ 		<!-- View Item -->
+		<h:form id="viewItemDetailForm">
+		<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
+		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		            <h:outputLabel for="name" value="Name:" />
+	            <h:outputLabel id="name" value="#{regionProduct.selectedViewItem.product.name}"/>
+
+	            <h:outputLabel for="createTime" value="Create Time:" />
+	            <h:outputLabel id="createTime" value="#{regionProduct.selectedViewItem.product.productCreateTime}">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputLabel>
+
+	            <h:outputLabel for="brand" value="Brand:" />
+	            <h:outputLabel id="brand" value="#{regionProduct.selectedViewItem.product.brand}" />
+
+	            <h:outputLabel for="itemWeight" value="Weight:" />
+	            <h:outputLabel id="itemWeight" value="#{regionProduct.selectedViewItem.product.itemWeight}" />
+
+	            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+	            <h:outputLabel id="manufacturer" value="#{regionProduct.selectedViewItem.product.manufacturer}" />
+
+	            <h:outputLabel for="price" value="Price:" />
+	            <h:outputLabel id="price" value="#{regionProduct.selectedViewItem.product.price}" />
+
+	            <h:outputLabel for="unit" value="Unit:" />
+	            <h:outputLabel id="unit" value="#{regionProduct.selectedViewItem.product.unit}" />
+
+	            <h:outputLabel for="minInventory" value="MinInventory:" />
+	            <h:outputLabel id="minInventory" value="#{regionProduct.selectedViewItem.product.minInventory}" />
+
+				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+		        <h:outputLabel id="deliveryFrequency" value="#{regionProduct.selectedViewItem.product.deliveryFrequency}" />
+		        <h:outputLabel for="image" value="Product Image:" />
+  					<p:panel id="uploadedImg" styleClass="divStyle">
+  					<p:lightBox styleClass="imagebox">
+  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedViewItem.product.image}" title="Nature 1">
+  					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedViewItem.product.image}"
+  					width="100" height="60" rendered="#{not empty regionProduct.selectedViewItem.product.image}"/>
+  					</h:outputLink>
+  					</p:lightBox>
+	            </p:panel>
+	        </p:panelGrid>
+		</p:dialog>
+		</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

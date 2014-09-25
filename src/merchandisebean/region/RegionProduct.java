@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.ProductUtil;
 import merchandise.utils.RegionListItemDiff;
+import model.BasicListItem;
 import model.Product;
 import model.RegionListCategory;
 import model.RegionListItem;
@@ -60,6 +61,8 @@ public class RegionProduct implements Serializable{
 	private RegionListItem selectedForEditHead;
 
 	private String leftMenuUpdateAlert;
+	
+	private RegionListItem selectedViewItem;
 	@PostConstruct
     public void init() {
 		//TODO
@@ -187,6 +190,10 @@ public class RegionProduct implements Serializable{
 		}
 	}
 
+	public void viewItemDetail(){
+		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
+	}
+	
 	public TreeNode getRootNode() {
 		return rootNode;
 	}
@@ -301,4 +308,13 @@ public class RegionProduct implements Serializable{
 	public void setSelectedForEditHead(RegionListItem selectedForEditHead) {
 		this.selectedForEditHead = selectedForEditHead;
 	}
+
+	public RegionListItem getSelectedViewItem() {
+		return selectedViewItem;
+	}
+
+	public void setSelectedViewItem(RegionListItem selectedViewItem) {
+		this.selectedViewItem = selectedViewItem;
+	}
+
 }

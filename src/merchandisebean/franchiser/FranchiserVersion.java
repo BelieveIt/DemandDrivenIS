@@ -20,6 +20,7 @@ import merchandise.utils.ProductUtil;
 import merchandise.utils.VersionUtil;
 import model.BasicList;
 import model.BasicListCategory;
+import model.BasicListItem;
 @ManagedBean(name="franchiserVersion")
 @ViewScoped
 public class FranchiserVersion implements Serializable{
@@ -34,6 +35,9 @@ private TreeNode viewRootNext;
 private BasicListDao basicListDao;
 private BasicListCategoryDao basicListCategoryDao;
 private BasicListItemDiff basicListDiff;
+
+private List<BasicList> viewItems;
+private BasicListItem selectedViewItem;
 @PostConstruct
 public void init(){
 	basicListDao = new BasicListDao();
@@ -77,6 +81,15 @@ public void openViewVersionDetail(){
 		basicListDiff = ProductUtil.generateBasicListDiff("-1", selectedBasicList.getVersionId());
 	}
 	RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
+}
+
+public void viewItemsDetail(){
+	RequestContext.getCurrentInstance().execute("PF('viewItemsDetail').show();");
+}
+
+
+public void viewItemDetail(){
+	RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
 }
 
 public List<BasicList> getBasicLists() {
@@ -126,4 +139,22 @@ public BasicListItemDiff getBasicListDiff() {
 public void setBasicListDiff(BasicListItemDiff basicListDiff) {
 	this.basicListDiff = basicListDiff;
 }
+
+public List<BasicList> getViewItems() {
+	return viewItems;
+}
+
+public void setViewItems(List<BasicList> viewItems) {
+	this.viewItems = viewItems;
+}
+
+public BasicListItem getSelectedViewItem() {
+	return selectedViewItem;
+}
+
+public void setSelectedViewItem(BasicListItem selectedViewItem) {
+	this.selectedViewItem = selectedViewItem;
+}
+
+
 }

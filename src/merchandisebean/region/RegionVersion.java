@@ -22,7 +22,9 @@ import merchandise.utils.CategoryUtil;
 import merchandise.utils.ProductUtil;
 import merchandise.utils.RegionVersionListItem;
 import merchandise.utils.VersionUtil;
+import model.BasicList;
 import model.BasicListCategory;
+import model.BasicListItem;
 import model.RegionListUpdateInfo;
 @ManagedBean(name="regionVersion")
 @ViewScoped
@@ -48,6 +50,9 @@ public class RegionVersion implements Serializable{
 	private BasicListItemDiff basicListDiff;
 
 	private String currentRegionId;
+	
+	private List<BasicList> viewItems;
+	private BasicListItem selectedViewItem;
 	@PostConstruct
 	public void init(){
 		//TODO
@@ -126,6 +131,15 @@ public class RegionVersion implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
 
+	public void viewItemsDetail(){
+		RequestContext.getCurrentInstance().execute("PF('viewItemsDetail').show();");
+	}
+
+
+	public void viewItemDetail(){
+		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
+	}
+	
 	public List<RegionVersionListItem> getRegionVersionListItems() {
 		return regionVersionListItems;
 	}
@@ -214,6 +228,22 @@ public class RegionVersion implements Serializable{
 
 	public void setCurrentRegionId(String currentRegionId) {
 		this.currentRegionId = currentRegionId;
+	}
+
+	public List<BasicList> getViewItems() {
+		return viewItems;
+	}
+
+	public void setViewItems(List<BasicList> viewItems) {
+		this.viewItems = viewItems;
+	}
+
+	public BasicListItem getSelectedViewItem() {
+		return selectedViewItem;
+	}
+
+	public void setSelectedViewItem(BasicListItem selectedViewItem) {
+		this.selectedViewItem = selectedViewItem;
 	}
 
 }

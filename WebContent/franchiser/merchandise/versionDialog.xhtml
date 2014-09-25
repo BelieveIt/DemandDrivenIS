@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+	    
+			<!-- Create Version -->
+			<h:form id="createVersionForm">
+			<p:dialog header="Create Version" widgetVar="createVersion" width="400">
+			    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+		            <f:facet name="footer">
+		                <p:commandButton actionListener="#{franchiserVersion.createVersion}" update=":tableForm"
+		                id="createVersionButton" value="Confirm Creation And Send New Version To Regions" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+			
+			<!-- View Version -->
+			<h:form id="viewVersionForm">
+			<p:dialog header="View Version Diff" widgetVar="viewVersion">
+				<p:panel styleClass="autoHeightPanel divStyle">
+					<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
+					<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{franchiserVersion.selectedBasicList.createTime}" style="float:left;margin-right:20px">
+		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+		            </h:outputText>
+					<p:separator styleClass="forizontalSeparator"/>
+				</p:panel>
+
+				<p:panel styleClass="autoHeightPanel divStyle">
+					 <p:tabView>
+					 	<!-- Diff of Category -->
+				        <p:tab title="Category Diff">
+				            <p:panel styleClass="autoHeightPanel divStyle">
+				            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
+						    </p:panel>
+						    <p:tree value="#{franchiserVersion.viewRoot}" var="category" orientation="horizontal">
+						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+						            <h:outputText value="#{category.categoryName}"/>
+						        </p:treeNode>
+						    </p:tree>
+				            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
+				            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.selectedBasicListNext.versionId}" style="float:left;margin-right:20px"/>
+						    </p:panel>
+						    <p:tree value="#{franchiserVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
+						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+						            <h:outputText value="#{category.categoryName}"/>
+						        </p:treeNode>
+						    </p:tree>
+				        </p:tab>
+
+				        <!-- Diff of Product -->
+				        <p:tab title="Product Diff">
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								Deletion: <h:outputText value="#{franchiserVersion.basicListDiff.deletedItems.size()}"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:separator styleClass="forizontalSeparator"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
+									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserVersion.basicListDiff.deletedItems.size() ne 0}">
+										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.deletedItems}" target="#{franchiserVersion.viewItems}" />
+									</p:commandButton>								
+								</p:panel>
+							</p:panel>
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								Edit: <h:outputText value="#{franchiserVersion.basicListDiff.editedItems.size()}"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:separator styleClass="forizontalSeparator"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
+									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserVersion.basicListDiff.editedItems.size() ne 0}">
+										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.editedItems}" target="#{franchiserVersion.viewItems}" />
+									</p:commandButton>								
+								</p:panel>
+							</p:panel>
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								Addition: <h:outputText value="#{franchiserVersion.basicListDiff.addedItems.size()}"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+								<p:separator styleClass="forizontalSeparator"/>
+								</p:panel>
+								<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
+									value="View" styleClass="right-content-header-button" icon="ui-icon-search" rendered="#{franchiserVersion.basicListDiff.addedItems.size() ne 0}">
+										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.addedItems}" target="#{franchiserVersion.viewItems}" />
+									</p:commandButton>								
+								</p:panel>
+							</p:panel>
+				        </p:tab>
+				    </p:tabView>
+				</p:panel>
+			</p:dialog>
+			</h:form>
+			
+			<!-- View Items Detail -->
+			<h:form id="viewItemsDetailForm">
+			<p:dialog header="View Items" widgetVar="viewItemsDetail">
+			<p:panel styleClass="autoHeightPanel divStyle" id="updatePanel">
+			 	<!-- Confirm Deletion -->
+				<p:dataTable id="dataTableViewItemsDetail" var="item" value="#{franchiserVersion.viewItems}"
+			                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			                         rowKey="#{item.productId}" rows="15" scrollable="true" style="width:700px;">
+					<!-- View -->
+					<p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
+		            <div style="width:125px;height:40px">
+		             <p:commandButton action="#{franchiserVersion.viewItemDetail}" update=":messagesForm:messages :viewItemDetailForm"
+		             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+		                <f:setPropertyActionListener value="#{item}" target="#{franchiserVersion.selectedViewItem}" />
+		             </p:commandButton>
+		            </div>
+		            </p:column>
+
+			        <p:column headerText="Image" styleClass="searchHintClass"
+			        style="padding:0px;">
+			        <p:lightBox styleClass="imagebox" rendered="#{not empty item.product.image}">
+   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.product.image}">
+			        <p:graphicImage library="uploadImg" name="#{item.product.image}"
+   					width="100" height="60"/>
+   					</h:outputLink>
+   					</p:lightBox>
+			        </p:column>
+			        <p:column headerText="ProductId" styleClass="ProductId noPadding">
+			            <h:outputText value="#{item.productId}" />
+			        </p:column>
+			        <p:column headerText="Name" styleClass="Name noPadding" id="Name">
+			            <h:outputText value="#{item.product.name}" />
+			            <p:watermark for="@(.Name)" value="Name" />
+			        </p:column>
+			    </p:dataTable>			   
+			</p:panel>
+			</p:dialog>
+			</h:form>
+   			<!-- View Item -->
+				<h:form id="viewItemDetailForm">
+				<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
+				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+ 			            <h:outputLabel for="name" value="Name:" />
+			            <h:outputLabel id="name" value="#{franchiserVersion.selectedViewItem.product.name}"/>
+
+			            <h:outputLabel for="createTime" value="Create Time:" />
+			            <h:outputLabel id="createTime" value="#{franchiserVersion.selectedViewItem.product.productCreateTime}">
+			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			            </h:outputLabel>
+
+			            <h:outputLabel for="brand" value="Brand:" />
+			            <h:outputLabel id="brand" value="#{franchiserVersion.selectedViewItem.product.brand}" />
+
+			            <h:outputLabel for="itemWeight" value="Weight:" />
+			            <h:outputLabel id="itemWeight" value="#{franchiserVersion.selectedViewItem.product.itemWeight}" />
+
+			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+			            <h:outputLabel id="manufacturer" value="#{franchiserVersion.selectedViewItem.product.manufacturer}" />
+
+			            <h:outputLabel for="price" value="Price:" />
+			            <h:outputLabel id="price" value="#{franchiserVersion.selectedViewItem.product.price}" />
+
+			            <h:outputLabel for="unit" value="Unit:" />
+			            <h:outputLabel id="unit" value="#{franchiserVersion.selectedViewItem.product.unit}" />
+
+			            <h:outputLabel for="minInventory" value="MinInventory:" />
+			            <h:outputLabel id="minInventory" value="#{franchiserVersion.selectedViewItem.product.minInventory}" />
+
+						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+				        <h:outputLabel id="deliveryFrequency" value="#{franchiserVersion.selectedViewItem.product.deliveryFrequency}" />
+				        <h:outputLabel for="image" value="Product Image:" />
+    					<p:panel id="uploadedImg" styleClass="divStyle">
+    					<p:lightBox styleClass="imagebox">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserVersion.selectedViewItem.product.image}" title="Nature 1">
+    					<p:graphicImage library="uploadImg" name="#{franchiserVersion.selectedViewItem.product.image}"
+    					width="100" height="60" rendered="#{not empty franchiserVersion.selectedViewItem.product.image}"/>
+    					</h:outputLink>
+    					</p:lightBox>
+			            </p:panel>
+			        </p:panelGrid>
+				</p:dialog>
+				</h:form>			
+	    </ui:composition>
+    </h:body>
+</html>
