@@ -251,6 +251,7 @@ public static void setBasicListItemToRegion(RegionListItem regionListItem, Basic
 public static String getRetrivedNewestVersionId(String regionId){
 	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
+	if(newestRegionListUpdateInfos.size()<1)return "-1";
 	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVersionId();
 	return localNewestVersion;
 }

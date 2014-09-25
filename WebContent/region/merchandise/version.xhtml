@@ -63,7 +63,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Category Status -->
 			            <p:column headerText="Category Update Status" toggleable="false"  exportable="false" >
-			             <p:commandButton onclick="location.href='#{request.contextPath}/region/category.xhtml'" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
+			             <p:commandButton onclick="location.href='#{request.contextPath}/region/merchandise/category.xhtml'" rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-extlink" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isCategoryUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
@@ -77,7 +77,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Product Status -->
 			            <p:column  headerText="Product Update Status" toggleable="false" exportable="false" >
-			             <p:commandButton onclick="location.href='#{request.contextPath}/region/product.xhtml'" update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
+			             <p:commandButton onclick="location.href='#{request.contextPath}/region/merchandise/product.xhtml'" update=":tableForm" rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 0}"
 			              icon="ui-icon-extlink" value="Go To Update"/>
 			             <p:commandButton rendered="#{item.isProductUpdated eq 0 and item.isOutDated eq 1}"
 			              icon="ui-icon-extlink" value="Go To Update" disabled="true"/>
@@ -182,10 +182,6 @@ xmlns:p="http://primefaces.org/ui">
 										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 										<p:separator styleClass="forizontalSeparator"/>
 										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-							            <p:commandButton
-							              icon="ui-icon-search" value="Retrive" disabled="true"/>
-							            </p:panel>
 									</p:panel>
 									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -194,10 +190,6 @@ xmlns:p="http://primefaces.org/ui">
 										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 										<p:separator styleClass="forizontalSeparator"/>
 										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-							            <p:commandButton
-							              icon="ui-icon-search" value="Retrive" disabled="true"/>
-							            </p:panel>
 									</p:panel>
 									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -206,10 +198,6 @@ xmlns:p="http://primefaces.org/ui">
 										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 										<p:separator styleClass="forizontalSeparator"/>
 										</p:panel>
-										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
-							            <p:commandButton
-							              icon="ui-icon-search" value="Retrive" disabled="true"/>
-							            </p:panel>
 									</p:panel>
 						        </p:tab>
 						    </p:tabView>

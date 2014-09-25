@@ -111,11 +111,18 @@ public class RegionVersion implements Serializable{
 		viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
 		CategoryUtil.expandAllTree(viewRoot);
 
-		List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItemNext.getVersionId());
-		viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-		CategoryUtil.expandAllTree(viewRootNext);
+		List<BasicListCategory> categories2;
+		if(selectedRegionVersionListItemNext!=null){
+			categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItemNext.getVersionId());
+			viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+			CategoryUtil.expandAllTree(viewRootNext);
 
-		basicListDiff = ProductUtil.generateBasicListDiff(selectedRegionVersionListItemNext.getVersionId(), selectedRegionVersionListItem.getVersionId());
+			basicListDiff = ProductUtil.generateBasicListDiff(selectedRegionVersionListItemNext.getVersionId(), selectedRegionVersionListItem.getVersionId());
+		}else{
+			viewRootNext = null;
+			basicListDiff = ProductUtil.generateBasicListDiff("-1", selectedRegionVersionListItem.getVersionId());
+		}
+
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
 

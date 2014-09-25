@@ -58,7 +58,7 @@ public class RegionProduct implements Serializable{
 
 	private RegionListItem selectedForEdit;
 	private RegionListItem selectedForEditHead;
-	
+
 	private String leftMenuUpdateAlert;
 	@PostConstruct
     public void init() {
@@ -83,7 +83,7 @@ public class RegionProduct implements Serializable{
 			selectedNode = rootNode.getChildren().get(0);
 
 	        List<RegionListItem> list = regionListItemDao.queryProductsByVersionIdAndRegionId(currentRegionId, versionId);
-	        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode);
+	        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode, currentRegionId);
 		}
 
         selectedRegionListItem = null;
@@ -96,7 +96,7 @@ public class RegionProduct implements Serializable{
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
         List<RegionListItem> list = regionListItemDao.queryProductsByVersionIdAndRegionId(currentRegionId, "head");
-        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode);
+        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode, currentRegionId);
         initTable();
     }
 
@@ -158,13 +158,13 @@ public class RegionProduct implements Serializable{
 		initRegionListItemsByVersionId("head");
 		initRegionListItemDiff();
 	}
-	
+
 	public void openEditConfirm(){
 		String editProductId = selectedForEdit.getProductId();
 		selectedForEditHead = regionListItemDao.queryProductByVersionIdAndRegionId(currentRegionId, "head", editProductId);
 		RequestContext.getCurrentInstance().execute("PF('editConfirm').show();");
 	}
-	
+
 	public void editConfirm(){
 		selectedForEditHead.setVersionId("head");
 		selectedForEditHead.setIsConfirmed(1);
@@ -173,13 +173,12 @@ public class RegionProduct implements Serializable{
 		initRegionListItemDiff();
 		RequestContext.getCurrentInstance().execute("PF('editConfirm').hide();");
 	}
-	
+
 	public void uploadProductImageForEditConfirm(FileUploadEvent event){
 		selectedForEditHead.getProduct().setImage(FileUpload.handleFileUpload(event));
 	}
-	
+
 	public void initRegionListItemDiff(){
-		if(rootNode == null) return;
 		regionListItemDiff = ProductUtil.generateRegionListItemDiffForHead(currentRegionId);
 		if(regionListItemDiff.getAddedItems().size() + regionListItemDiff.getDeletedItems().size() + regionListItemDiff.getEditedItems().size() > 0){
 			leftMenuUpdateAlert = "Update";

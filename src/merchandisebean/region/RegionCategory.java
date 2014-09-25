@@ -12,7 +12,6 @@ import javax.faces.event.ActionEvent;
 
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.VersionUtil;
-import model.BasicListCategory;
 import model.Category;
 import model.RegionListCategory;
 import model.RegionListUpdateInfo;

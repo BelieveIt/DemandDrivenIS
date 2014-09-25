@@ -34,15 +34,6 @@ xmlns:p="http://primefaces.org/ui">
 		    			</div>
 		    			</f:facet>
 
-			            <p:column style="width:40px;text-align: center" toggleable="false"  exportable="false">
-			            <div style="width:40px;height:40px">
-			             <p:commandButton actionListener="#{franchiserVersion.viewVersion}"
-			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" >
-			                <f:setPropertyActionListener value="#{item}" target="#{franchiserVersion.selectedVersion}" />
-			            </p:commandButton>
-			            </div>
-			            </p:column>
-
 				        <p:column headerText="VersionId" styleClass="VersionId noPadding"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
 				            <h:outputText value="#{item.versionId}" />
@@ -127,7 +118,30 @@ xmlns:p="http://primefaces.org/ui">
 
 						        <!-- Diff of Product -->
 						        <p:tab title="Product Diff">
-
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Deletion: <h:outputText value="#{franchiserVersion.basicListDiff.deletedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+									</p:panel>
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Edit: <h:outputText value="#{franchiserVersion.basicListDiff.editedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+									</p:panel>
+									<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										Addition: <h:outputText value="#{franchiserVersion.basicListDiff.addedItems.size()}"/>
+										</p:panel>
+										<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+										<p:separator styleClass="forizontalSeparator"/>
+										</p:panel>
+									</p:panel>
 						        </p:tab>
 						    </p:tabView>
 						</p:panel>

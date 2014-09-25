@@ -3,8 +3,6 @@ package merchandise.utils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-
 import model.BasicListCategory;
 import model.Category;
 import model.RegionListCategory;
@@ -57,7 +55,7 @@ public static TreeNode generateTreeForProduct(List<? extends Category> categorie
 			 return rootNode;
 		}
 	}
-	return null;
+	return rootNode;
 }
 
 //Set Parent for Every Node

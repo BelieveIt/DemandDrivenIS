@@ -14,7 +14,9 @@ import org.primefaces.model.TreeNode;
 import dao.BasicListCategoryDao;
 import dao.BasicListDao;
 
+import merchandise.utils.BasicListItemDiff;
 import merchandise.utils.CategoryUtil;
+import merchandise.utils.ProductUtil;
 import merchandise.utils.VersionUtil;
 import model.BasicList;
 import model.BasicListCategory;
@@ -31,7 +33,7 @@ private TreeNode viewRootNext;
 
 private BasicListDao basicListDao;
 private BasicListCategoryDao basicListCategoryDao;
-
+private BasicListItemDiff basicListDiff;
 @PostConstruct
 public void init(){
 	basicListDao = new BasicListDao();
@@ -62,17 +64,18 @@ public void openViewVersionDetail(){
 			index = i;
 		}
 	}
-	if(index+1 >= basicLists.size()){
+	if(index+1 < basicLists.size()){
+		selectedBasicListNext = basicLists.get(index+1);
+		List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
+		viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+		CategoryUtil.expandAllTree(viewRootNext);
+
+		basicListDiff = ProductUtil.generateBasicListDiff(selectedBasicListNext.getVersionId(), selectedBasicList.getVersionId());
+	}else {
 		selectedBasicListNext = null;
 		viewRootNext = null;
-		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
-		return;
-	}else {
-		selectedBasicListNext = basicLists.get(index+1);
+		basicListDiff = ProductUtil.generateBasicListDiff("-1", selectedBasicList.getVersionId());
 	}
-	List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
-	viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-	CategoryUtil.expandAllTree(viewRootNext);
 	RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 }
 
@@ -116,4 +119,11 @@ public void setViewRootNext(TreeNode viewRootNext) {
 	this.viewRootNext = viewRootNext;
 }
 
+public BasicListItemDiff getBasicListDiff() {
+	return basicListDiff;
+}
+
+public void setBasicListDiff(BasicListItemDiff basicListDiff) {
+	this.basicListDiff = basicListDiff;
+}
 }

@@ -6,16 +6,14 @@ import java.util.List;
 
 import org.primefaces.model.TreeNode;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
-
 import dao.BasicListItemDao;
+import dao.RegionListCategoryDao;
 import dao.RegionListItemDao;
-
 
 import model.BasicListItem;
 import model.Category;
 import model.Product;
+import model.RegionListCategory;
 import model.RegionListItem;
 
 public class ProductUtil {
@@ -37,7 +35,7 @@ public class ProductUtil {
 		return list;
 	}
 
-	public static List<RegionListItem> generateRegionListItemsBySelectedNode(List<RegionListItem> items, TreeNode selectedNode){
+	public static List<RegionListItem> generateRegionListItemsBySelectedNode(List<RegionListItem> items, TreeNode selectedNode, String regionId){
 		List<RegionListItem> list = new ArrayList<RegionListItem>();
 		List<String> categoryIdList = new ArrayList<String>();
 		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
@@ -49,6 +47,25 @@ public class ProductUtil {
 				list.add(item);
 			}
 		}
+		if(categoryIdList.contains(CategoryUtil.NOT_CLASSIFIED_FOR_PRODUCT_ID)){
+			List<RegionListItem> notInHeadCategoryTree = new ArrayList<RegionListItem>();
+			RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
+			List<RegionListCategory> allRegionHeadCategories = regionListCategoryDao.queryCategoriesByVersionId("head", regionId);
+			List<String> allIdList = new ArrayList<String>();
+			for(RegionListCategory regionListCategory : allRegionHeadCategories){
+				allIdList.add(regionListCategory.getCategoryId());
+			}
+			for(RegionListItem item : items){
+				if(!allIdList.contains(item.getCategoryId()) && !item.getCategoryId().equals(CategoryUtil.NOT_CLASSIFIED_FOR_PRODUCT_ID)){
+					notInHeadCategoryTree.add(item);
+				}
+			}
+
+			for(RegionListItem regionListItem : notInHeadCategoryTree){
+				list.add(regionListItem);
+			}
+		}
+
 		return list;
 	}
 
@@ -93,8 +110,8 @@ public class ProductUtil {
 			}
 		}
 		HashMap<String, RegionListItem> oldMap = convertToMapForRegionListItem(headRegionListItems);
-		
-		
+
+
 		String lastUpdated = VersionUtil.getRetrivedNewestFinishedVersionId(regionId);
 		HashMap<String, RegionListItem> oldMapForHeadMirror;
 		if(lastUpdated != null){
@@ -110,7 +127,7 @@ public class ProductUtil {
 			oldMapForHeadMirror = null;
 		}
 
-		
+
 		List<RegionListItem> newestRetrivedItems = regionListItemDao.queryProductsByVersionIdAndRegionId(regionId, VersionUtil.getRetrivedNewestVersionId(regionId));
 		HashMap<String, RegionListItem> newMap = convertToMapForRegionListItem(newestRetrivedItems);
 
@@ -121,7 +138,7 @@ public class ProductUtil {
 			String currentId = regionListItem.getProductId();
 			if(!oldMap.containsKey(currentId))
 				regionListItemDiff.getAddedItems().add(regionListItem);
-			
+
 			if(oldMapForHeadMirror==null || oldMapForHeadMirror.get(currentId)==null){
 				if(oldMap.containsKey(currentId) && !checkProductDiff(regionListItem.getProduct(), oldMap.get(currentId).getProduct()) && oldMap.get(currentId).getIsConfirmed().equals(new Integer(0)))
 					regionListItemDiff.getEditedItems().add(regionListItem);
