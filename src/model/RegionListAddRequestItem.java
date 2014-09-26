@@ -1,6 +1,9 @@
 package model;
 
-public class RegionListAddRequestItem {
+import java.io.Serializable;
+
+public class RegionListAddRequestItem implements Serializable{
+private static final long serialVersionUID = -7102812018195430990L;
 private String requestId;
 private String productId;
 private Integer isApproved;

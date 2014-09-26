@@ -1,6 +1,10 @@
 package model;
 
-public class Region {
+import java.io.Serializable;
+
+public class Region implements Serializable{
+
+	private static final long serialVersionUID = 2267346057827412715L;
 	private String regionId;
 	private String name;
 	public String getRegionId() {

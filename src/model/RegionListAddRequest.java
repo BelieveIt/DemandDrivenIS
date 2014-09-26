@@ -1,8 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RegionListAddRequest {
+public class RegionListAddRequest implements Serializable{
+private static final long serialVersionUID = -6185765563906069490L;
 private String requestId;
 private String requestComment;
 private Date createTime;
