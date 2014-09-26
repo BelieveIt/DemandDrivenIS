@@ -8,7 +8,7 @@ private static final long serialVersionUID = 7540494728094163764L;
 private String storeId;
 private String productId;
 private Integer wasteNumber;
-private String reasonId;
+private WasteReason wasteReason;
 private Date createTime;
 public String getStoreId() {
 	return storeId;
@@ -28,17 +28,19 @@ public Integer getWasteNumber() {
 public void setWasteNumber(Integer wasteNumber) {
 	this.wasteNumber = wasteNumber;
 }
-public String getReasonId() {
-	return reasonId;
-}
-public void setReasonId(String reasonId) {
-	this.reasonId = reasonId;
-}
+
 public Date getCreateTime() {
 	return createTime;
 }
 public void setCreateTime(Date createTime) {
 	this.createTime = createTime;
 }
+public WasteReason getWasteReason() {
+	return wasteReason;
+}
+public void setWasteReason(WasteReason wasteReason) {
+	this.wasteReason = wasteReason;
+}
+
 
 }
