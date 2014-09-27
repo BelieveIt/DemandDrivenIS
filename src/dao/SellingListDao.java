@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.BasicList;
-import model.BasicListItem;
-import model.Product;
 import model.RegionListItem;
 import model.RelationSellingListAndProduct;
 import model.SellingList;
