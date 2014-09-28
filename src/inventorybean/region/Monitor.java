@@ -7,13 +7,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
 
 import merchandise.utils.CategoryUtil;
 import model.Region;
@@ -25,6 +26,11 @@ import model.StoreSellingItem;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.CategoryAxis;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
 
 import utils.DateUtil;
 
@@ -57,7 +63,10 @@ public class Monitor implements Serializable{
 	private List<StoreSellingItem> filteredItems;
 
 	private StoreSellingItem selectedItem;
-
+	
+	private LineChartModel weekdayAverSalesModel;
+	private Date startDate;
+	private Date endDate;
 	@PostConstruct
 	public void init(){
 		storeDao = new StoreDao();
@@ -77,7 +86,10 @@ public class Monitor implements Serializable{
 			selectedNode = rootNode.getChildren().get(0);
 		}
 		setItemsBySelectedNode();
-
+		
+		//TODO
+		startDate=new Date();
+		endDate=new Date();
 	}
 
 	private void setItemsBySelectedNode(){
@@ -101,13 +113,41 @@ public class Monitor implements Serializable{
 		Date date1 = map.get("1").get(0).getCreateTime();
 		Date date2 = map.get("1").get(2).getCreateTime();
 		analysisUtil.weekdayAverSales(date2, date1, currentStore.getStoreId(), selectedItem.getProductId());
-
+		endDate = DateUtil.minusDay(selectedItem.getStockoutOccurrenceTime(), 1);
+		startDate = DateUtil.minusMonth(endDate, 3);
+		refreshSalesStatistics();
 		RequestContext.getCurrentInstance().execute("PF('addVirtualSales').show();");
 	}
 	public void setVirtualSales(){
 		RequestContext.getCurrentInstance().execute("PF('addVirtualSales').hide();");
 	}
 
+	public void refreshSalesStatistics(){
+			weekdayAverSalesModel = new LineChartModel();
+			
+			LinkedHashMap<Integer, Double> weekdayAverSalesMap = analysisUtil.weekdayAverSales(startDate,endDate,currentStore.getStoreId(),selectedItem.getProductId());
+	        ChartSeries averageSales = new ChartSeries();
+	        averageSales.setLabel("Average Sales Volume");
+	        Iterator<Integer> iterator = weekdayAverSalesMap.keySet().iterator();
+	        while (iterator.hasNext()) {
+	        	Integer currentWeekdayId = iterator.next();
+				averageSales.set(DateUtil.getWeekDay(currentWeekdayId), weekdayAverSalesMap.get(currentWeekdayId));
+				System.out.println(DateUtil.getWeekDay(currentWeekdayId) + " " +weekdayAverSalesMap.get(currentWeekdayId));
+			}
+	       
+			
+	        weekdayAverSalesModel.addSeries(averageSales);
+	        weekdayAverSalesModel.setTitle("Sales Volume Statistics - " + selectedItem.getRegionListItem().getProduct().getName() 
+	        		+ "(" + selectedItem.getProductId() + ")");
+	        weekdayAverSalesModel.setLegendPosition("e");
+	        weekdayAverSalesModel.setShowPointLabels(true);
+	        weekdayAverSalesModel.getAxes().put(AxisType.X, new CategoryAxis("Weekday"));
+	        Axis yAxis  = weekdayAverSalesModel.getAxis(AxisType.Y);
+	        yAxis.setLabel("Sales Volume");
+	        yAxis.setMin(0);
+	        yAxis.setMax(200);	
+	}
+	
 	private void initTable(){
 		selectedItems = null;
 		filteredItems = null;
@@ -197,4 +237,30 @@ public class Monitor implements Serializable{
 	public void setAnalysisUtil(AnalysisUtil analysisUtil) {
 		this.analysisUtil = analysisUtil;
 	}
+
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public LineChartModel getWeekdayAverSalesModel() {
+		return weekdayAverSalesModel;
+	}
+
+	public void setWeekdayAverSalesModel(LineChartModel weekdayAverSalesModel) {
+		this.weekdayAverSalesModel = weekdayAverSalesModel;
+	}
+
 }

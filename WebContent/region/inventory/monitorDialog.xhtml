@@ -71,9 +71,21 @@ xmlns:p="http://primefaces.org/ui">
 		        <h:outputLabel for="volume" value="Forecast Virtual Sales Volume For The Duration:  " />
 				<p:inputText id="volume" value="#{regionProduct.selectedForEditHead.product.brand}" required="true" label="brand" />
 				<p:commandButton action="#{monitor.addVirtualSales}"
-				 icon="ui-icon-plus" value="Virtual Sales For Stock-out"/>
+				 icon="ui-icon-plus" value="Add Virtual Sales For Stock-out"/>
 	        </p:panel>
 			<p:panel styleClass="divStyle autoHeightPanel">
+			<h:outputText value="Reference: Statistics of Sales" style="float:left;font-weight:bold;margin-right:3px"/>
+			<p:separator styleClass="forizontalSeparator"/>
+			<p:calendar id="startTime" value="#{monitor.startDate}"  required="true"
+			pattern="yyyy-MM-dd HH:mm:ss">
+			<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			</p:calendar>
+			<p:calendar id="endTime" value="#{monitor.endDate}"  required="true"
+			pattern="yyyy-MM-dd HH:mm:ss">
+			<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			</p:calendar>
+
+            <p:chart rendered="#{monitor.weekdayAverSalesModel!=null}" type="line" model="#{monitor.weekdayAverSalesModel}" style="width:600px;height:300px" />
 			</p:panel>
 		</p:dialog>
 		</h:form>

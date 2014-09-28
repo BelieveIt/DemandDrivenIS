@@ -54,8 +54,10 @@ public class AnalysisUtil {
 	public List<SalesRecord> getRecordsByLimit(Date date1, Date date2, List<SalesRecord> records, String productId){
 		List<SalesRecord> list = new ArrayList<SalesRecord>();
 		for(SalesRecord salesRecord : records){
-			if(salesRecord.getCreateTime().after(date1) && salesRecord.getCreateTime().before(date2) && salesRecord.getProductId().endsWith(productId)){
+			if((salesRecord.getCreateTime().equals(date1) || salesRecord.getCreateTime().after(date1))
+					&& (salesRecord.getCreateTime().equals(date2) || salesRecord.getCreateTime().before(date2)) && salesRecord.getProductId().equals(productId)){
 				list.add(salesRecord);
+				
 			}
 		}
 		return list;
@@ -91,7 +93,8 @@ public class AnalysisUtil {
 		weekdaySumDaysMap.put(Calendar.THURSDAY, new Integer(0));
 		weekdaySumDaysMap.put(Calendar.FRIDAY, new Integer(0));
 		weekdaySumDaysMap.put(Calendar.SATURDAY, new Integer(0));
-
+		
+		
 		for(SalesRecord salesRecord : limitedSalesRecords){
 			Calendar c = Calendar.getInstance();
 			c.setTime(salesRecord.getCreateTime());
@@ -99,13 +102,16 @@ public class AnalysisUtil {
 			int currentSum = weekdaySumMap.get(currentWeekDay);
 			weekdaySumMap.put(currentWeekDay, salesRecord.getSalesNumber() + currentSum);
 			sum = sum + salesRecord.getSalesNumber();
-			weekdaySumDaysMap.put(currentWeekDay, weekdaySumMap.get(currentWeekDay) + 1);
+			weekdaySumDaysMap.put(currentWeekDay, weekdaySumDaysMap.get(currentWeekDay) + 1);
 		}
 
 		for(int i = 1; i <= 7; i++){
-			double averageVolumeOfCertainday = NumberUtil.divide(weekdaySumMap.get(i), weekdaySumDaysMap.get(i));
-			weekdayAverMap.put(i, averageVolumeOfCertainday);
-			System.out.println(weekdayAverMap.get(i));
+			if(weekdaySumDaysMap.get(i) != 0){
+				double averageVolumeOfCertainday = NumberUtil.divide(weekdaySumMap.get(i), weekdaySumDaysMap.get(i));
+				weekdayAverMap.put(i, averageVolumeOfCertainday);
+			}else {
+				weekdayAverMap.put(i, (double) 0);
+			}
 		}
 		return weekdayAverMap;
 	}

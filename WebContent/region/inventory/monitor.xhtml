@@ -43,6 +43,7 @@ xmlns:p="http://primefaces.org/ui">
     			<!-- Products List -->
 				<p:panel styleClass="floatLeft width78 divStyle">
 				<h:form id="tableForm">
+				
 					<p:dataTable id="dataTable" var="item" value="#{monitor.storeSellingItems}"
 				                         filteredValue="#{monitor.filteredItems}"  selection="#{monitor.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

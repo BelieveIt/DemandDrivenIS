@@ -12,6 +12,10 @@ import model.SalesRecord;
 import dao.SalesRecordDao;
 
 public class DateUtil {
+	public final static String[] weekday={"Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."};
+	public static String getWeekDay(int i){
+		return weekday[i-1];
+	}
 	public static void main(String[] strings){
 		SalesRecordDao salesRecordDao = new SalesRecordDao();
 		HashMap<String, ArrayList<SalesRecord>> map = salesRecordDao.querySalesRecords();
@@ -49,4 +53,18 @@ public class DateUtil {
 			}
 		 return -1;
 	    }
+	 
+	 public static Date minusDay(Date date, int x){
+		 Calendar calendar  = Calendar.getInstance();
+		 calendar.setTime(date);
+		 calendar.add(Calendar.DATE, -1 * x);
+		 return calendar.getTime();
+	 }
+	 
+	 public static Date minusMonth(Date date, int x){
+		 Calendar calendar  = Calendar.getInstance();
+		 calendar.setTime(date);
+		 calendar.add(Calendar.MONTH, -1 * x);
+		 return calendar.getTime();
+	 }
 }
