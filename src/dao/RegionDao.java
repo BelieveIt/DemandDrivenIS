@@ -34,7 +34,7 @@ public class RegionDao implements Serializable{
 		String sql = "select * from REGION";
 		return jdbcTemplate.query(sql, new RegionMapper());
 	}
-	public Region queryRegion(String regionId){
+	public Region queryRegionById(String regionId){
 		String sql = "select * from REGION where REGION_ID = :regionId";
 		SqlParameterSource namedParameters = new MapSqlParameterSource("regionId", regionId);
 		return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new RegionMapper());

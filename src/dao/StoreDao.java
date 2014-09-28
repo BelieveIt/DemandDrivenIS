@@ -8,18 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import model.RegionListItem;
-import model.RelationSellingListAndProduct;
 import model.Store;
-import model.StoreSellingProduct;
-
-import oracle.net.aso.s;
+import model.StoreSellingItem;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-
 
 import utils.DaoUtil;
 
@@ -43,26 +39,33 @@ public List<Store> queryStoresByRegionId(String regionId){
 }
 
 public Store queryStoreById(String storeId){
-	String sql = "select * from STORE where STORE_ID = :storeId";
+	String sql = "select STORE.*, COMMERCIAL_ENVIRONMENT.NAME as ENVIRONMENT_NAME from STORE " +
+			"left outer join COMMERCIAL_ENVIRONMENT " +
+			"on STORE.ENVIRONMENT_ID = COMMERCIAL_ENVIRONMENT.ENVIRONMENT_ID " +
+			"where STORE_ID = :storeId";
 	SqlParameterSource namedParameters = new MapSqlParameterSource("storeId", storeId);
 	return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new StoreMapper());
 }
 
-public List<StoreSellingProduct> queryRegionListItemsByStoreId(String storeId){
+public List<StoreSellingItem> queryStoreSellingItemsByStoreId(String storeId){
 	Store store = queryStoreById(storeId);
 
-	String sql = "select * from RELA_STORE_PRODUCT where STORE_ID = : storeId";
+	String sql = "select * from RELA_STORE_PRODUCT where STORE_ID = :storeId";
 	SqlParameterSource namedParameters = new MapSqlParameterSource("storeId", storeId);
-	List<StoreSellingProduct> list = namedParameterJdbcTemplate.query(sql, namedParameters, new StoreSellingProductMapper());
+	List<StoreSellingItem> list = namedParameterJdbcTemplate.query(sql, namedParameters, new StoreSellingProductMapper());
 
 	RegionListItemDao regionListItemDao = new RegionListItemDao();
 	HashMap<String, RegionListItem> map = regionListItemDao.queryProductsMapByVersionIdAndRegionId(store.getRegionId(), "head");
-	for(StoreSellingProduct storeSellingProduct : list){
+	for(StoreSellingItem storeSellingProduct : list){
 		if(map.containsKey(storeSellingProduct.getProductId())){
 			storeSellingProduct.setIsAvailable(1);
 			storeSellingProduct.setRegionListItem(map.get(storeSellingProduct.getProductId()));
 		}else {
 			storeSellingProduct.setIsAvailable(0);
+		}
+
+		if(!storeSellingProduct.getCurrentInventory().equals(new Integer(0))){
+			storeSellingProduct.setStockoutOccurrenceTime(null);
 		}
 	}
 	return list;
@@ -93,12 +96,13 @@ private static final class StoreMapper implements RowMapper<Store> {
         return store;
     }
 }
-private static final class StoreSellingProductMapper implements RowMapper<StoreSellingProduct> {
-    public StoreSellingProduct mapRow(ResultSet rs, int rowNum) throws SQLException {
-    	StoreSellingProduct storeSellingProduct = new StoreSellingProduct();
+private static final class StoreSellingProductMapper implements RowMapper<StoreSellingItem> {
+    public StoreSellingItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+    	StoreSellingItem storeSellingProduct = new StoreSellingItem();
     	storeSellingProduct.setStoreId(rs.getString("STORE_ID"));
     	storeSellingProduct.setProductId(rs.getString("PRODUCT_ID"));
     	storeSellingProduct.setCurrentInventory(rs.getInt("CURRENT_INVENTORY"));
+    	storeSellingProduct.setStockoutOccurrenceTime(rs.getTimestamp("STOCKOUT_OCCURRENCE_TIME"));
         return storeSellingProduct;
     }
 }

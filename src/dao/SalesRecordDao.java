@@ -35,7 +35,7 @@ private static final long serialVersionUID = -3409920921009654496L;
 		String sql = "select * from SALES_RECORD";
 		List<SalesRecord> records =  jdbcTemplate.query(sql,new SalesRecordMapper());
 		HashMap<String, ArrayList<SalesRecord>> map = new HashMap<String, ArrayList<SalesRecord>>();
-		
+
 		for(SalesRecord record : records){
 			if(map.containsKey(record.getStoreId())){
 				map.get(record.getStoreId()).add(record);
@@ -44,11 +44,11 @@ private static final long serialVersionUID = -3409920921009654496L;
 				newList.add(record);
 				map.put(record.getStoreId(), newList);
 			}
-		}	
+		}
 		return map;
-		
 	}
-	
+
+
 	public void insertProduct(SalesRecord salesRecord){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("STORE_ID", salesRecord.getStoreId());

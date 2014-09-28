@@ -129,7 +129,7 @@ public static void retriveFromFranchiser(String regionId){
 		RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
 		RegionListItemDao regionListItemDao = new RegionListItemDao();
 		RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
-		Region region = regionDao.queryRegion(regionId);
+		Region region = regionDao.queryRegionById(regionId);
 
 		//insert new version
 		for(BasicListCategory basicListCategory : basicListCategories){
@@ -164,7 +164,7 @@ public static void retriveFromFranchiser(String regionId){
 public static void updateToNewestBasiclistCategory(String regionId){
 	//init
 	RegionDao regionDao = new RegionDao();
-	Region region = regionDao.queryRegion(regionId);
+	Region region = regionDao.queryRegionById(regionId);
 
 	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
 

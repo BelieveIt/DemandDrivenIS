@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+	    <h:form id="leftMenuForm">
+		<div class="ui-menu ui-widget ui-widget-content ui-corner-all ui-helper-clearfix leftMenu">
+		<ul class="ui-menu-list ui-helper-reset">
+		<li class="ui-widget-header ui-corner-all"><h3>Inventory Info Management</h3></li>
+		<li class="ui-menuitem ui-widget ui-corner-all" >
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/inventory/monitor.xhtml">
+		<span class="ui-menuitem-icon ui-icon ui-icon-document"></span>
+		<span class="ui-menuitem-text">Monitor Inventory</span>
+		</a>
+		</li>
+		<li class="ui-menuitem ui-widget ui-corner-all">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/region/inventory/analysis.xhtml">
+		<span class="ui-menuitem-icon ui-icon ui-icon-tag"></span>
+		<span class="ui-menuitem-text">Inventory Analysis</span>
+		</a>
+		</li>
+
+		<li class="ui-widget-header ui-corner-all"><h3>Product Addition Request Management</h3></li>
+		<li class="ui-menuitem ui-widget ui-corner-all" >
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/region/merchandise/product.xhtml" >
+		<span class="ui-menuitem-icon ui-icon ui-icon-mail-closed"></span>
+		<span class="ui-menuitem-text">Request Management</span>
+		</a>
+		</li>
+		</ul>
+		</div>
+		</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

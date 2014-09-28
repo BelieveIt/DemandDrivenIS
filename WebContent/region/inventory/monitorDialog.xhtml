@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+ 		<!-- View Item -->
+		<h:form id="viewProductForm">
+		<p:dialog header="View Item" widgetVar="viewProduct" width="350">
+		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		            <h:outputLabel for="name" value="Name:" />
+	            <h:outputLabel id="name" value="#{monitor.selectedItem.regionListItem.product.name}"/>
+
+	            <h:outputLabel for="createTime" value="Create Time:" />
+	            <h:outputLabel id="createTime" value="#{monitor.selectedItem.regionListItem.product.productCreateTime}">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputLabel>
+
+	            <h:outputLabel for="brand" value="Brand:" />
+	            <h:outputLabel id="brand" value="#{monitor.selectedItem.regionListItem.product.brand}" />
+
+	            <h:outputLabel for="itemWeight" value="Weight:" />
+	            <h:outputLabel id="itemWeight" value="#{monitor.selectedItem.regionListItem.product.itemWeight}" />
+
+	            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+	            <h:outputLabel id="manufacturer" value="#{monitor.selectedItem.regionListItem.product.manufacturer}" />
+
+	            <h:outputLabel for="price" value="Price:" />
+	            <h:outputLabel id="price" value="#{monitor.selectedItem.regionListItem.product.price}" />
+
+	            <h:outputLabel for="unit" value="Unit:" />
+	            <h:outputLabel id="unit" value="#{monitor.selectedItem.regionListItem.product.unit}" />
+
+	            <h:outputLabel for="minInventory" value="MinInventory:" />
+	            <h:outputLabel id="minInventory" value="#{monitor.selectedItem.regionListItem.product.minInventory}" />
+
+				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+		        <h:outputLabel id="deliveryFrequency" value="#{monitor.selectedItem.regionListItem.product.deliveryFrequency}" />
+		        <h:outputLabel for="uploadedImg" value="Product Image:" />
+  					<p:panel id="uploadedImg" styleClass="divStyle">
+  					<p:lightBox styleClass="imagebox">
+  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{monitor.selectedItem.regionListItem.product.image}" title="Nature 1">
+  					<p:graphicImage library="uploadImg" name="#{monitor.selectedItem.regionListItem.product.image}"
+  					width="100" height="60" rendered="#{not empty monitor.selectedItem.regionListItem.product.image}"/>
+  					</h:outputLink>
+  					</p:lightBox>
+	            </p:panel>
+	        </p:panelGrid>
+		</p:dialog>
+		</h:form>
+
+ 		<!-- Add Virtual Sales Dialog -->
+		<h:form id="addVirtualSalesForm">
+		<p:dialog header="Add Virtual Sales For Stock-out" widgetVar="addVirtualSales" width="700">
+			<p:panel styleClass="divStyle autoHeightPanel">
+			<h:outputText value="Stock-out Occurrence Time: " style="float:left;font-weight:bold;margin-right:3px"/>
+			<h:outputText value="#{monitor.selectedItem.stockoutOccurrenceTime}" style="float:left;margin-right:20px">
+            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+            </h:outputText>
+			<h:outputText value="Stock-out Time Of Duration: " style="float:left;font-weight:bold;margin-right:3px"/>
+			<h:outputText value="#{monitor.selectedItem.stockoutDuration}" style="float:left;margin-right:20px"/>
+			<p:separator styleClass="forizontalSeparator"/>
+			</p:panel>
+			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+		        <h:outputLabel for="volume" value="Forecast Virtual Sales Volume For The Duration:  " />
+				<p:inputText id="volume" value="#{regionProduct.selectedForEditHead.product.brand}" required="true" label="brand" />
+				<p:commandButton action="#{monitor.addVirtualSales}"
+				 icon="ui-icon-plus" value="Virtual Sales For Stock-out"/>
+	        </p:panel>
+			<p:panel styleClass="divStyle autoHeightPanel">
+			</p:panel>
+		</p:dialog>
+		</h:form>
+	    </ui:composition>
+    </h:body>
+</html>
