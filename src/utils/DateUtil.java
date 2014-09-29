@@ -34,33 +34,34 @@ public class DateUtil {
 			return hours + " hours";
 		}
 	}
+	public static void setToZero(Calendar calendar){
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+	}
+	public static int daysBetween(Date date1,Date date2)
+	{
+		Calendar start = Calendar.getInstance();
+		start.setTime(date1);
+		DateUtil.setToZero(start);
+		Calendar end = Calendar.getInstance();
+		end.setTime(date2);
+		DateUtil.setToZero(end);
+		int day = 0;
+		while(!start.after(end)){
+			day++;
+		}
+		return day;
+	}
 
-	 public static int daysBetween(Date smdate,Date bdate)
-	    {
-		 try {
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-			smdate=sdf.parse(sdf.format(smdate));
-	        bdate=sdf.parse(sdf.format(bdate));
-	        Calendar cal = Calendar.getInstance();
-	        cal.setTime(smdate);
-	        long time1 = cal.getTimeInMillis();
-	        cal.setTime(bdate);
-	        long time2 = cal.getTimeInMillis();
-	        long between_days=(time2-time1)/(1000*3600*24);
-	        return Integer.parseInt(String.valueOf(between_days)) + 1;
-	        } catch (ParseException e) {
-				e.printStackTrace();
-			}
-		 return -1;
-	    }
-	 
 	 public static Date minusDay(Date date, int x){
 		 Calendar calendar  = Calendar.getInstance();
 		 calendar.setTime(date);
 		 calendar.add(Calendar.DATE, -1 * x);
 		 return calendar.getTime();
 	 }
-	 
+
 	 public static Date minusMonth(Date date, int x){
 		 Calendar calendar  = Calendar.getInstance();
 		 calendar.setTime(date);

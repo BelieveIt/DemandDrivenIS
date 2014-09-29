@@ -3,9 +3,12 @@ package dao;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import model.SalesRecord;
 import model.SellingList;
 import model.WasteReason;
 import model.WasteRecord;
@@ -37,6 +40,24 @@ public void insertWasteRecord(WasteRecord wasteRecord){
 	parameters.put("STORE_ID", wasteRecord.getStoreId());
 	simpleJdbcInsert.execute(parameters);
 }
+
+public HashMap<String, ArrayList<WasteRecord>> queryWasteRecords(){
+	String sql = "select * from WASTE_RECORD order by CREATE_TIME desc";
+	List<WasteRecord> records =  jdbcTemplate.query(sql,new WasteRecordMapper());
+	HashMap<String, ArrayList<WasteRecord>> map = new HashMap<String, ArrayList<WasteRecord>>();
+
+	for(WasteRecord record : records){
+		if(map.containsKey(record.getStoreId())){
+			map.get(record.getStoreId()).add(record);
+		}else {
+			ArrayList<WasteRecord> newList = new ArrayList<WasteRecord>();
+			newList.add(record);
+			map.put(record.getStoreId(), newList);
+		}
+	}
+	return map;
+}
+
 private static final class WasteRecordMapper implements RowMapper<WasteRecord> {
     public WasteRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
     	WasteRecord wasteRecord = new WasteRecord();

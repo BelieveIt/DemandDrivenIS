@@ -12,83 +12,177 @@ xmlns:p="http://primefaces.org/ui">
 	    <ui:composition>
  		<!-- View Item -->
 		<h:form id="viewProductForm">
-		<p:dialog header="View Item" widgetVar="viewProduct" width="350">
-		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
-		            <h:outputLabel for="name" value="Name:" />
-	            <h:outputLabel id="name" value="#{monitor.selectedItem.regionListItem.product.name}"/>
+		<p:dialog header="View Item" widgetVar="viewProduct" width="1000">
+			<p:panel styleClass="divStyle autoHeightPanel floatLeft">
+			    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+			            <h:outputLabel for="name" value="Name:" />
+		            <h:outputLabel id="name" value="#{monitor.selectedItem.regionListItem.product.name}"/>
 
-	            <h:outputLabel for="createTime" value="Create Time:" />
-	            <h:outputLabel id="createTime" value="#{monitor.selectedItem.regionListItem.product.productCreateTime}">
-	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-	            </h:outputLabel>
+		            <h:outputLabel for="createTime" value="Create Time:" />
+		            <h:outputLabel id="createTime" value="#{monitor.selectedItem.regionListItem.product.productCreateTime}">
+		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+		            </h:outputLabel>
 
-	            <h:outputLabel for="brand" value="Brand:" />
-	            <h:outputLabel id="brand" value="#{monitor.selectedItem.regionListItem.product.brand}" />
+		            <h:outputLabel for="brand" value="Brand:" />
+		            <h:outputLabel id="brand" value="#{monitor.selectedItem.regionListItem.product.brand}" />
 
-	            <h:outputLabel for="itemWeight" value="Weight:" />
-	            <h:outputLabel id="itemWeight" value="#{monitor.selectedItem.regionListItem.product.itemWeight}" />
+		            <h:outputLabel for="itemWeight" value="Weight:" />
+		            <h:outputLabel id="itemWeight" value="#{monitor.selectedItem.regionListItem.product.itemWeight}" />
 
-	            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-	            <h:outputLabel id="manufacturer" value="#{monitor.selectedItem.regionListItem.product.manufacturer}" />
+		            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+		            <h:outputLabel id="manufacturer" value="#{monitor.selectedItem.regionListItem.product.manufacturer}" />
 
-	            <h:outputLabel for="price" value="Price:" />
-	            <h:outputLabel id="price" value="#{monitor.selectedItem.regionListItem.product.price}" />
+		            <h:outputLabel for="price" value="Price:" />
+		            <h:outputLabel id="price" value="#{monitor.selectedItem.regionListItem.product.price}" />
 
-	            <h:outputLabel for="unit" value="Unit:" />
-	            <h:outputLabel id="unit" value="#{monitor.selectedItem.regionListItem.product.unit}" />
+		            <h:outputLabel for="unit" value="Unit:" />
+		            <h:outputLabel id="unit" value="#{monitor.selectedItem.regionListItem.product.unit}" />
 
-	            <h:outputLabel for="minInventory" value="MinInventory:" />
-	            <h:outputLabel id="minInventory" value="#{monitor.selectedItem.regionListItem.product.minInventory}" />
+		            <h:outputLabel for="minInventory" value="MinInventory:" />
+		            <h:outputLabel id="minInventory" value="#{monitor.selectedItem.regionListItem.product.minInventory}" />
 
-				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
-		        <h:outputLabel id="deliveryFrequency" value="#{monitor.selectedItem.regionListItem.product.deliveryFrequency}" />
-		        <h:outputLabel for="uploadedImg" value="Product Image:" />
-  					<p:panel id="uploadedImg" styleClass="divStyle">
-  					<p:lightBox styleClass="imagebox">
-  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{monitor.selectedItem.regionListItem.product.image}" title="Nature 1">
-  					<p:graphicImage library="uploadImg" name="#{monitor.selectedItem.regionListItem.product.image}"
-  					width="100" height="60" rendered="#{not empty monitor.selectedItem.regionListItem.product.image}"/>
-  					</h:outputLink>
-  					</p:lightBox>
-	            </p:panel>
-	        </p:panelGrid>
+					<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+			        <h:outputLabel id="deliveryFrequency" value="#{monitor.selectedItem.regionListItem.product.deliveryFrequency}" />
+			        <h:outputLabel for="uploadedImg" value="Product Image:" />
+	  					<p:panel id="uploadedImg" styleClass="divStyle">
+	  					<p:lightBox styleClass="imagebox">
+	  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{monitor.selectedItem.regionListItem.product.image}" title="Nature 1">
+	  					<p:graphicImage library="uploadImg" name="#{monitor.selectedItem.regionListItem.product.image}"
+	  					width="100" height="60" rendered="#{not empty monitor.selectedItem.regionListItem.product.image}"/>
+	  					</h:outputLink>
+	  					</p:lightBox>
+		            </p:panel>
+		        </p:panelGrid>
+		     </p:panel>
+		     <p:panel styleClass="divStyle autoHeightPanel floatLeft">
+		     	<p:tabView>
+		     		<p:tab title="Sales Record">
+   							<p:dataTable id="dataTableForSales" var="item" value="#{monitor.selectedItemRecord.salesRecords}"
+	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                         rows="15" scrollable="true" style="width:550px;">
+
+					        <p:column headerText="CreateTime" styleClass="CreateTime noPadding"
+					        sortBy="#{item.createTime}" filterBy="#{item.createTime}">
+					            <h:outputText value="#{item.createTime}">
+					            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+					            </h:outputText>
+					        </p:column>
+
+					        <p:column headerText="Number" styleClass="noPadding">
+					            <h:outputText value="#{item.salesNumber}" />
+					        </p:column>
+					    	</p:dataTable>
+		     		</p:tab>
+		     		<p:tab title="Stock-Out Virtual Sales Record">
+		     			   	<p:dataTable id="dataTableForVirtualSales" var="item" value="#{monitor.selectedItemRecord.stockOutVirtualSalesRecords}"
+	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                         rows="15" scrollable="true" style="width:550px;">
+
+					        <p:column headerText="CreateTime" styleClass="CreateTime noPadding"
+					        sortBy="#{item.createTime}" filterBy="#{item.createTime}">
+					            <h:outputText value="#{item.createTime}">
+					            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+					            </h:outputText>
+					        </p:column>
+
+					        <p:column headerText="Number" styleClass="noPadding">
+					            <h:outputText value="#{item.stockoutNumber}" />
+					        </p:column>
+					    	</p:dataTable>
+		     		</p:tab>
+		     		<p:tab title="Waste Record">
+		     				<p:dataTable id="dataTableForWaste" var="item" value="#{monitor.selectedItemRecord.wasteRecords}"
+	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                         rows="15" scrollable="true" style="width:550px;">
+
+					        <p:column headerText="CreateTime" styleClass="CreateTime noPadding"
+					        sortBy="#{item.createTime}" filterBy="#{item.createTime}">
+					            <h:outputText value="#{item.createTime}">
+					            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+					            </h:outputText>
+					        </p:column>
+
+					        <p:column headerText="Number" styleClass="noPadding">
+					            <h:outputText value="#{item.wasteNumber}" />
+					        </p:column>
+
+					        <p:column headerText="Number" styleClass="noPadding">
+					            <h:outputText value="#{item.wasteReason}" />
+					        </p:column>
+					    	</p:dataTable>
+		     		</p:tab>
+		     	</p:tabView>
+		     </p:panel>
 		</p:dialog>
 		</h:form>
 
  		<!-- Add Virtual Sales Dialog -->
-		<h:form id="addVirtualSalesForm">
 		<p:dialog header="Add Virtual Sales For Stock-out" widgetVar="addVirtualSales" width="700">
-			<p:panel styleClass="divStyle autoHeightPanel">
-			<h:outputText value="Stock-out Occurrence Time: " style="float:left;font-weight:bold;margin-right:3px"/>
-			<h:outputText value="#{monitor.selectedItem.stockoutOccurrenceTime}" style="float:left;margin-right:20px">
-            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-            </h:outputText>
-			<h:outputText value="Stock-out Time Of Duration: " style="float:left;font-weight:bold;margin-right:3px"/>
-			<h:outputText value="#{monitor.selectedItem.stockoutDuration}" style="float:left;margin-right:20px"/>
-			<p:separator styleClass="forizontalSeparator"/>
-			</p:panel>
+			<h:form id="virtualSalesHeadForm">
+				<p:panel styleClass="divStyle autoHeightPanel">
+				<h:outputText value="Stock-out Occurrence Time: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{monitor.selectedItem.stockoutOccurrenceTime}" style="float:left;margin-right:20px">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputText>
+				<h:outputText value="Stock-out Time Of Duration: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{monitor.selectedItem.stockoutDuration}" style="float:left;margin-right:20px"/>
+				<p:separator styleClass="forizontalSeparator"/>
+				</p:panel>
+			</h:form>
+			<h:form id="addVirtualSalesForm">
 			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
 		        <h:outputLabel for="volume" value="Forecast Virtual Sales Volume For The Duration:  " />
-				<p:inputText id="volume" value="#{regionProduct.selectedForEditHead.product.brand}" required="true" label="brand" />
-				<p:commandButton action="#{monitor.addVirtualSales}"
+				<p:inputText id="volume" value="#{monitor.vitualSales}" required="true" label="brand" />
+				<p:commandButton action="#{monitor.addVirtualSales}" process="@form"
 				 icon="ui-icon-plus" value="Add Virtual Sales For Stock-out"/>
 	        </p:panel>
+	        </h:form>
+	        <h:form id="SalesStatisticsForm">
 			<p:panel styleClass="divStyle autoHeightPanel">
-			<h:outputText value="Reference: Statistics of Sales" style="float:left;font-weight:bold;margin-right:3px"/>
-			<p:separator styleClass="forizontalSeparator"/>
-			<p:calendar id="startTime" value="#{monitor.startDate}"  required="true"
-			pattern="yyyy-MM-dd HH:mm:ss">
-			<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-			</p:calendar>
-			<p:calendar id="endTime" value="#{monitor.endDate}"  required="true"
-			pattern="yyyy-MM-dd HH:mm:ss">
-			<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-			</p:calendar>
+				<h:outputText value="Reference: Statistics of Sales" style="float:left;font-weight:bold;margin-right:3px"/>
+				<p:separator styleClass="forizontalSeparator"/>
+				<p:panel styleClass="divStyle autoHeightPanel floatLeft">
+					<h:outputText value="Data Source:" style="font-weight:bold;margin-right:3px"/>
+					<h:outputText value="Start:" style="margin-right:3px"/>
+					<p:calendar id="startTime" value="#{monitor.startDate}"  required="true"
+					pattern="yyyy-MM-dd" maxdate="#{monitor.endDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd" />
+					</p:calendar>
+					<h:outputText value="End:" style="margin-right:3px"/>
 
-            <p:chart rendered="#{monitor.weekdayAverSalesModel!=null}" type="line" model="#{monitor.weekdayAverSalesModel}" style="width:600px;height:300px" />
+	                <p:calendar id="endTime" value="#{monitor.endDate}"  required="true"
+					pattern="yyyy-MM-dd" maxdate="#{monitor.endDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd" />
+					</p:calendar>
+
+					<p:commandButton action="#{monitor.refreshSalesStatistics}" update="weekdayAverSalesLineChart" process="@form"
+					 icon="ui-icon-arrowrefresh-1-e" value="Refresh Statistics"/>
+				</p:panel>
+				<p:panel id="weekdayAverSalesLineChart" styleClass="divStyle autoHeightPanel floatLeft">
+	            	<p:chart rendered="#{monitor.weekdayAverSalesModel!=null}" type="line" model="#{monitor.weekdayAverSalesModel}" style="width:600px;height:300px" />
+	            </p:panel>
 			</p:panel>
+			</h:form>
 		</p:dialog>
-		</h:form>
+
+ 		<!-- Add Waste Record -->
+		<p:dialog header="Add Waste Record" widgetVar="addWasteRecord" width="450">
+			<h:form id="addWasteRecordForm">
+			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+				<h:outputText value="ProductName: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{monitor.selectedItem.regionListItem.product.name}" style="float:left;margin-right:20px"/>
+				<h:outputText value="ProductId: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{monitor.selectedItem.productId}" style="float:left;margin-right:20px"/>
+				<h:outputText value="Inventory: " style="float:left;font-weight:bold;margin-right:3px"/>
+				<h:outputText value="#{monitor.selectedItem.currentInventory}" style="float:left;margin-right:20px"/>
+				<p:separator styleClass="forizontalSeparator"/>
+
+				<p:inputText id="volume" value="#{monitor.wasteVolume}" required="true" />
+				<p:commandButton action="#{monitor.addWasteRecord}" process="@form" update=":messagesForm:messages"
+				 icon="ui-icon-plus" value="Add Waste Record"/>
+	        </p:panel>
+	        </h:form>
+		</p:dialog>
 	    </ui:composition>
     </h:body>
 </html>

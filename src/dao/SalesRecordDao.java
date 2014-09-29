@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ private static final long serialVersionUID = -3409920921009654496L;
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(DaoUtil.getDataSource());
 	}
 	public HashMap<String, ArrayList<SalesRecord>> querySalesRecords(){
-		String sql = "select * from SALES_RECORD";
+		String sql = "select * from SALES_RECORD order by CREATE_TIME desc";
 		List<SalesRecord> records =  jdbcTemplate.query(sql,new SalesRecordMapper());
 		HashMap<String, ArrayList<SalesRecord>> map = new HashMap<String, ArrayList<SalesRecord>>();
 

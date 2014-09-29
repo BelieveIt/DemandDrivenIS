@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class StockOutVirtualSalesDao {
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(DaoUtil.getDataSource());
 	}
 	public HashMap<String, ArrayList<StockOutVirtualSales>> queryStockOutVirtualSales(){
-		String sql = "select * from STOCK_OUT_VIRTUAL_SALES";
+		String sql = "select * from STOCK_OUT_VIRTUAL_SALES order by CREATE_TIME desc";
 		List<StockOutVirtualSales> records =  jdbcTemplate.query(sql,new StockOutVirtualSalesMapper());
 		HashMap<String, ArrayList<StockOutVirtualSales>> map = new HashMap<String, ArrayList<StockOutVirtualSales>>();
 
@@ -42,6 +43,15 @@ public class StockOutVirtualSalesDao {
 			}
 		}
 		return map;
+	}
+
+	public void insertStockOutVirtualSales(StockOutVirtualSales stockOutVirtualSales){
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("STORE_ID", stockOutVirtualSales.getStoreId());
+		parameters.put("PRODUCT_ID", stockOutVirtualSales.getProductId());
+		parameters.put("CREATE_TIME", stockOutVirtualSales.getCreateTime());
+		parameters.put("STOCKOUT_NUMBER", stockOutVirtualSales.getStockoutNumber());
+		simpleJdbcInsert.execute(parameters);
 	}
 	private static final class StockOutVirtualSalesMapper implements RowMapper<StockOutVirtualSales> {
 	    public StockOutVirtualSales mapRow(ResultSet rs, int rowNum) throws SQLException {
