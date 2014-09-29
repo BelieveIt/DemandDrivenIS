@@ -1,6 +1,7 @@
 package inventorybean.region;
 
 import inventorybean.utils.AnalysisUtil;
+import inventorybean.utils.MonitorUtil;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,7 +20,9 @@ import dao.StockOutVirtualSalesDao;
 import dao.StoreDao;
 import dao.WasteRecordDao;
 
+import merchandise.utils.CategoryUtil;
 import model.Region;
+import model.RegionListCategory;
 import model.Store;
 import model.StoreSellingItem;
 
@@ -59,5 +62,18 @@ public class AnalysisOfRegion implements Serializable{
 		String storeId = "1";
 		currentStore = storeDao.queryStoreById(storeId);
 		currentRegion = regionDao.queryRegionById(currentStore.getRegionId());
+		
+		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", currentRegion.getRegionId());
+		rootNode = CategoryUtil.generateTreeForProduct(categories);
+		if(rootNode !=null){
+			CategoryUtil.expandAllTree(rootNode);
+			rootNode.getChildren().get(0).setSelected(true);
+			selectedNode = rootNode.getChildren().get(0);
+		}
+		setItemsBySelectedNode();
 	}
+	
+	private void setItemsBySelectedNode(){
+        storeSellingItems = MonitorUtil.generateStoreSellingItemsBySelectedNode(selectedNode, currentStore);
+}
 }
