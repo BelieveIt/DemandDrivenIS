@@ -12,6 +12,7 @@ import model.Store;
 import model.StoreSellingItem;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -69,6 +70,15 @@ public List<StoreSellingItem> queryStoreSellingItemsByStoreId(String storeId){
 		}
 	}
 	return list;
+}
+
+public int updateStoreSellingItem(StoreSellingItem storeSellingItem){
+		String sql = "update RELA_STORE_PRODUCT set " +
+				"CURRENT_INVENTORY = :currentInventory, " +
+				"STOCKOUT_OCCURRENCE_TIME = :stockoutOccurrenceTime " +
+				"where PRODUCT_ID = :productId and STORE_ID = :storeId";
+		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(storeSellingItem);
+		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 }
 
 public void insertStore(Store store){

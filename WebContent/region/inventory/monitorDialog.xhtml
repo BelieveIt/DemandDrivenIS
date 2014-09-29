@@ -106,8 +106,8 @@ xmlns:p="http://primefaces.org/ui">
 					            <h:outputText value="#{item.wasteNumber}" />
 					        </p:column>
 
-					        <p:column headerText="Number" styleClass="noPadding">
-					            <h:outputText value="#{item.wasteReason}" />
+					        <p:column headerText="Reason" styleClass="noPadding">
+					            <h:outputText value="#{item.wasteReason.reasonDescription}" />
 					        </p:column>
 					    	</p:dataTable>
 		     		</p:tab>
@@ -117,7 +117,7 @@ xmlns:p="http://primefaces.org/ui">
 		</h:form>
 
  		<!-- Add Virtual Sales Dialog -->
-		<p:dialog header="Add Virtual Sales For Stock-out" widgetVar="addVirtualSales" width="700">
+		<p:dialog header="Add Virtual Sales For Stock-out" widgetVar="addVirtualSales" width="750">
 			<h:form id="virtualSalesHeadForm">
 				<p:panel styleClass="divStyle autoHeightPanel">
 				<h:outputText value="Stock-out Occurrence Time: " style="float:left;font-weight:bold;margin-right:3px"/>
@@ -178,7 +178,7 @@ xmlns:p="http://primefaces.org/ui">
 				<p:separator styleClass="forizontalSeparator"/>
 
 				<p:inputText id="volume" value="#{monitor.wasteVolume}" required="true" />
-				<p:commandButton action="#{monitor.addWasteRecord}" process="@form" update=":messagesForm:messages"
+				<p:commandButton action="#{monitor.addWasteRecord}" process="@form" update=":tableForm :messagesForm:messages"
 				 icon="ui-icon-plus" value="Add Waste Record"/>
 	        </p:panel>
 	        </h:form>

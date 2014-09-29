@@ -42,7 +42,10 @@ public void insertWasteRecord(WasteRecord wasteRecord){
 }
 
 public HashMap<String, ArrayList<WasteRecord>> queryWasteRecords(){
-	String sql = "select * from WASTE_RECORD order by CREATE_TIME desc";
+	String sql = "select WASTE_RECORD.*, WASTE_REASON.REASON_DESCRIPTION from WASTE_RECORD " +
+			"left outer join WASTE_REASON " +
+			"on WASTE_RECORD.REASON_ID = WASTE_REASON.REASON_ID " +
+			"order by CREATE_TIME desc";
 	List<WasteRecord> records =  jdbcTemplate.query(sql,new WasteRecordMapper());
 	HashMap<String, ArrayList<WasteRecord>> map = new HashMap<String, ArrayList<WasteRecord>>();
 

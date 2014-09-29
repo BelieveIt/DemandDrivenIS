@@ -4,9 +4,7 @@ import inventorybean.utils.AnalysisUtil;
 import inventorybean.utils.MonitorUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +19,6 @@ import javax.faces.context.FacesContext;
 import merchandise.utils.CategoryUtil;
 import model.Region;
 import model.RegionListCategory;
-import model.SalesRecord;
 import model.StockOutVirtualSales;
 import model.Store;
 import model.StoreSellingItem;
@@ -67,7 +64,6 @@ public class Monitor implements Serializable{
 	private TreeNode selectedNode;
 
 	private List<StoreSellingItem> storeSellingItems;
-	private StoreSellingItem selectedRegionListItem;
 	private List<StoreSellingItem> selectedItems;
 	private List<StoreSellingItem> filteredItems;
 	private SelectedItemRecord selectedItemRecord;
@@ -141,6 +137,7 @@ public class Monitor implements Serializable{
 		stockOutVirtualSales.setStockoutNumber(vitualSales);
 		stockOutVirtualSales.setStoreId(currentStore.getStoreId());
 		stockOutVirtualSalesDao.insertStockOutVirtualSales(stockOutVirtualSales);
+		analysisUtil.initVirtualSalesRecordMap();
 		RequestContext.getCurrentInstance().execute("PF('addVirtualSales').hide();");
 	}
 
@@ -178,6 +175,11 @@ public class Monitor implements Serializable{
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
 		}
+		if(wasteVolume == 0){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "Can Input Zero!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
 		WasteRecord wasteRecord = new WasteRecord();
 		wasteRecord.setCreateTime(new Date());
 		wasteRecord.setProductId(selectedItem.getProductId());
@@ -187,6 +189,15 @@ public class Monitor implements Serializable{
 		wasteReason.setReasonId(wasteReasonId);
 		wasteRecord.setWasteReason(wasteReason);
 		wasteRecordDao.insertWasteRecord(wasteRecord);
+		analysisUtil.initWasteRecordMap();
+		
+		int newInventory = selectedItem.getCurrentInventory() - wasteVolume;
+		selectedItem.setCurrentInventory(newInventory);
+		if((newInventory) == 0)
+			selectedItem.setStockoutOccurrenceTime(new Date());
+		storeDao.updateStoreSellingItem(selectedItem);
+		setItemsBySelectedNode();
+		
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "Saved Successfully!");
         FacesContext.getCurrentInstance().addMessage(null, message);
 		RequestContext.getCurrentInstance().execute("PF('addWasteRecord').hide();");
@@ -247,12 +258,7 @@ public class Monitor implements Serializable{
 	public void setStoreSellingItems(List<StoreSellingItem> storeSellingItems) {
 		this.storeSellingItems = storeSellingItems;
 	}
-	public StoreSellingItem getSelectedRegionListItem() {
-		return selectedRegionListItem;
-	}
-	public void setSelectedRegionListItem(StoreSellingItem selectedRegionListItem) {
-		this.selectedRegionListItem = selectedRegionListItem;
-	}
+
 	public List<StoreSellingItem> getSelectedItems() {
 		return selectedItems;
 	}

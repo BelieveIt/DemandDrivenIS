@@ -43,16 +43,23 @@ public class AnalysisUtil {
 		stockOutVirtualSalesDao = new StockOutVirtualSalesDao();
 		wasteRecordDao = new WasteRecordDao();
 
+		initSalesRecordMap();
+		initVirtualSalesRecordMap();
+		initSalesRecordRorForecastMap();
+		
+		initWasteRecordMap();
+	}
+	
+	public void initSalesRecordMap(){
 		salesRecordsMap = salesRecordDao.querySalesRecords();
-		virtualSalesRecordsMap = stockOutVirtualSalesDao.queryStockOutVirtualSales();
-		initSalesRecordsMap();
-
-		wasteRecordsMap = wasteRecordDao.queryWasteRecords();
 	}
 
+	public void initVirtualSalesRecordMap(){
+		virtualSalesRecordsMap = stockOutVirtualSalesDao.queryStockOutVirtualSales();
+	}
 	//Combine real sales and virtual sales
-	private void initSalesRecordsMap(){
-		salesRecordsMapForForecast = new HashMap<String, ArrayList<SalesRecord>>(salesRecordsMap);
+	public void initSalesRecordRorForecastMap(){
+		salesRecordsMapForForecast = salesRecordDao.querySalesRecords();
 		Iterator<String> iterator = virtualSalesRecordsMap.keySet().iterator();
 		while (iterator.hasNext()) {
 			String currentKey = iterator.next();
@@ -68,6 +75,10 @@ public class AnalysisUtil {
 		}
 	}
 
+	public void initWasteRecordMap(){
+		wasteRecordsMap = wasteRecordDao.queryWasteRecords();
+	}
+	
 	public ArrayList<SalesRecord> querySalesRecords(String storeId, String productId){
 		ArrayList<SalesRecord> allRecordsOfStore = salesRecordsMap.get(storeId);
 		ArrayList<SalesRecord> records = new ArrayList<SalesRecord>();
