@@ -7,14 +7,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-
-import oracle.net.aso.s;
 
 import utils.DateUtil;
 import utils.NumberUtil;
@@ -24,10 +20,16 @@ import dao.StockOutVirtualSalesDao;
 import dao.WasteRecordDao;
 import model.SalesRecord;
 import model.StockOutVirtualSales;
+import model.StoreSellingItem;
 import model.WasteRecord;
 @ManagedBean(name="analysisUtil", eager = true)
 @ApplicationScoped
 public class AnalysisUtil {
+	public static final String CATEGORY_INCLUDE_NONE = "CATEGORY_INCLUDE_NONE";
+	public static final String CATEGORY_INCLUDE_CATEGORY = "CATEGORY_INCLUDE_CATEGORY";
+	public static final String CATEGORY_INCLUDE_PRODUCT = "CATEGORY_INCLUDE_PRODUCT";
+	public static final String PRODUCT = "PRODUCT";
+
 	private SalesRecordDao salesRecordDao;
 	private StockOutVirtualSalesDao stockOutVirtualSalesDao;
 	private WasteRecordDao wasteRecordDao;
@@ -46,10 +48,10 @@ public class AnalysisUtil {
 		initSalesRecordMap();
 		initVirtualSalesRecordMap();
 		initSalesRecordRorForecastMap();
-		
+
 		initWasteRecordMap();
 	}
-	
+
 	public void initSalesRecordMap(){
 		salesRecordsMap = salesRecordDao.querySalesRecords();
 	}
@@ -78,7 +80,7 @@ public class AnalysisUtil {
 	public void initWasteRecordMap(){
 		wasteRecordsMap = wasteRecordDao.queryWasteRecords();
 	}
-	
+
 	public ArrayList<SalesRecord> querySalesRecords(String storeId, String productId){
 		ArrayList<SalesRecord> allRecordsOfStore = salesRecordsMap.get(storeId);
 		ArrayList<SalesRecord> records = new ArrayList<SalesRecord>();
@@ -198,6 +200,21 @@ public class AnalysisUtil {
 		}
 		return list;
 	}
+
+
+	public LinkedHashMap<String, Double> getSalesTrendDataByYear(List<StoreSellingItem> items, String storeId, String currentYear){
+		LinkedHashMap<String, Double> chartDataMap = new LinkedHashMap<String, Double>();
+		initChartDataMap(chartDataMap);
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		
+		return chartDataMap;
+	}
+	private void initChartDataMap(LinkedHashMap<String, Double> chartDataMap){
+		for(int i = 0; i <= 11; i++){
+			chartDataMap.put(DateUtil.month[0], new Double(0));
+		}
+	}
+
 	public HashMap<String, ArrayList<StockOutVirtualSales>> getVirtualSalesRecordsMap() {
 		return virtualSalesRecordsMap;
 	}

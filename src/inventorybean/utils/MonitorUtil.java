@@ -6,7 +6,6 @@ import java.util.List;
 import merchandise.utils.CategoryUtil;
 import model.Category;
 import model.RegionListCategory;
-import model.RegionListItem;
 import model.Store;
 import model.StoreSellingItem;
 

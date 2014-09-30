@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+			<h:form id="analysisChartsForm">
+			<p:tabView rendered="#{analysisOfRegion.analysisType eq 'CATEGORY_INCLUDE_CATEGORY'}">
+	     		<p:tab title="Sales Share of Categories">
+	     		</p:tab>
+	     		<p:tab title="Sales Trend of Categories">
+	     		</p:tab>
+	     		<p:tab title="Low-moving List in the Category">
+	     		</p:tab>
+     		</p:tabView>
+
+     		<p:tabView rendered="#{analysisOfRegion.analysisType eq 'CATEGORY_INCLUDE_PRODUCT'}">
+	     		<p:tab title="Low-moving List in the Category">
+	     		</p:tab>
+     		</p:tabView>
+
+			<p:tabView rendered="#{analysisOfRegion.analysisType eq 'PRODUCT'}">
+				<p:tab title="Sales Volume Trend of Product">
+	     		</p:tab>
+     		</p:tabView>
+
+     		</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

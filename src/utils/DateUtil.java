@@ -1,7 +1,5 @@
 package utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,10 +11,16 @@ import dao.SalesRecordDao;
 
 public class DateUtil {
 	public final static String[] weekday={"Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."};
+	public final static String[] month={"Jan.", "Feb.", "Mar.", "Api.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Aug.", "Nov.", "Dec."};
 	public static String getWeekDay(int i){
 		return weekday[i-1];
 	}
+
+	public static String getMonth(int i){
+		return month[i];
+	}
 	public static void main(String[] strings){
+		System.out.println(Calendar.SEPTEMBER);
 		SalesRecordDao salesRecordDao = new SalesRecordDao();
 		HashMap<String, ArrayList<SalesRecord>> map = salesRecordDao.querySalesRecords();
 		Date date1 = map.get("1").get(0).getCreateTime();
@@ -67,5 +71,26 @@ public class DateUtil {
 		 calendar.setTime(date);
 		 calendar.add(Calendar.MONTH, -1 * x);
 		 return calendar.getTime();
+	 }
+
+	 public static int getYearOfDate(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int year = cal.get(Calendar.YEAR);
+		return year;
+	 }
+
+	 public static int getMonthOfDate(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int month = cal.get(Calendar.MONTH);
+		return month;
+	 }
+
+	 public static int getDayOfDate(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		return day;
 	 }
 }
