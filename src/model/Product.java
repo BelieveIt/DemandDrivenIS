@@ -2,7 +2,10 @@ package model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+
+import utils.StringUtil;
 
 public class Product implements Serializable{
 	private static final long serialVersionUID = -4546717255351419498L;
@@ -16,6 +19,9 @@ public class Product implements Serializable{
 	private String deliveryFrequency;
 	private String minInventory;
 	private Date productCreateTime;
+	private ArrayList<String>  additionalInformation;
+	@SuppressWarnings("unused")
+	private String  additionalInformationString;
 	public String getName() {
 		return name;
 	}
@@ -76,4 +82,19 @@ public class Product implements Serializable{
 	public void setProductCreateTime(Date productCreateTime) {
 		this.productCreateTime = productCreateTime;
 	}
+	public ArrayList<String> getAdditionalInformation() {
+		return additionalInformation;
+	}
+	public void setAdditionalInformation(ArrayList<String> additionalInformation) {
+		this.additionalInformation = additionalInformation;
+	}
+	public String getAdditionalInformationString() {
+		return StringUtil.getStringByList(additionalInformation);
+	}
+	public void setAdditionalInformationString(
+			String additionalInformationString) {
+		this.additionalInformationString = additionalInformationString;
+	}
+
+
 }

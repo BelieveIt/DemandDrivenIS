@@ -27,15 +27,16 @@ xmlns:p="http://primefaces.org/ui">
     			value="Add" styleClass="right-content-header-button" icon="ui-icon-plus" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
 				<p:commandButton actionListener="#{franchiserCategory.openDeleteCategory}" update="messages :deleteCategoryForm"
 				value="Delete" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
-    			<p:commandButton actionListener="#{franchiserCategory.openRenameCategory}" update="messages :renameCategoryForm"
-				value="Rename" styleClass="right-content-header-button" icon="ui-icon-pencil" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
-
+    			<p:commandButton action="#{franchiserCategory.openEditCategory}" update="messages :editCategoryForm"
+				value="Edit" styleClass="right-content-header-button" icon="ui-icon-pencil" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
+    			<p:commandButton actionListener="#{franchiserCategory.openManageProductType}" update="messages :manageProductTypeForm"
+				value="ManageProductType" styleClass="right-content-header-button" icon="ui-icon-pencil" />
 				<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
 
 				<!-- Expand/Collapse -->
-				<p:commandButton actionListener="#{franchiserCategory.expandAllTree}" update=":treeForm"
+				<p:commandButton rendered="#{franchiserCategory.isExpanded eq false}" actionListener="#{franchiserCategory.expandAllTree}" update=":treeForm :buttonForm"
 				value="Expand All" styleClass="right-content-header-button" icon="ui-icon-plusthick" />
-				<p:commandButton actionListener="#{franchiserCategory.collapseAllTree}" update=":treeForm"
+				<p:commandButton rendered="#{franchiserCategory.isExpanded eq true}" actionListener="#{franchiserCategory.collapseAllTree}" update=":treeForm :buttonForm"
 				value="Collapse All" styleClass="right-content-header-button" icon="ui-icon-minusthick" />
 
 				<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
@@ -59,7 +60,13 @@ xmlns:p="http://primefaces.org/ui">
 		             <f:selectItems value="#{franchiserCategory.versionIdList}" var="version"
                     itemLabel="#{version}" itemValue="#{version}" />
 		        </p:selectOneMenu>
-
+		        
+		        <span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
+		        <!-- Search -->
+		        <p:inputText id="search" value="#{franchiserCategory.searchValue}" style="width:50px;margin-top:1px;" styleClass="right-content-header-button"/>
+		        <p:commandButton actionListener="#{franchiserCategory.searchCategory}" update=":treeForm"
+				value="Search" styleClass="right-content-header-button" icon="ui-icon-search" process="@this,search"/>
+				
     			</div>
     			</div>
     			</h:form>
@@ -82,7 +89,7 @@ xmlns:p="http://primefaces.org/ui">
 				<p:blockUI
 				block=":rightContentLayout"
 				trigger=":buttonForm:orderSelect :buttonForm:versionSelect
-				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :renameCategoryForm:renameCategoryButton">
+				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :editCategoryForm:editCategoryButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>

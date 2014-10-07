@@ -106,7 +106,7 @@ public class RegionCategory implements Serializable{
 
 	public void initRootNodeByVersionId(String versionId){
 		rootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
-		CategoryUtil.expandAllTree(rootNode);
+		rootNode.setExpanded(true);
 		selectedNode = null;
 		selectedNodeName = null;
 
@@ -115,7 +115,7 @@ public class RegionCategory implements Serializable{
 
 	public void initNewestRootNodeByVersionId(String versionId){
 		newestRootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
-		CategoryUtil.expandAllTree(newestRootNode);
+		newestRootNode.setExpanded(true);
 	}
 
 	//Update to Retrieved Newest Version

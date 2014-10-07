@@ -41,11 +41,11 @@ xmlns:p="http://primefaces.org/ui">
 				</p:panel>
 
     			<!-- Products List -->
-				<p:panel styleClass="floatLeft width78 divStyle">
+				<p:panel styleClass="floatLeft width80 divStyle">
 				<h:form id="tableForm">
 
-					<p:dataTable id="dataTable" var="item" value="#{monitor.storeSellingItems}" scrollable="true" scrollHeight="250"
-				                         filteredValue="#{monitor.filteredItems}"  selection="#{monitor.selectedItems}"
+					<p:dataTable id="dataTable" var="item" value="#{analysisOfRegion.storeSellingItems}" scrollable="true" scrollHeight="250"
+				                         filteredValue="#{analysisOfRegion.filteredItems}"  selection="#{analysisOfRegion.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" >
 		    			<f:facet name="header" >
@@ -65,9 +65,9 @@ xmlns:p="http://primefaces.org/ui">
  					    <!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:70px;height:40px">
- 			             <p:commandButton action="#{monitor.openViewProduct}" update=":viewProductForm :messagesForm:messages"
-			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
-			                <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
+ 			             <p:commandButton action="#{analysisOfRegion.viewProductAnalysis}" update=":analysisChartsForm"
+			             value="Analysis" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{analysisOfRegion.selectedItem}" />
 			             </p:commandButton>
 			            </div>
 			            </p:column>
@@ -101,25 +101,6 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.currentInventory}" />
 				            <p:watermark for="@(.Inventory)" value="Inventory" />
 				        </p:column>
-
-						<!-- Stock-out -->
-			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{monitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
-			              icon="ui-icon-plus" value="Virtual Sales For Stock-out">
-			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
-			             </p:commandButton>
-
-			             <p:commandButton rendered="#{item.currentInventory ne 0}"
-			              icon="ui-icon-plus" value="Virtual Sales For Stock-out" disabled="true" />
-			            </p:column>
-
-						<!-- Waste -->
-			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
-			              icon="ui-icon-plus" value="Waste Record">
-			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
-			             </p:commandButton>
-			            </p:column>
 				    </p:dataTable>
 				</h:form>
 				</p:panel>

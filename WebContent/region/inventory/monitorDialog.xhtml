@@ -176,8 +176,16 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputText value="Inventory: " style="float:left;font-weight:bold;margin-right:3px"/>
 				<h:outputText value="#{monitor.selectedItem.currentInventory}" style="float:left;margin-right:20px"/>
 				<p:separator styleClass="forizontalSeparator"/>
-
+				<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+				<h:outputLabel for="volume" value="Waste Volume:" />
 				<p:inputText id="volume" value="#{monitor.wasteVolume}" required="true" />
+				
+				<h:outputLabel for="wasteReason" value="Waste Reason:" />
+		        <p:selectOneMenu id="wasteReason" value="#{monitor.wasteReasonId}">
+					<f:selectItems value="#{wasteReasonSelect.reasonsMap.entrySet()}" var="reason"
+					                    itemLabel="#{reason.value}" itemValue="#{reason.key}" />
+		        </p:selectOneMenu>
+		        </h:panelGrid>
 				<p:commandButton action="#{monitor.addWasteRecord}" process="@form" update=":tableForm :messagesForm:messages"
 				 icon="ui-icon-plus" value="Add Waste Record"/>
 	        </p:panel>

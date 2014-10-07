@@ -8,6 +8,7 @@ import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.PieChartModel;
 
 
 public class ChartUtil {
@@ -33,10 +34,26 @@ public static LineChartModel generateLineChartModel(String chartTitle, String xL
     lineChartModel.setTitle(chartTitle);
     lineChartModel.setLegendPosition("e");
     lineChartModel.setShowPointLabels(true);
+    lineChartModel.setAnimate(true);
     lineChartModel.getAxes().put(AxisType.X, new CategoryAxis(xLabel));
     Axis yAxis  = lineChartModel.getAxis(AxisType.Y);
     yAxis.setLabel(yLabel);
     yAxis.setMin(0);
     return lineChartModel;
+}
+
+public static PieChartModel generatePieChartModel(String title, LinkedHashMap<String, Integer> dataMap){
+	 PieChartModel pieModel = new PieChartModel();
+     
+     Iterator<String> iterator = dataMap.keySet().iterator();
+     while(iterator.hasNext()){
+    	 String keyString = iterator.next();
+    	 pieModel.set(keyString, dataMap.get(keyString));
+     }
+      
+     pieModel.setTitle(title);
+     pieModel.setLegendPosition("e");
+     
+     return pieModel;
 }
 }

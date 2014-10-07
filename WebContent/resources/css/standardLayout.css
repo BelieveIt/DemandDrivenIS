@@ -58,7 +58,7 @@
 #rightContentPanel{
 	border:0px;
 	margin:0px auto;
-	width:97%;
+	width:99%;
 	text-align:center;
 }
 .right-content-header{
@@ -69,11 +69,11 @@
 	font-weight:bold;
 }
 .right-content-header-buttons-panel{
-	width:95%;
+	width:100%;
 	height:40px;
 	margin:0px auto;
 	border:0px;
-	padding:3px;
+	padding:2px;
 }
 .right-content-header-button, .right-content-header-label, .right-content-header-select{
 	float:left;
@@ -150,6 +150,12 @@ width:20%;
 }
 .width78{
 width:78%;
+}
+.width80{
+width:80%;
+}
+.width85{
+width:85%;
 }
 .leftTree{
 width:100%;

@@ -159,6 +159,7 @@ public class Monitor implements Serializable{
 	        		+ " (ProductId:" + selectedItem.getProductId() + ")");
 	        weekdayAverSalesModel.setLegendPosition("e");
 	        weekdayAverSalesModel.setShowPointLabels(true);
+	        weekdayAverSalesModel.setAnimate(true);
 	        weekdayAverSalesModel.getAxes().put(AxisType.X, new CategoryAxis("Weekday"));
 	        Axis yAxis  = weekdayAverSalesModel.getAxis(AxisType.Y);
 	        yAxis.setLabel("Sales Volume");
@@ -343,6 +344,14 @@ public class Monitor implements Serializable{
 
 	public void setWasteVolume(Integer wasteVolume) {
 		this.wasteVolume = wasteVolume;
+	}
+
+	public String getWasteReasonId() {
+		return wasteReasonId;
+	}
+
+	public void setWasteReasonId(String wasteReasonId) {
+		this.wasteReasonId = wasteReasonId;
 	}
 
 }

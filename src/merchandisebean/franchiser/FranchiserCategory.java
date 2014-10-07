@@ -14,12 +14,15 @@ import javax.faces.event.ActionEvent;
 
 import merchandise.utils.CategoryDefaultTreeNode;
 import merchandise.utils.CategoryUtil;
+import merchandise.utils.FranchiserCategoryInit;
 import merchandise.utils.ProductUtil;
 import model.BasicList;
 import model.BasicListCategory;
 import model.BasicListItem;
 import model.Category;
+import model.ProductType;
 
+import oracle.net.aso.i;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
@@ -31,6 +34,7 @@ import utils.IdentityUtil;
 import dao.BasicListCategoryDao;
 import dao.BasicListDao;
 import dao.BasicListItemDao;
+import dao.ProductTypeDao;
 
 @ManagedBean(name="franchiserCategory")
 @ViewScoped
@@ -40,25 +44,42 @@ public class FranchiserCategory implements Serializable{
 	private BasicListDao basicListDao;
 	private BasicListCategoryDao categoryDao;
 	private BasicListItemDao basicListItemDao;
-
+	private ProductTypeDao productTypeDao;
+	
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 	private String selectedNodeName;
 	private TreeNode selectedNodeTreeRoot;
 
+	private BasicListCategory selectedCategory;
+	
+	private boolean isExpanded;
+	
+	private String searchValue;
+	
 	private String categoryName;
 	private String currentVersion;
 	private String order;
 	private List<String> versionIdList;
 
+	private List<ProductType> productTypes;
+	private ProductType selectedProductType;
+	private String newProductTypeName;
+	private String attributeName;
+	private String selectedAttributeName;
+	private String oldAttributeName;
 	@PostConstruct
     public void init() {
 		basicListDao = new BasicListDao();
 		categoryDao = new BasicListCategoryDao();
 		basicListItemDao = new BasicListItemDao();
+		productTypeDao = new ProductTypeDao();
 		order = CategoryUtil.ORDER_BY_NAME;
 		initIfHeadNull();
 		initByVersionId("head");
+		isExpanded = true;
+		
+		productTypes = productTypeDao.queryProductTypes();
     }
 
 	private void initIfHeadNull(){
@@ -72,10 +93,24 @@ public class FranchiserCategory implements Serializable{
 			basicListCategory.setVersionId("head");
 			categoryDao.insertCategory(basicListCategory);
 		}
+		if(categories.size() == 0 || categories.size() == 1){
+			RequestContext.getCurrentInstance().execute("PF('initCategory').show();");
+		}
+	}
+	
+	public void initByPreparedCategories(){
+		FranchiserCategoryInit.initCategory();
+		initByVersionId("head");
+		RequestContext.getCurrentInstance().execute("PF('initCategory').hide();");
+	}
+	public void initWithoutPreparedCategories(){
+		RequestContext.getCurrentInstance().execute("PF('initCategory').hide();");
 	}
 	private void initByVersionId(String versionId){
 		rootNode= getCurrentTree(order, versionId);
-		CategoryUtil.expandAllTree(rootNode);
+		rootNode.setExpanded(true);
+		
+		
 		selectedNode = null;
 		selectedNodeName = null;
 
@@ -90,6 +125,21 @@ public class FranchiserCategory implements Serializable{
 		}
 
 	}
+	
+	public void searchCategory(){
+		List<TreeNode> allNodes = CategoryUtil.getListFromTree(rootNode);
+		CategoryUtil.collapseAllTree(rootNode);
+		for(TreeNode treeNode : allNodes){
+			treeNode.setSelected(false);
+		}
+		for(TreeNode treeNode : allNodes){
+			if( ((Category) treeNode.getData()).getCategoryName().toLowerCase().startsWith(searchValue.toLowerCase())){
+				CategoryUtil.expandCertainTree(treeNode);
+				treeNode.setSelected(true);
+			}
+		}
+	}
+	
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
     }
@@ -137,7 +187,6 @@ public class FranchiserCategory implements Serializable{
 		Category selectedCategory = (Category) selectedNode.getData();
 		selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
 		RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
-
 	}
 
 	//Delete Category
@@ -173,27 +222,106 @@ public class FranchiserCategory implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('deleteCategory').hide();");
 	}
 
-	//Rename Category
-	public void openRenameCategory(ActionEvent actionEvent){
+	//Edit Category
+	public void openEditCategory(){
 		if(selectedNode == null){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Catecory Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
 		}
-		RequestContext.getCurrentInstance().execute("PF('renameCategory').show();");
+		selectedCategory = (BasicListCategory) selectedNode.getData();
+		RequestContext.getCurrentInstance().execute("PF('editCategory').show();");
 	}
 
-	public void renameCategory(){
-		Category selectedCategory = (Category) selectedNode.getData();
+	public void editCategory(){
 		categoryDao.updateCategory((BasicListCategory)selectedCategory);
-		RequestContext.getCurrentInstance().execute("PF('renameCategory').hide();");
-	}
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		
+		for(Category category : categories){
+			category.setProductTypeId(selectedCategory.getProductTypeId());
+			categoryDao.updateCategory((BasicListCategory)category);
+		}
 
+		RequestContext.getCurrentInstance().execute("PF('editCategory').hide();");
+	}
+	
+	//Manage Product Type
+	public void openManageProductType(ActionEvent actionEvent){
+		productTypes = productTypeDao.queryProductTypes();
+		RequestContext.getCurrentInstance().execute("PF('manageProductType').show();");
+	}
+	
+	public void viewProductType(){
+	}
+	
+	//Add Product Type
+	public void openAddProductType(){
+		newProductTypeName = null;
+		RequestContext.getCurrentInstance().execute("PF('addProductType').show();");
+	}
+	
+	public void addProductType(){
+		ProductType productType = new ProductType();
+		productType.setProductTypeId(IdentityUtil.randomUUID());
+		productType.setProductTypeName(newProductTypeName);
+		productTypeDao.insertProductType(productType);
+		productTypes.add(productType);
+		RequestContext.getCurrentInstance().execute("PF('addProductType').hide();");
+	}
+	
+	//Add Attribute
+	public void openAddAttribute(ActionEvent actionEvent){
+		attributeName = null;
+		RequestContext.getCurrentInstance().execute("PF('addAttribute').show();");
+	}
+	
+	public void addAttribute(ActionEvent actionEvent){
+		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
+		if(attributes != null){
+			attributes.add(attributeName);
+		}else {
+			attributes = new ArrayList<String>();
+			attributes.add(attributeName);
+		}
+		
+		selectedProductType.setAdditionalInformationLable(attributes);
+		productTypeDao.updateProductType(selectedProductType);
+		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
+	}
+	
+	public void deleteAttribute(){
+		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
+		attributes.remove(selectedAttributeName);
+		selectedProductType.setAdditionalInformationLable(attributes);
+		productTypeDao.updateProductType(selectedProductType);
+	}
+	
+	public void openEditAttribute(){
+		oldAttributeName = selectedAttributeName;
+		RequestContext.getCurrentInstance().execute("PF('editAttribute').show();");
+	}
+	
+	public void editAttribute(){
+		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
+		for(int index = 0; index < attributes.size(); index++){
+			if(attributes.get(index).equals(oldAttributeName)){
+				attributes.set(index, selectedAttributeName);
+			}
+		}
+		selectedProductType.setAdditionalInformationLable(attributes);
+		productTypeDao.updateProductType(selectedProductType);
+		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
+	}
+	
+	
+	
 	public void expandAllTree(){
 		CategoryUtil.expandAllTree(rootNode);
+		isExpanded = true;
 	}
 	public void collapseAllTree(){
 		CategoryUtil.collapseAllTree(rootNode);
+		isExpanded = false;
 	}
 
 	public void changeOrder(){
@@ -310,6 +438,82 @@ public class FranchiserCategory implements Serializable{
 
 	public void setVersionIdList(List<String> versionIdList) {
 		this.versionIdList = versionIdList;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public boolean getIsExpanded() {
+		return isExpanded;
+	}
+
+	public void setIsExpanded(boolean isExpanded) {
+		this.isExpanded = isExpanded;
+	}
+
+	public void setSelectedNodeTreeRoot(TreeNode selectedNodeTreeRoot) {
+		this.selectedNodeTreeRoot = selectedNodeTreeRoot;
+	}
+
+	public List<ProductType> getProductTypes() {
+		return productTypes;
+	}
+
+	public void setProductTypes(List<ProductType> productTypes) {
+		this.productTypes = productTypes;
+	}
+
+	public ProductType getSelectedProductType() {
+		return selectedProductType;
+	}
+
+	public void setSelectedProductType(ProductType selectedProductType) {
+		this.selectedProductType = selectedProductType;
+	}
+
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+	}
+
+	public String getSelectedAttributeName() {
+		return selectedAttributeName;
+	}
+
+	public void setSelectedAttributeName(String selectedAttributeName) {
+		this.selectedAttributeName = selectedAttributeName;
+	}
+
+	public String getOldAttributeName() {
+		return oldAttributeName;
+	}
+
+	public void setOldAttributeName(String oldAttributeName) {
+		this.oldAttributeName = oldAttributeName;
+	}
+
+	public String getNewProductTypeName() {
+		return newProductTypeName;
+	}
+
+	public void setNewProductTypeName(String newProductTypeName) {
+		this.newProductTypeName = newProductTypeName;
+	}
+
+	public BasicListCategory getSelectedCategory() {
+		return selectedCategory;
+	}
+
+	public void setSelectedCategory(BasicListCategory selectedCategory) {
+		this.selectedCategory = selectedCategory;
 	}
 
 

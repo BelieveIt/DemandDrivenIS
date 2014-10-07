@@ -80,7 +80,7 @@ public class RegionProduct implements Serializable{
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
 		if(rootNode !=null){
-			CategoryUtil.expandAllTree(rootNode);
+			if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
 			rootNode.getChildren().get(0).setSelected(true);
 			selectedNode = rootNode.getChildren().get(0);
 

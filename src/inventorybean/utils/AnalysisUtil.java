@@ -1,12 +1,20 @@
 package inventorybean.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
@@ -81,6 +89,32 @@ public class AnalysisUtil {
 		wasteRecordsMap = wasteRecordDao.queryWasteRecords();
 	}
 
+	public LinkedHashMap<String, String> queryYearsOfStores(String storeId){
+		ArrayList<SalesRecord> allRecordsOfStore = salesRecordsMap.get(storeId);
+		ArrayList<String> years = new ArrayList<String>();
+		if(allRecordsOfStore != null){
+			for(SalesRecord salesRecord : allRecordsOfStore){
+				int year = DateUtil.getYearOfDate(salesRecord.getCreateTime());
+				String yearString = Integer.toString(year);
+				if(!years.contains(yearString))years.add(yearString);
+			}
+		}
+		
+		Collections.sort(years, new Comparator<String>() {
+	        @Override
+	        public int compare(String  str1, String  str2)
+	        {
+	        	return  str1.compareTo(str2);
+	        }
+	    });
+		
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		for(String year : years){
+			map.put(year, year);
+		}
+		return map;
+	}
+	
 	public ArrayList<SalesRecord> querySalesRecords(String storeId, String productId){
 		ArrayList<SalesRecord> allRecordsOfStore = salesRecordsMap.get(storeId);
 		ArrayList<SalesRecord> records = new ArrayList<SalesRecord>();
@@ -123,7 +157,9 @@ public class AnalysisUtil {
 		LinkedHashMap<Integer, Integer> weekdaySumMap = new LinkedHashMap<Integer, Integer>();
 		LinkedHashMap<Integer, Integer> weekdaySumDaysMap = new LinkedHashMap<Integer, Integer>();
 
-		List<SalesRecord> limitedSalesRecords = getRecordsByLimit(date1, date2, salesRecordsMapForForecast.get(storeId), productId);
+		ArrayList<SalesRecord> salesRecordsForecast =  salesRecordsMapForForecast.get(storeId);
+		if(salesRecordsForecast == null) salesRecordsForecast = new ArrayList<SalesRecord>();
+		List<SalesRecord> limitedSalesRecords = getRecordsByLimit(date1, date2, salesRecordsForecast, productId);
 		weekdayAverMap.put(Calendar.SUNDAY, new Double(1));
 		weekdayAverMap.put(Calendar.MONDAY, new Double(1));
 		weekdayAverMap.put(Calendar.TUESDAY, new Double(1));
@@ -201,20 +237,185 @@ public class AnalysisUtil {
 		return list;
 	}
 
-
+//Return data of one category's items
 	public LinkedHashMap<String, Double> getSalesTrendDataByYear(List<StoreSellingItem> items, String storeId, String currentYear){
 		LinkedHashMap<String, Double> chartDataMap = new LinkedHashMap<String, Double>();
 		initChartDataMap(chartDataMap);
 		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		LinkedHashMap<String, StoreSellingItem> productHashMap = new LinkedHashMap<String, StoreSellingItem>();
+		for(StoreSellingItem sellingItem : items){
+			productHashMap.put(sellingItem.getProductId(), sellingItem);
+		}
 		
+		for(SalesRecord record : records){
+			if(productHashMap.containsKey(record.getProductId())){
+				int year = DateUtil.getYearOfDate(record.getCreateTime());
+				int month = DateUtil.getMonthOfDate(record.getCreateTime());
+				BigDecimal salesValue = productHashMap.get(record.getProductId()).getRegionListItem().getProduct().getPrice().multiply(new BigDecimal(record.getSalesNumber()));
+				Double salesValueDouble = salesValue.doubleValue();
+				if(Integer.toString(year).equals(currentYear)){
+					Double currentValue = chartDataMap.get(DateUtil.month[month-1]);
+					chartDataMap.put(DateUtil.month[month-1], currentValue + salesValueDouble);
+				}
+			}
+		}
 		return chartDataMap;
 	}
-	private void initChartDataMap(LinkedHashMap<String, Double> chartDataMap){
-		for(int i = 0; i <= 11; i++){
-			chartDataMap.put(DateUtil.month[0], new Double(0));
+//Return data for one product analysis
+	public LinkedHashMap<String, Double> getForecastSalesDataForYear(String storeId, String productId){
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		TreeMap<String, Double> chartDataMap = new TreeMap<String, Double>();
+		for(SalesRecord record : records){
+			if(record.getProductId().equals(productId)){
+				int year = DateUtil.getYearOfDate(record.getCreateTime());
+				String yearString = Integer.toString(year);
+				if(chartDataMap.containsKey(yearString)){
+					Double currentNum = chartDataMap.get(yearString);
+					chartDataMap.put(yearString, currentNum + record.getSalesNumber());
+				}else {
+					chartDataMap.put(yearString, new Double(0) + record.getSalesNumber());
+				}
+			}
+		}	
+		return new LinkedHashMap<String, Double>(chartDataMap);
+	}
+	
+	public LinkedHashMap<String, Double> getForecastSalesDataForMonth(String storeId, String productId, String currentYear){
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		LinkedHashMap<String, Double> chartDataMap = new LinkedHashMap<String, Double>();
+		initChartDataMap(chartDataMap);
+		for(SalesRecord record : records){
+			if(record.getProductId().equals(productId)){
+				int year = DateUtil.getYearOfDate(record.getCreateTime());
+				int month = DateUtil.getMonthOfDate(record.getCreateTime());
+				if(Integer.toString(year).equals(currentYear)){
+					Double currentValue = chartDataMap.get(DateUtil.month[month-1]);
+					chartDataMap.put(DateUtil.month[month-1], currentValue + record.getSalesNumber());
+				}
+			}
+		}	
+		return chartDataMap;
+	}
+	public LinkedHashMap<String, Double> getForecastSalesDataForMonthForForecast(String storeId, String productId){
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		TreeMap<String, Double> chartDataMap = new TreeMap<String, Double>();
+		ArrayList<String> lastTwelveDate = DateUtil.getLastYearAndMonthList(new Date(),6);
+		for(int i = 0; i <= 6; i++){
+			chartDataMap.put(lastTwelveDate.get(i), new Double(0));
 		}
+
+		for(SalesRecord record : records){
+			if(record.getProductId().equals(productId)){
+				String yearAndMonthString = DateUtil.getYearAndMonth(record.getCreateTime());
+				if(lastTwelveDate.contains(yearAndMonthString)){
+					if(chartDataMap.containsKey(yearAndMonthString)){
+						Double currentValue = chartDataMap.get(yearAndMonthString);
+						chartDataMap.put(yearAndMonthString, currentValue + record.getSalesNumber());
+					}else {
+						chartDataMap.put(yearAndMonthString, new Double(0) + record.getSalesNumber());
+					}
+				}
+			}
+		}	
+		return new LinkedHashMap<String, Double>(chartDataMap);
+	}	
+	
+	
+//Return number of one category's items
+	public Integer getSalesShareDataByYear(List<StoreSellingItem> items, String storeId, String currentYear){
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		LinkedHashMap<String, StoreSellingItem> productHashMap = new LinkedHashMap<String, StoreSellingItem>();
+		for(StoreSellingItem sellingItem : items){
+			productHashMap.put(sellingItem.getProductId(), sellingItem);
+		}
+		
+		Integer number = 0;
+		for(SalesRecord record : records){
+			int year = DateUtil.getYearOfDate(record.getCreateTime());
+			if(Integer.toString(year).equals(currentYear)){
+				if(productHashMap.containsKey(record.getProductId())){
+					number = number + record.getSalesNumber();
+				}
+			}
+		}
+		return number;
 	}
 
+	public LinkedHashMap<StoreSellingItem, Integer> getSalesLowingMoveDataByYear(List<StoreSellingItem> items, String storeId, String currentYear, Integer number){
+		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
+		LinkedHashMap<String, StoreSellingItem> productHashMap = new LinkedHashMap<String, StoreSellingItem>();
+		for(StoreSellingItem sellingItem : items){
+			productHashMap.put(sellingItem.getProductId(), sellingItem);
+		}
+		
+		HashMap<String, Integer> salesSumById = new HashMap<String, Integer>();
+		
+		for(SalesRecord record : records){
+			if(productHashMap.containsKey(record.getProductId())){
+				int year = DateUtil.getYearOfDate(record.getCreateTime());
+				if(Integer.toString(year).equals(currentYear)){
+					if(salesSumById.containsKey(record.getProductId())){
+						Integer currentSalesVolume = salesSumById.get(record.getProductId());
+						salesSumById.put(record.getProductId(), currentSalesVolume + record.getSalesNumber());
+					}else {
+						salesSumById.put(record.getProductId(), record.getSalesNumber());
+					}
+				}
+
+			}
+		}	
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		ValueComparator comparator =  new ValueComparator(salesSumById);
+		@SuppressWarnings("unchecked")
+		TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(comparator);
+		sorted_map.putAll(salesSumById);
+
+		Iterator<String> iterator = sorted_map.keySet().iterator();
+		LinkedHashMap<StoreSellingItem, Integer> lowMovingList = new LinkedHashMap<StoreSellingItem, Integer>();
+		int index = 0;
+		while(iterator.hasNext()){
+			String id = iterator.next();
+			lowMovingList.put(productHashMap.get(id), sorted_map.get(id));
+			index++;
+			if(index >= number){
+				break;
+			}
+		}
+		return lowMovingList;
+	}
+	
+
+	
+	
+	@SuppressWarnings("rawtypes")
+	static class ValueComparator<K, V extends Comparable> implements Comparator<K> {
+		  
+		  private final Map<K,V> map;
+		  public ValueComparator(Map<K,V> map) {
+		  this.map = map;
+		  }
+		  
+		  public int compare(K key1, K key2) {
+		   V v1 = this.map.get(key1);
+		   V v2 = this.map.get(key2);
+		   @SuppressWarnings("unchecked")
+		   int c = v1.compareTo(v2);
+		   if (c != 0) {
+		    return c;
+		   }
+		   Integer hashCode1 = key1.hashCode();
+		   Integer hashCode2 = key2.hashCode();
+		   return hashCode1.compareTo(hashCode2);
+		  }
+		 }
+	private void initChartDataMap(LinkedHashMap<String, Double> chartDataMap){
+		for(int i = 0; i <= 11; i++){
+			chartDataMap.put(DateUtil.month[i], new Double(0));
+		}
+	}
+	
+
+	
 	public HashMap<String, ArrayList<StockOutVirtualSales>> getVirtualSalesRecordsMap() {
 		return virtualSalesRecordsMap;
 	}

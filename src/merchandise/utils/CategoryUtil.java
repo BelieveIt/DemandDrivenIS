@@ -98,6 +98,16 @@ public static void expandAllTree(TreeNode rootNode){
 	}
 }
 
+public static void expandCertainTree(TreeNode node){
+	List<TreeNode> fathers = new ArrayList<TreeNode>();
+	while(node.getParent() != null){
+		fathers.add(node.getParent());
+		node = node.getParent();
+	}
+	for(TreeNode n : fathers){
+		n.setExpanded(true);
+}
+}
 public static void collapseAllTree(TreeNode rootNode){
 	List<TreeNode> treeNodes = getListFromTree(rootNode);
 	for(TreeNode node : treeNodes){
@@ -196,7 +206,7 @@ public static void getCategoriesByTreeOrder(List<Category> categories, TreeNode 
 }
 
 //Get All Tree Node in Tree
-private static List<TreeNode> getListFromTree(TreeNode rootNode){
+public static List<TreeNode> getListFromTree(TreeNode rootNode){
 	List<TreeNode> list = new ArrayList<TreeNode>();
 	visitNode(rootNode, list);
 	return list;

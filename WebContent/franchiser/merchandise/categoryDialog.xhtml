@@ -10,6 +10,22 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
 	    <ui:composition>
+	    	<!-- Init -->
+			<h:form id="initCategoryForm">
+			<p:dialog header="Init Category" widgetVar="initCategory" width="650">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel styleClass="floatLeft" for="categoryName" value="Dear user, your categories repository is empty. Please select initialization method." />
+		            <f:facet name="footer">
+		                <p:commandButton actionListener="#{franchiserCategory.initByPreparedCategories}" update=":treeForm"
+		                value="Init With General Categories(Recommended)" />
+		                
+		                <p:commandButton actionListener="#{franchiserCategory.initWithoutPreparedCategories}" update=":treeForm"
+		                value="Init Without Data" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+			
 			<!-- Add -->
 			<h:form id="addCategoryForm">
 			<p:dialog header="Add Category" widgetVar="addCategory" width="450">
@@ -41,15 +57,140 @@ xmlns:p="http://primefaces.org/ui">
 			</p:dialog>
 			</h:form>
 
-			<!-- Rename -->
-			<h:form id="renameCategoryForm">
-			<p:dialog header="Rename Category" widgetVar="renameCategory" width="450">
+			<!-- Edit -->
+			<h:form id="editCategoryForm">
+			<p:dialog header="Edit Category" widgetVar="editCategory" width="450">
 			    <h:panelGrid columns="2" cellpadding="5">
-		            <h:outputLabel for="categoryName" value="Category Name:" />
-		            <p:inputText id="categoryName" value="#{franchiserCategory.selectedNodeName}" required="true" label="categoryName" />
+		            <h:outputLabel for="categoryName" value="Category Name:" styleClass="right-content-header-label"/>
+		            <p:inputText id="categoryName" value="#{franchiserCategory.selectedCategory.categoryName}" required="true" label="categoryName" />
+		            
+					<p:outputLabel for="versionSelect"
+					value="Product Type:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="versionSelect" value="#{franchiserCategory.selectedCategory.productTypeId}"
+			        styleClass="right-content-header-select">
+			             <f:selectItems value="#{franchiserCategory.productTypes}" var="item"
+	                    itemLabel="#{item.productTypeName}" itemValue="#{item.productTypeId}" />
+			        </p:selectOneMenu>		   
+			                 
+		            <h:outputLabel for="categoryDescription" value="Category Description:" styleClass="right-content-header-label"/>
+		            <p:inputTextarea rows="3" cols="20"
+		            id="categoryDescription" value="#{franchiserCategory.selectedCategory.description}" label="categoryDescription" />
+
 		            <f:facet name="footer">
-		                <p:commandButton actionListener="#{franchiserCategory.renameCategory}" update=":treeForm"
-		                id="renameCategoryButton" value="Rename" />
+		                <p:commandButton actionListener="#{franchiserCategory.editCategory}" update=":treeForm"
+		                id="editCategoryButton" value="Confirm" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+			
+			<!-- Product Type -->
+			<h:form id="manageProductTypeForm">
+			<p:dialog header="Manage Product Type" widgetVar="manageProductType" width="950">
+				<p:panel id="manageProductTypePanel" styleClass="autoHeightPanel divStyle">
+	    			<div class="ui-datatable-header ui-widget-header ui-corner-top" style="float:left;width:360px;margin-right:20px;">
+	    			<span class="right-content-header-text">Product Type List</span>
+		    			<div class="right-content-header-buttons-panel">
+						<p:commandButton actionListener="#{franchiserCategory.openAddProductType}" update=":addProductTypeForm"
+						value="Add" icon="ui-icon-plus" style="display:block">
+						</p:commandButton>
+						</div>
+						<p:dataTable id="ProductTypesDataTable" var="item" value="#{franchiserCategory.productTypes}"
+						rowKey="#{item.productTypeId}" scrollable="true" >		    			
+					        <p:column headerText="Type Name" styleClass="noPadding" id="TypeName">
+					            <h:outputText value="#{item.productTypeName}"/>
+					        </p:column>
+					        
+						    <p:column styleClass="noPadding" id="VersionStatus">
+						        <p:commandButton action="#{franchiserCategory.viewProductType}" update=":manageProductTypeForm:productTypeDetail"
+								value="View" styleClass="right-content-header-button" icon="ui-icon-search">
+								<f:setPropertyActionListener value="#{item}" target="#{franchiserCategory.selectedProductType}" />
+							 	</p:commandButton>
+					        </p:column>
+					    </p:dataTable>
+					</div>
+					<p:panel id="productTypeDetail" header="Product Type Attrbutes - #{franchiserCategory.selectedProductType.productTypeName}" style="float:left;width:480px;margin-right:20px;">
+						<p:panel id="productTypeBasicInfo" header="Basic Attrbutes" style="float:left;width:40%;" styleClass="autoHeightPanel divStyle">
+						<p:panelGrid columns="1" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		            		<h:outputLabel value="Name" />
+				            <h:outputLabel value="Brand" />
+				            <h:outputLabel value="Weight" />
+				            <h:outputLabel value="Manufacturer" />
+				            <h:outputLabel value="Price" />
+				            <h:outputLabel value="Unit" />
+				            <h:outputLabel value="MinInventory" />
+							<h:outputLabel value="Delivery Frequency" />
+					        <h:outputLabel value="Product Image" />				
+	        			</p:panelGrid>
+	        			</p:panel>
+						<p:panel id="productTypeAdditionalInfo" header="Addtional Attrbutes" style="float:left;width:55%;margin-left:10px;" styleClass="autoHeightPanel divStyle">
+
+							<table class="ui-panelgrid ui-widget text-align-left">
+					    		<ui:repeat var="item" value="#{franchiserCategory.selectedProductType.additionalInformationLable}">
+					    			  <tr class="ui-widget-content">
+						    			<td class="ui-panelgrid-cell label">
+						    				<h:outputText value="#{item}"/>
+						    			</td>
+						    			<td class="ui-panelgrid-cell label">
+						    				<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" action="#{franchiserCategory.deleteAttribute}" update=":manageProductTypeForm:productTypeDetail"
+											icon="ui-icon-trash" style="display:block">
+											<f:setPropertyActionListener value="#{item}" target="#{franchiserCategory.selectedAttributeName}" />
+										 	</p:commandButton>
+						    				<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" action="#{franchiserCategory.openEditAttribute}" update=":editAttributeForm"
+											icon="ui-icon-pencil" style="display:block">
+											<f:setPropertyActionListener value="#{item}" target="#{franchiserCategory.selectedAttributeName}" />
+										 	</p:commandButton>
+						    			</td>
+						    		  </tr>
+					    		</ui:repeat>
+				    		</table>		
+						<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" 
+						actionListener="#{franchiserCategory.openAddAttribute}" update=":addAttributeForm"
+						value="Add Attribute" icon="ui-icon-plus" style="display:block">
+						</p:commandButton>
+	        			</p:panel>
+					</p:panel>
+				</p:panel>
+			</p:dialog>
+			</h:form>
+			
+			<!-- Add ProductType -->
+			<h:form id="addProductTypeForm">
+			<p:dialog header="Add Product Type" widgetVar="addProductType" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel for="productTypeName" value="Product Type Name:" />
+		            <p:inputText id="productTypeName" value="#{franchiserCategory.newProductTypeName}" required="true" label="productTypeName" />
+		            <f:facet name="footer">
+		                <p:commandButton action="#{franchiserCategory.addProductType}" update=":manageProductTypeForm:manageProductTypePanel"
+		                id="productTypeButton" value="Add" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+						
+			<!-- Add Attribute -->
+			<h:form id="addAttributeForm">
+			<p:dialog header="Add Attribute" widgetVar="addAttribute" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel for="attributeName" value="Attribute Name:" />
+		            <p:inputText id="attributeName" value="#{franchiserCategory.attributeName}" required="true" label="attributeName" />
+		            <f:facet name="footer">
+		                <p:commandButton actionListener="#{franchiserCategory.addAttribute}" update=":manageProductTypeForm:productTypeDetail :addAttributeForm"
+		                id="addAttributeButton" value="Add" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+			
+			<!-- Edit Attribute -->
+			<h:form id="editAttributeForm">
+			<p:dialog header="Edit Attribute" widgetVar="editAttribute" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel for="attributeName" value="Attribute Name:" />
+		            <p:inputText id="attributeName" value="#{franchiserCategory.selectedAttributeName}" required="true" label="attributeName" />
+		            <f:facet name="footer">
+		                <p:commandButton actionListener="#{franchiserCategory.editAttribute}" update=":manageProductTypeForm:productTypeDetail :editAttributeForm"
+		                id="editAttributeButton" value="Edit" />
 		            </f:facet>
 		        </h:panelGrid>
 			</p:dialog>

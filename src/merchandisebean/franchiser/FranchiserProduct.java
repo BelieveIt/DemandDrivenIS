@@ -3,6 +3,7 @@ package merchandisebean.franchiser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import merchandise.utils.AdditionalInfoItem;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.ProductUtil;
 import model.BasicList;
@@ -19,6 +21,7 @@ import model.BasicListCategory;
 import model.BasicListItem;
 import model.Category;
 import model.Product;
+import model.ProductType;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -31,6 +34,7 @@ import utils.IdentityUtil;
 import dao.BasicListCategoryDao;
 import dao.BasicListDao;
 import dao.BasicListItemDao;
+import dao.ProductTypeDao;
 
 @ManagedBean(name="franchiserProduct")
 @ViewScoped
@@ -40,7 +44,8 @@ public class FranchiserProduct implements Serializable{
 	private BasicListCategoryDao categoryDao;
 	private BasicListItemDao basicListItemDao;
 	private BasicListDao basicListDao;
-
+	private ProductTypeDao productTypeDao;
+	
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 
@@ -51,6 +56,7 @@ public class FranchiserProduct implements Serializable{
 
 	private String currentVersion;
 	private Product newProduct;
+	private List<AdditionalInfoItem> newProductAdditionalInfos;
 	private List<String> versionIdList;
 
 	private TreeNode selectedNodeForMove;
@@ -60,6 +66,7 @@ public class FranchiserProduct implements Serializable{
 		categoryDao = new BasicListCategoryDao();
 		basicListItemDao = new BasicListItemDao();
 		basicListDao = new BasicListDao();
+		productTypeDao = new ProductTypeDao();
 		currentVersion = "head";
 
 		initBasicListItemsByVersionId(currentVersion);
@@ -68,7 +75,7 @@ public class FranchiserProduct implements Serializable{
 	public void initBasicListItemsByVersionId(String versionId){
 		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId);
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
-		CategoryUtil.expandAllTree(rootNode);
+		if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
 		rootNode.getChildren().get(0).setSelected(true);
 		selectedNode = rootNode.getChildren().get(0);
 
@@ -105,6 +112,19 @@ public class FranchiserProduct implements Serializable{
 	        return;
 		}
 		newProduct = new Product();
+		newProductAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> newProductAdditionalInfoLabels = new ArrayList<String>();
+		Category category = (Category) selectedNode.getData();
+		ProductType categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+		if(categoryProductType != null){
+			newProductAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(String itemString : newProductAdditionalInfoLabels){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(itemString);
+				additionalInfoItem.setValue("");
+				newProductAdditionalInfos.add(additionalInfoItem);
+			}
+		}
 		RequestContext.getCurrentInstance().execute("PF('addProduct').show();");
 	}
 	public void addProduct(ActionEvent actionEvent){
@@ -113,8 +133,15 @@ public class FranchiserProduct implements Serializable{
 		basicListItem.setCategoryId(category.getCategoryId());
 		basicListItem.setProductId(IdentityUtil.randomUUID());
 		basicListItem.setVersionId(currentVersion);
-		basicListItem.setProduct(newProduct);
+		
 		newProduct.setProductCreateTime(new Date());
+		ArrayList<String> additionInfos = new ArrayList<String>();
+		for(AdditionalInfoItem item : newProductAdditionalInfos){
+			additionInfos.add(item.getValue());
+		}
+		newProduct.setAdditionalInformation(additionInfos);
+		
+		basicListItem.setProduct(newProduct);
 		basicListItemDao.insertProduct(basicListItem);
 		basicListItems.add(basicListItem);
 		RequestContext.getCurrentInstance().execute("PF('addProduct').hide();");
@@ -310,4 +337,14 @@ public class FranchiserProduct implements Serializable{
 	public void setSelectedNodeForMove(TreeNode selectedNodeForMove) {
 		this.selectedNodeForMove = selectedNodeForMove;
 	}
+
+	public List<AdditionalInfoItem> getNewProductAdditionalInfos() {
+		return newProductAdditionalInfos;
+	}
+
+	public void setNewProductAdditionalInfos(
+			List<AdditionalInfoItem> newProductAdditionalInfos) {
+		this.newProductAdditionalInfos = newProductAdditionalInfos;
+	}
+
 }

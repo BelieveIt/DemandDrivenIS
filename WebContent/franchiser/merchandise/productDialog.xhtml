@@ -47,6 +47,14 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
+			            
+			            <ui:repeat var="item" value="#{franchiserProduct.newProductAdditionalInfos}">
+			            <tr>
+			            <td><h:outputLabel value="#{item.label}:" /></td>
+			            <td><p:inputText value="#{item.value}" required="true" /></td>
+			            </tr>
+			            </ui:repeat>
+			            
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
 			                id="addProductButton" value="Add" />

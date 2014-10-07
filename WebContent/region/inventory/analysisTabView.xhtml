@@ -11,22 +11,132 @@ xmlns:p="http://primefaces.org/ui">
     <h:body>
 	    <ui:composition>
 			<h:form id="analysisChartsForm">
-			<p:tabView rendered="#{analysisOfRegion.analysisType eq 'CATEGORY_INCLUDE_CATEGORY'}">
+			<p:tabView rendered="#{analysisOfRegion.analysisType eq 'CATEGORY_INCLUDE_CATEGORY'}" dynamic="true" cache="false">
 	     		<p:tab title="Sales Share of Categories">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Year:" />
+				        <p:selectOneMenu  value="#{analysisOfRegion.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{analysisOfRegion.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{analysisOfRegion.salesShareForCategoryIncludeCategory!=null}" type="pie" 
+			     		model="#{analysisOfRegion.salesShareForCategoryIncludeCategory}" style="width:800px;height:350px" />
+		     		</p:panel>
 	     		</p:tab>
 	     		<p:tab title="Sales Trend of Categories">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{analysisOfRegion.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{analysisOfRegion.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{analysisOfRegion.salesTrendForCategoryIncludeCategory!=null}" type="line" 
+			     		model="#{analysisOfRegion.salesTrendForCategoryIncludeCategory}" style="width:800px;height:350px" />
+		     		</p:panel>
 	     		</p:tab>
 	     		<p:tab title="Low-moving List in the Category">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+	     				<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{analysisOfRegion.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{analysisOfRegion.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				        
+				        <h:outputLabel value="Number Showed:" />
+				        <p:selectOneMenu value="#{analysisOfRegion.currentNum}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshLowMovingForCategoryIncludeCategory}"/>
+							 <f:selectItem itemLabel="10" itemValue="10" />
+							 <f:selectItem itemLabel="30" itemValue="30" />
+							 <f:selectItem itemLabel="50" itemValue="50" />
+				        </p:selectOneMenu>
+				    </p:panel>
+   					<p:dataTable id="dataTableForLowMoving" var="item" value="#{analysisOfRegion.salesLowMovingForCategory}"
+                       scrollable="true" style="width:550px;">
+				        <p:column headerText="Product Id" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.productId}" />
+				        </p:column>
+	
+				        <p:column headerText="Product Name" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.product.name}" />
+				        </p:column>
+	
+				        <p:column headerText="Sales Volume" styleClass="noPadding">
+				            <h:outputText value="#{item.salesVolume}" />
+				        </p:column>
+			    	</p:dataTable>
 	     		</p:tab>
      		</p:tabView>
 
      		<p:tabView rendered="#{analysisOfRegion.analysisType eq 'CATEGORY_INCLUDE_PRODUCT'}">
 	     		<p:tab title="Low-moving List in the Category">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+	     				<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{analysisOfRegion.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshLowMovingListForCategoryIncludeProduct}"/>
+							<f:selectItems value="#{analysisOfRegion.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				        
+				        <h:outputLabel value="Number Showed:" />
+				        <p:selectOneMenu value="#{analysisOfRegion.currentNum}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshLowMovingListForCategoryIncludeProduct}"/>
+							 <f:selectItem itemLabel="10" itemValue="10" />
+							 <f:selectItem itemLabel="30" itemValue="30" />
+							 <f:selectItem itemLabel="50" itemValue="50" />
+				        </p:selectOneMenu>				        
+				    </p:panel>
+   					<p:dataTable id="dataTableForLowMoving" var="item" value="#{analysisOfRegion.salesLowMovingForCategory}"
+                       scrollable="true" style="width:550px;">
+				        <p:column headerText="Product Id" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.productId}" />
+				        </p:column>
+	
+				        <p:column headerText="Product Name" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.product.name}" />
+				        </p:column>
+	
+				        <p:column headerText="Sales Volume" styleClass="noPadding">
+				            <h:outputText value="#{item.salesVolume}" />
+				        </p:column>
+			    	</p:dataTable>
 	     		</p:tab>
      		</p:tabView>
 
 			<p:tabView rendered="#{analysisOfRegion.analysisType eq 'PRODUCT'}">
 				<p:tab title="Sales Volume Trend of Product">
+					<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Mode:"/>
+				        <p:selectOneMenu  value="#{analysisOfRegion.productAnalysisType}">
+				        	 <p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshSalesVolumeTrendForProduct}"/>
+							 <f:selectItem itemLabel="For Months" itemValue="forMonth" />
+							 <f:selectItem itemLabel="For Years" itemValue="forYear" />
+				        </p:selectOneMenu>
+					
+			     		<h:outputLabel  value="Select Year:" 
+			     		rendered="#{analysisOfRegion.productAnalysisType eq 'forMonth' and analysisOfRegion.isForecast eq false}" />
+				        <p:selectOneMenu  value="#{analysisOfRegion.currentYear}" 
+				        rendered="#{analysisOfRegion.productAnalysisType eq 'forMonth' and analysisOfRegion.isForecast eq false}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{analysisOfRegion.refreshSalesVolumeTrendForProduct}"/>
+							<f:selectItems value="#{analysisOfRegion.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				        				        
+				        <h:outputText value="Forecast: " />
+				        <p:inputSwitch value="#{analysisOfRegion.isForecast}">
+				           <p:ajax listener="#{analysisOfRegion.refreshSalesVolumeTrendForProductSwitchForecast}" update=":analysisChartsForm" />
+				        </p:inputSwitch>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{analysisOfRegion.salesTrendForCategoryIncludeProduct!=null}" type="line" 
+			     		model="#{analysisOfRegion.salesTrendForCategoryIncludeProduct}" style="width:1100px;height:350px" />
+		     		</p:panel>
 	     		</p:tab>
      		</p:tabView>
 

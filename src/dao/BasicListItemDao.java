@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import utils.DaoUtil;
+import utils.StringUtil;
 
 public class BasicListItemDao implements Serializable{
 	private static final long serialVersionUID = 7250936813405061101L;
@@ -53,6 +54,7 @@ public class BasicListItemDao implements Serializable{
 		parameters.put("DELIVERY_FREQUENCY", product.getDeliveryFrequency());
 		parameters.put("MIN_INVENTORY", product.getMinInventory());
 		parameters.put("PRODUCT_CREATE_TIME", product.getProductCreateTime());
+		parameters.put("ADDITIONAL_INFORMATION", StringUtil.getStringByList(product.getAdditionalInformation()));
 		simpleJdbcInsert.execute(parameters);
 	}
 	public int deleteAll(){
@@ -74,7 +76,7 @@ public class BasicListItemDao implements Serializable{
 				"MANUFACTURER = :product.manufacturer, IMAGE = :product.image, " +
 				"PRICE = :product.price, UNIT = :product.unit, " +
 				"DELIVERY_FREQUENCY = :product.deliveryFrequency, MIN_INVENTORY = :product.minInventory, " +
-				"PRODUCT_CREATE_TIME = :product.productCreateTime " +
+				"PRODUCT_CREATE_TIME = :product.productCreateTime, ADDITIONAL_INFORMATION = :product.additionalInformationString" +
 				"where PRODUCT_ID = :productId and VERSION_ID = :versionId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(basicListItem);
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
@@ -96,7 +98,7 @@ public class BasicListItemDao implements Serializable{
 	    	product.setDeliveryFrequency(rs.getString("DELIVERY_FREQUENCY"));
 	    	product.setMinInventory(rs.getString("MIN_INVENTORY"));
 	    	product.setProductCreateTime(rs.getTimestamp("PRODUCT_CREATE_TIME"));
-	    	
+	    	product.setAdditionalInformation(StringUtil.getStringsBySplit(rs.getString("ADDITIONAL_INFORMATION")));
 	    	basicListItem.setProduct(product);
 	        return basicListItem;
 	    }

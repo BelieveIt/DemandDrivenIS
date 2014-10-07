@@ -115,7 +115,12 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Waste -->
 			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			              icon="ui-icon-plus" value="Waste Record" disabled="true">
+			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}"/>
+			             </p:commandButton>
+			             
+			             <p:commandButton rendered="#{item.currentInventory ne 0}" action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Waste Record">
 			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
 			             </p:commandButton>

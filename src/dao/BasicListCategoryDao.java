@@ -47,6 +47,21 @@ public class BasicListCategoryDao implements Serializable{
 		parameters.put("CREATE_TIME", basicListCategory.getCreateTime());
 		simpleJdbcInsert.execute(parameters);
 	}
+	
+	public void insertCategories(List<BasicListCategory> basicListCategories){
+		for(BasicListCategory basicListCategory : basicListCategories){
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("CATEGORY_ID", basicListCategory.getCategoryId());
+			parameters.put("VERSION_ID", basicListCategory.getVersionId());
+			parameters.put("CATEGORY_FATHERID", basicListCategory.getCategoryFatherId());
+			parameters.put("CATEGORY_NAME", basicListCategory.getCategoryName());
+			parameters.put("CREATE_TIME", basicListCategory.getCreateTime());
+			parameters.put("PRODUCT_TYPE_ID", basicListCategory.getProductTypeId());
+			parameters.put("DESCRIPTION", basicListCategory.getDescription());
+			simpleJdbcInsert.execute(parameters);
+		}
+
+	}
 	public int deleteAll(){
 		String sql = "delete from BASIC_LIST_CATEGORIES";
 		return jdbcTemplate.update(sql);
@@ -61,7 +76,8 @@ public class BasicListCategoryDao implements Serializable{
 
 	public int updateCategory(BasicListCategory basicListCategory){
 		String sql = "update BASIC_LIST_CATEGORIES set " +
-				"CATEGORY_FATHERID = :categoryFatherId, CATEGORY_NAME = :categoryName " +
+				"CATEGORY_FATHERID = :categoryFatherId, CATEGORY_NAME = :categoryName, " +
+				"PRODUCT_TYPE_ID = :productTypeId, DESCRIPTION = :description " +
 				"where CATEGORY_ID = :categoryId and VERSION_ID = :versionId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(basicListCategory);
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
@@ -74,6 +90,8 @@ public class BasicListCategoryDao implements Serializable{
 	    	basicListCategory.setCategoryFatherId(rs.getString("CATEGORY_FATHERID"));
 	    	basicListCategory.setCategoryName(rs.getString("CATEGORY_NAME"));
 	    	basicListCategory.setCreateTime(rs.getTimestamp("CREATE_TIME"));
+	    	basicListCategory.setProductTypeId(rs.getString("PRODUCT_TYPE_ID"));
+	    	basicListCategory.setDescription(rs.getString("DESCRIPTION"));
 	        return basicListCategory;
 	    }
 	}

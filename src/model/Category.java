@@ -7,6 +7,18 @@ public class Category implements Comparable<Category>{
 	private String categoryFatherId;
 	private String categoryName;
 	private Date createTime;
+	private String productTypeId;
+	private String description;
+	public Category(){}
+	public Category(String categoryId, String categoryFatherId,
+			String categoryName, Date createTime) {
+		super();
+		this.categoryId = categoryId;
+		this.categoryFatherId = categoryFatherId;
+		this.categoryName = categoryName;
+		this.createTime = createTime;
+	}
+
 	public String getCategoryId() {
 		return categoryId;
 	}
@@ -34,5 +46,17 @@ public class Category implements Comparable<Category>{
 	}
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	public String getProductTypeId() {
+		return productTypeId;
+	}
+	public void setProductTypeId(String productTypeId) {
+		this.productTypeId = productTypeId;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
