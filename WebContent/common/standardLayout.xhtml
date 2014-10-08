@@ -10,12 +10,18 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
     <h:outputStylesheet name="standardLayout.css" library="css" />
+   	<h:outputStylesheet name="introjs.css" library="css" />
+    <h:outputScript name="intro.js" library="js"/>
 	<p:layout id="pageLayout" fullPage="true">
 	    <p:layoutUnit position="north" size="70">
 	    <p:graphicImage library="img" name="logo.png" />
-		<ui:insert name="headerContent" >
-	    </ui:insert>
 	    <ui:include src="lanSelect.xhtml" />
+		<ui:insert name="headerContent" >
+				<h:form id="headerForm" style="float:right;">
+				<p:commandButton type="button" value="How To Use"  icon="ui-icon-help" style="margin-top:10px;float:right;"
+				onclick="introJs().start();" />
+				</h:form>
+	    </ui:insert>  
 	    </p:layoutUnit>
 
 	    <p:layoutUnit position="south" size="50" >

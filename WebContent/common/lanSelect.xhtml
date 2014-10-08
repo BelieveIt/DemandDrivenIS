@@ -8,7 +8,7 @@ xmlns:p="http://primefaces.org/ui">
 	    <ui:composition>
 			<h:form style="float:right;padding:6px;margin-right:25px;">
 			<p:outputLabel id="lanSelectLabel" for="lanSelect" value="#{lanManager.getText('language')}: " style="font-weight:bold;font-size:16px;padding:6px;"/>
-			<p:selectOneMenu id="lanSelect" value="#{lanManager.selectedLanguage}" >
+			<p:selectOneMenu id="lanSelect" value="#{lanManager.selectedLanguage}"  >
 			    <p:ajax update="lanSelect" oncomplete="window.location.replace(window.location.href);"/>
 			            <f:selectItems value="#{lanManager.supportedLanguages}" var="lan"
 			            itemLabel="#{lan.languageLabel}" itemValue="#{lan.languageCode}" />

@@ -83,8 +83,6 @@ public class FranchiserProduct implements Serializable{
 			selectedNode = rootNode.getChildren().get(0);
 		}
 
-
-
         List<BasicListItem> list = basicListItemDao.queryProductsByVersionId(currentVersion);
         basicListItems = ProductUtil.generateBasicListItemsBySelectedNode(list, selectedNode);
         selectedBasicListItem = null;

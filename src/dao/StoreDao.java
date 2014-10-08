@@ -11,6 +11,7 @@ import model.RegionListItem;
 import model.Store;
 import model.StoreSellingItem;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -22,11 +23,17 @@ import utils.DaoUtil;
 
 public class StoreDao implements Serializable{
 private static final long serialVersionUID = 6078373053365007678L;
+private JdbcTemplate jdbcTemplate;
 private SimpleJdbcInsert simpleJdbcInsert;
 private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+private SimpleJdbcInsert simpleJdbcInsertForRelaStoreProduct;
 public StoreDao(){
+	jdbcTemplate = new JdbcTemplate(DaoUtil.getDataSource());
 	simpleJdbcInsert = new SimpleJdbcInsert(DaoUtil.getDataSource())
 	.withTableName("STORE");
+	
+	simpleJdbcInsertForRelaStoreProduct = new SimpleJdbcInsert(DaoUtil.getDataSource())
+	.withTableName("RELA_STORE_PRODUCT");
 	namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(DaoUtil.getDataSource());
 }
 
@@ -48,6 +55,17 @@ public Store queryStoreById(String storeId){
 	return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new StoreMapper());
 }
 
+public void insertStoreSellingItemForStore(String storeId, String productId){
+	Map<String, Object> parameters = new HashMap<String, Object>();
+	parameters.put("STORE_ID", storeId);
+	parameters.put("PRODUCT_ID", productId);
+	parameters.put("CURRENT_INVENTORY", 0);
+	simpleJdbcInsertForRelaStoreProduct.execute(parameters);
+}
+public int deleteAllStoreSellingItemForStore(){
+	String sql = "delete from RELA_STORE_PRODUCT";
+	return jdbcTemplate.update(sql);
+}
 public List<StoreSellingItem> queryStoreSellingItemsByStoreId(String storeId){
 	Store store = queryStoreById(storeId);
 

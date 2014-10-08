@@ -95,9 +95,15 @@ public class StoreAnalysis implements Serializable{
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", currentRegion.getRegionId());
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
 		if(rootNode !=null){
-			if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
-			rootNode.getChildren().get(0).setSelected(true);
-			selectedNode = rootNode.getChildren().get(0);
+			if(rootNode.getChildCount() > 1){
+				rootNode.getChildren().get(1).setExpanded(true);
+				rootNode.getChildren().get(1).setSelected(true);
+				selectedNode = rootNode.getChildren().get(1);
+			}else {
+				rootNode.getChildren().get(0).setSelected(true);
+				selectedNode = rootNode.getChildren().get(0);
+			}
+			
 		}
 		setItemsBySelectedNode();
 		initChartsForSelectedNode();

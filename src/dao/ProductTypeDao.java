@@ -60,7 +60,10 @@ public class ProductTypeDao {
 		.addValue("productTypeId", productType.getProductTypeId());
 		return namedParameterJdbcTemplate.update(sql, namedParameters);
 	}
-	
+	public int deleteAll(){
+		String sql = "delete from PRODUCT_TYPE";
+		return jdbcTemplate.update(sql);
+	}	
 	private static final class ProductTypeMapper implements RowMapper<ProductType> {
 	    public ProductType mapRow(ResultSet rs, int rowNum) throws SQLException {
 	    	ProductType productType = new ProductType();

@@ -14,19 +14,22 @@ xmlns:p="http://primefaces.org/ui">
 		<ul class="ui-menu-list ui-helper-reset">
 		<li class="ui-widget-header ui-corner-all"><h3>Merchandise Info Management</h3></li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/category.xhtml">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/category.xhtml"
+		data-step="1" data-intro="You can create/delete/edit Product Categories here. And you can also manage Product Type here.">
 		<span class="ui-menuitem-icon ui-icon ui-icon-folder-collapsed"></span>
 		<span class="ui-menuitem-text">Category Management</span>
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/product.xhtml">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/product.xhtml"
+		data-step="2" data-intro="You can create all the products here. Click a certain category, system will show the products which is in the certain category.">
 		<span class="ui-menuitem-icon ui-icon ui-icon-document"></span>
 		<span class="ui-menuitem-text">Product Management</span>
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all">
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/version.xhtml">
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/franchiser/merchandise/version.xhtml"
+		data-step="3" data-intro="After manage the categories and products, you can generate a new version. And the region can see the new version.">
 		<span class="ui-menuitem-icon ui-icon ui-icon-tag"></span>
 		<span class="ui-menuitem-text">Version Management</span>
 		</a>

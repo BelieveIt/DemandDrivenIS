@@ -48,6 +48,10 @@ private static final long serialVersionUID = -3409920921009654496L;
 		return map;
 	}
 
+	public int deleteAll(){
+		String sql = "delete from SALES_RECORD";
+		return jdbcTemplate.update(sql);
+	}
 
 	public void insertProduct(SalesRecord salesRecord){
 		Map<String, Object> parameters = new HashMap<String, Object>();

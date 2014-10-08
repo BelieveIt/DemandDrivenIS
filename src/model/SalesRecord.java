@@ -9,6 +9,17 @@ private String storeId;
 private String productId;
 private Integer salesNumber;
 private Date createTime;
+public SalesRecord(){}
+
+public SalesRecord(String storeId, String productId, Integer salesNumber,
+		Date createTime) {
+	super();
+	this.storeId = storeId;
+	this.productId = productId;
+	this.salesNumber = salesNumber;
+	this.createTime = createTime;
+}
+
 public String getStoreId() {
 	return storeId;
 }

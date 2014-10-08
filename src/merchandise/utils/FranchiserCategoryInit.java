@@ -1,16 +1,17 @@
 package merchandise.utils;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-
-import javax.persistence.Basic;
 
 import dao.BasicListCategoryDao;
 import dao.BasicListItemDao;
 import dao.ProductTypeDao;
+import dao.StoreDao;
 
 import utils.IdentityUtil;
 import utils.StringUtil;
@@ -173,10 +174,11 @@ public class FranchiserCategoryInit {
 		basicListCategoryDao.insertCategories(basicListCategories);
 
 		//Init two example products
+		////Cold Drinks
 		BasicListItem icedCoffee = new BasicListItem();
 		icedCoffee.setCategoryId(cate2_2.getCategoryId());
 		icedCoffee.setVersionId("head");
-		icedCoffee.setProductId(IdentityUtil.randomUUID());
+		icedCoffee.setProductId("OdkRj84jt1");
 		Product icedCoffeeProduct = new Product();
 
 		ArrayList<String> attributesForCoffee = new ArrayList<String>();
@@ -199,11 +201,12 @@ public class FranchiserCategoryInit {
 
 		icedCoffeeProduct.setUnit("g");
 		icedCoffee.setProduct(icedCoffeeProduct);
-
+		
+		////From the Fridge
 		BasicListItem cocaCola = new BasicListItem();
-		cocaCola.setCategoryId(cate2_2.getCategoryId());
+		cocaCola.setCategoryId(cate2_3.getCategoryId());
 		cocaCola.setVersionId("head");
-		cocaCola.setProductId(IdentityUtil.randomUUID());
+		cocaCola.setProductId("OdkRj84jt2");
 		Product cocaColaProduct = new Product();
 
 		ArrayList<String> attributesForCoca = new ArrayList<String>();
@@ -226,8 +229,73 @@ public class FranchiserCategoryInit {
 		cocaColaProduct.setUnit("g");
 		cocaCola.setProduct(cocaColaProduct);
 
+		////Hot Drink
+		BasicListItem hotCoffee = new BasicListItem();
+		hotCoffee.setCategoryId(cate2_1.getCategoryId());
+		hotCoffee.setVersionId("head");
+		hotCoffee.setProductId("OdkRj84jt3");
+		Product hotCoffeeProduct = new Product();
+
+		ArrayList<String> attributesForHotCoffee = new ArrayList<String>();
+		attributesForHotCoffee.add("Cup");
+		attributesForHotCoffee.add("Normal temperature");
+		attributesForHotCoffee.add("Drink immediately");
+		hotCoffeeProduct.setAdditionalInformation(attributesForHotCoffee);
+
+		hotCoffeeProduct.setBrand("Hot Coffee");
+		hotCoffeeProduct.setDeliveryFrequency(ProductUtil.EVERYDAY);
+		hotCoffeeProduct.setImage("hotCoffee.jpg");
+		hotCoffeeProduct.setItemWeight(300);
+		hotCoffeeProduct.setManufacturer("Nestle");
+		hotCoffeeProduct.setMinInventory("10");
+		hotCoffeeProduct.setName("Hot Coffee");
+		hotCoffeeProduct.setPrice(new BigDecimal("3.5"));
+
+		hotCoffeeProduct.setProductCreateTime(createTime);
+
+		hotCoffeeProduct.setUnit("g");
+		hotCoffee.setProduct(hotCoffeeProduct);
+
+		////Only at Ours
+		BasicListItem freshOrgangeJuice = new BasicListItem();
+		freshOrgangeJuice.setCategoryId(cate2_4.getCategoryId());
+		freshOrgangeJuice.setVersionId("head");
+		freshOrgangeJuice.setProductId("OdkRj84jt4");
+		Product freshOrgangeJuiceProduct = new Product();
+
+		ArrayList<String> attributesForFreshOrgangeJuice = new ArrayList<String>();
+		attributesForFreshOrgangeJuice.add("Cup");
+		attributesForFreshOrgangeJuice.add("Normal temperature");
+		attributesForFreshOrgangeJuice.add("Drink immediately");
+		freshOrgangeJuiceProduct.setAdditionalInformation(attributesForFreshOrgangeJuice);
+
+		freshOrgangeJuiceProduct.setBrand("Fresh Organge Juice");
+		freshOrgangeJuiceProduct.setDeliveryFrequency(ProductUtil.EVERYDAY);
+		freshOrgangeJuiceProduct.setImage("freshOrangeJuice.jpg");
+		freshOrgangeJuiceProduct.setItemWeight(300);
+		freshOrgangeJuiceProduct.setManufacturer("Our Factory");
+		freshOrgangeJuiceProduct.setMinInventory("10");
+		freshOrgangeJuiceProduct.setName("Fresh Organge Juice");
+		freshOrgangeJuiceProduct.setPrice(new BigDecimal("5.5"));
+
+		freshOrgangeJuiceProduct.setProductCreateTime(createTime);
+
+		freshOrgangeJuiceProduct.setUnit("g");
+		freshOrgangeJuice.setProduct(freshOrgangeJuiceProduct);
+		
 		BasicListItemDao basicListItemDao = new BasicListItemDao();
 		basicListItemDao.insertProduct(cocaCola);
 		basicListItemDao.insertProduct(icedCoffee);
+		basicListItemDao.insertProduct(hotCoffee);
+		basicListItemDao.insertProduct(freshOrgangeJuice);
+		
+		StoreDao storeDao = new StoreDao();
+		storeDao.insertStoreSellingItemForStore("1", cocaCola.getProductId());
+		storeDao.insertStoreSellingItemForStore("1", icedCoffee.getProductId());
+		storeDao.insertStoreSellingItemForStore("1", hotCoffee.getProductId());
+		storeDao.insertStoreSellingItemForStore("1", freshOrgangeJuice.getProductId());
+		
+		
+
 	}
 }

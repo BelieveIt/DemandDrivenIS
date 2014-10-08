@@ -87,9 +87,15 @@ public class RegionProduct implements Serializable{
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
 		if(rootNode !=null){
-			if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
-			rootNode.getChildren().get(0).setSelected(true);
-			selectedNode = rootNode.getChildren().get(0);
+			if(rootNode.getChildCount() > 1){
+				rootNode.getChildren().get(1).setExpanded(true);
+				rootNode.getChildren().get(1).setSelected(true);
+				selectedNode = rootNode.getChildren().get(1);
+			}else {
+				rootNode.getChildren().get(0).setSelected(true);
+				selectedNode = rootNode.getChildren().get(0);
+			}
+
 
 	        List<RegionListItem> list = regionListItemDao.queryProductsByVersionIdAndRegionId(currentRegionId, versionId);
 	        regionListItems = ProductUtil.generateRegionListItemsBySelectedNode(list, selectedNode, currentRegionId);
@@ -203,9 +209,14 @@ public class RegionProduct implements Serializable{
 	public void openViewProduct(){
 		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
 		List<String> productAdditionalInfoLabels = new ArrayList<String>();
-		Category category = (Category) selectedNode.getData();
-		System.out.println(category.getProductTypeId());
-		ProductType categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		ProductType categoryProductType = new ProductType();
+		for(Category category : categories){
+			if(category.getCategoryId().equals(selectedViewItem.getCategoryId())){
+				categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+				break;
+			}
+		}
 		if(categoryProductType != null){
 			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
 			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
