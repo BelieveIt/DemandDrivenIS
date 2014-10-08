@@ -1,6 +1,7 @@
 package merchandisebean.franchiser;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,18 +46,20 @@ public class FranchiserCategory implements Serializable{
 	private BasicListCategoryDao categoryDao;
 	private BasicListItemDao basicListItemDao;
 	private ProductTypeDao productTypeDao;
-	
+
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 	private String selectedNodeName;
 	private TreeNode selectedNodeTreeRoot;
 
 	private BasicListCategory selectedCategory;
-	
+
 	private boolean isExpanded;
-	
+
 	private String searchValue;
-	
+
+	private BasicListCategory newBasicListCategory;
+
 	private String categoryName;
 	private String currentVersion;
 	private String order;
@@ -78,7 +81,7 @@ public class FranchiserCategory implements Serializable{
 		initIfHeadNull();
 		initByVersionId("head");
 		isExpanded = true;
-		
+
 		productTypes = productTypeDao.queryProductTypes();
     }
 
@@ -97,9 +100,10 @@ public class FranchiserCategory implements Serializable{
 			RequestContext.getCurrentInstance().execute("PF('initCategory').show();");
 		}
 	}
-	
-	public void initByPreparedCategories(){
+
+	public void initByPreparedCategories() throws ParseException{
 		FranchiserCategoryInit.initCategory();
+		productTypes = productTypeDao.queryProductTypes();
 		initByVersionId("head");
 		RequestContext.getCurrentInstance().execute("PF('initCategory').hide();");
 	}
@@ -108,9 +112,9 @@ public class FranchiserCategory implements Serializable{
 	}
 	private void initByVersionId(String versionId){
 		rootNode= getCurrentTree(order, versionId);
-		rootNode.setExpanded(true);
-		
-		
+		if(rootNode!=null)rootNode.setExpanded(true);
+
+
 		selectedNode = null;
 		selectedNodeName = null;
 
@@ -125,7 +129,7 @@ public class FranchiserCategory implements Serializable{
 		}
 
 	}
-	
+
 	public void searchCategory(){
 		List<TreeNode> allNodes = CategoryUtil.getListFromTree(rootNode);
 		CategoryUtil.collapseAllTree(rootNode);
@@ -139,7 +143,7 @@ public class FranchiserCategory implements Serializable{
 			}
 		}
 	}
-	
+
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
     }
@@ -151,28 +155,26 @@ public class FranchiserCategory implements Serializable{
     }
 
 	//Add Category
-	public void openAddCategory(ActionEvent actionEvent){
+	public void openAddCategory(){
 		if(selectedNode == null){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Catecory Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
 		}
-		categoryName = null;
+		newBasicListCategory = new BasicListCategory();
 		RequestContext.getCurrentInstance().execute("PF('addCategory').show();");
 	}
 
-	public void addCategory(ActionEvent actionEvent){
-		BasicListCategory basicListCategory = new BasicListCategory();
+	public void addCategory(){
 		BasicListCategory parentCategory = (BasicListCategory) selectedNode.getData();
 
-		basicListCategory.setCategoryFatherId(parentCategory.getCategoryId());
-		basicListCategory.setCategoryName(categoryName);
-		basicListCategory.setVersionId(parentCategory.getVersionId());
-		basicListCategory.setCategoryId(IdentityUtil.randomUUID());
-		basicListCategory.setCreateTime(new Date());
+		newBasicListCategory.setCategoryFatherId(parentCategory.getCategoryId());
+		newBasicListCategory.setVersionId(parentCategory.getVersionId());
+		newBasicListCategory.setCategoryId(IdentityUtil.randomUUID());
+		newBasicListCategory.setCreateTime(new Date());
 
-		categoryDao.insertCategory(basicListCategory);
-		new CategoryDefaultTreeNode(basicListCategory, selectedNode);
+		categoryDao.insertCategory(newBasicListCategory);
+		new CategoryDefaultTreeNode(newBasicListCategory, selectedNode);
 
 //		ArrayList<String> expandIds = CategoryUtil.getExpendList(rootNode);
 //		Category selectedCategory = (Category) selectedNode.getData();
@@ -236,7 +238,7 @@ public class FranchiserCategory implements Serializable{
 	public void editCategory(){
 		categoryDao.updateCategory((BasicListCategory)selectedCategory);
 		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
-		
+
 		for(Category category : categories){
 			category.setProductTypeId(selectedCategory.getProductTypeId());
 			categoryDao.updateCategory((BasicListCategory)category);
@@ -244,22 +246,22 @@ public class FranchiserCategory implements Serializable{
 
 		RequestContext.getCurrentInstance().execute("PF('editCategory').hide();");
 	}
-	
+
 	//Manage Product Type
 	public void openManageProductType(ActionEvent actionEvent){
 		productTypes = productTypeDao.queryProductTypes();
 		RequestContext.getCurrentInstance().execute("PF('manageProductType').show();");
 	}
-	
+
 	public void viewProductType(){
 	}
-	
+
 	//Add Product Type
 	public void openAddProductType(){
 		newProductTypeName = null;
 		RequestContext.getCurrentInstance().execute("PF('addProductType').show();");
 	}
-	
+
 	public void addProductType(){
 		ProductType productType = new ProductType();
 		productType.setProductTypeId(IdentityUtil.randomUUID());
@@ -268,13 +270,13 @@ public class FranchiserCategory implements Serializable{
 		productTypes.add(productType);
 		RequestContext.getCurrentInstance().execute("PF('addProductType').hide();");
 	}
-	
+
 	//Add Attribute
 	public void openAddAttribute(ActionEvent actionEvent){
 		attributeName = null;
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').show();");
 	}
-	
+
 	public void addAttribute(ActionEvent actionEvent){
 		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
 		if(attributes != null){
@@ -283,24 +285,33 @@ public class FranchiserCategory implements Serializable{
 			attributes = new ArrayList<String>();
 			attributes.add(attributeName);
 		}
-		
+
 		selectedProductType.setAdditionalInformationLable(attributes);
 		productTypeDao.updateProductType(selectedProductType);
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
 	}
-	
+
+	public void openDeleteAttribute(){
+		RequestContext.getCurrentInstance().execute("PF('deleteAttribute').show();");
+	}
+
 	public void deleteAttribute(){
 		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
 		attributes.remove(selectedAttributeName);
 		selectedProductType.setAdditionalInformationLable(attributes);
 		productTypeDao.updateProductType(selectedProductType);
+		RequestContext.getCurrentInstance().execute("PF('deleteAttribute').hide();");
 	}
-	
+
+	public void deleteAttributeCancel(){
+		RequestContext.getCurrentInstance().execute("PF('deleteAttribute').hide();");
+	}
+
 	public void openEditAttribute(){
 		oldAttributeName = selectedAttributeName;
 		RequestContext.getCurrentInstance().execute("PF('editAttribute').show();");
 	}
-	
+
 	public void editAttribute(){
 		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
 		for(int index = 0; index < attributes.size(); index++){
@@ -312,9 +323,9 @@ public class FranchiserCategory implements Serializable{
 		productTypeDao.updateProductType(selectedProductType);
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
 	}
-	
-	
-	
+
+
+
 	public void expandAllTree(){
 		CategoryUtil.expandAllTree(rootNode);
 		isExpanded = true;
@@ -412,7 +423,7 @@ public class FranchiserCategory implements Serializable{
 		Category selectedCategoryParent = (Category) selectedNode.getParent().getData();
 		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
 		selectedNodeTreeRoot = CategoryUtil.generateTree(categories, order, selectedCategoryParent.getCategoryId());
-		CategoryUtil.expandAllTree(selectedNodeTreeRoot);
+		selectedNodeTreeRoot.setExpanded(true);
 		return selectedNodeTreeRoot;
 	}
 
@@ -514,6 +525,14 @@ public class FranchiserCategory implements Serializable{
 
 	public void setSelectedCategory(BasicListCategory selectedCategory) {
 		this.selectedCategory = selectedCategory;
+	}
+
+	public BasicListCategory getNewBasicListCategory() {
+		return newBasicListCategory;
+	}
+
+	public void setNewBasicListCategory(BasicListCategory newBasicListCategory) {
+		this.newBasicListCategory = newBasicListCategory;
 	}
 
 

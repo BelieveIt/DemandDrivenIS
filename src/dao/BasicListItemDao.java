@@ -76,7 +76,7 @@ public class BasicListItemDao implements Serializable{
 				"MANUFACTURER = :product.manufacturer, IMAGE = :product.image, " +
 				"PRICE = :product.price, UNIT = :product.unit, " +
 				"DELIVERY_FREQUENCY = :product.deliveryFrequency, MIN_INVENTORY = :product.minInventory, " +
-				"PRODUCT_CREATE_TIME = :product.productCreateTime, ADDITIONAL_INFORMATION = :product.additionalInformationString" +
+				"PRODUCT_CREATE_TIME = :product.productCreateTime, ADDITIONAL_INFORMATION = :product.additionalInformationString " +
 				"where PRODUCT_ID = :productId and VERSION_ID = :versionId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(basicListItem);
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);

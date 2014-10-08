@@ -13,9 +13,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import merchandise.utils.AdditionalInfoItem;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.ProductUtil;
+import model.AdditionalInfoItem;
 import model.BasicList;
 import model.BasicListCategory;
 import model.BasicListItem;
@@ -45,7 +45,7 @@ public class FranchiserProduct implements Serializable{
 	private BasicListItemDao basicListItemDao;
 	private BasicListDao basicListDao;
 	private ProductTypeDao productTypeDao;
-	
+
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 
@@ -56,7 +56,6 @@ public class FranchiserProduct implements Serializable{
 
 	private String currentVersion;
 	private Product newProduct;
-	private List<AdditionalInfoItem> newProductAdditionalInfos;
 	private List<String> versionIdList;
 
 	private TreeNode selectedNodeForMove;
@@ -75,9 +74,16 @@ public class FranchiserProduct implements Serializable{
 	public void initBasicListItemsByVersionId(String versionId){
 		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId);
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
-		if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
-		rootNode.getChildren().get(0).setSelected(true);
-		selectedNode = rootNode.getChildren().get(0);
+		if(rootNode.getChildCount() > 1){
+			rootNode.getChildren().get(1).setExpanded(true);
+			rootNode.getChildren().get(1).setSelected(true);
+			selectedNode = rootNode.getChildren().get(1);
+		}else {
+			rootNode.getChildren().get(0).setSelected(true);
+			selectedNode = rootNode.getChildren().get(0);
+		}
+
+
 
         List<BasicListItem> list = basicListItemDao.queryProductsByVersionId(currentVersion);
         basicListItems = ProductUtil.generateBasicListItemsBySelectedNode(list, selectedNode);
@@ -112,7 +118,7 @@ public class FranchiserProduct implements Serializable{
 	        return;
 		}
 		newProduct = new Product();
-		newProductAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		ArrayList<AdditionalInfoItem> newProductAdditionalInfos = new ArrayList<AdditionalInfoItem>();
 		List<String> newProductAdditionalInfoLabels = new ArrayList<String>();
 		Category category = (Category) selectedNode.getData();
 		ProductType categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
@@ -125,6 +131,7 @@ public class FranchiserProduct implements Serializable{
 				newProductAdditionalInfos.add(additionalInfoItem);
 			}
 		}
+		newProduct.setAdditionalInfoItems(newProductAdditionalInfos);
 		RequestContext.getCurrentInstance().execute("PF('addProduct').show();");
 	}
 	public void addProduct(ActionEvent actionEvent){
@@ -133,14 +140,14 @@ public class FranchiserProduct implements Serializable{
 		basicListItem.setCategoryId(category.getCategoryId());
 		basicListItem.setProductId(IdentityUtil.randomUUID());
 		basicListItem.setVersionId(currentVersion);
-		
+
 		newProduct.setProductCreateTime(new Date());
 		ArrayList<String> additionInfos = new ArrayList<String>();
-		for(AdditionalInfoItem item : newProductAdditionalInfos){
+		for(AdditionalInfoItem item : newProduct.getAdditionalInfoItems()){
 			additionInfos.add(item.getValue());
 		}
 		newProduct.setAdditionalInformation(additionInfos);
-		
+
 		basicListItem.setProduct(newProduct);
 		basicListItemDao.insertProduct(basicListItem);
 		basicListItems.add(basicListItem);
@@ -166,7 +173,29 @@ public class FranchiserProduct implements Serializable{
 	}
 
 	//Delete Product
-	public void openDeleteProduct(ActionEvent actionEvent){
+	public void openDeleteProduct(){
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		ProductType categoryProductType = new ProductType();
+		for(Category category : categories){
+			if(category.getCategoryId().equals(selectedBasicListItem.getCategoryId())){
+				categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+				break;
+			}
+		}
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedBasicListItem.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedBasicListItem.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedBasicListItem.setProduct(product);
 		RequestContext.getCurrentInstance().execute("PF('deleteProduct').show();");
 	}
 
@@ -177,15 +206,70 @@ public class FranchiserProduct implements Serializable{
 	}
 
 	//View Product
-	public void openViewProduct(ActionEvent actionEvent){
+	public void openViewProduct(){
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		ProductType categoryProductType = new ProductType();
+		for(Category category : categories){
+			if(category.getCategoryId().equals(selectedBasicListItem.getCategoryId())){
+				categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+				break;
+			}
+		}
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedBasicListItem.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedBasicListItem.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedBasicListItem.setProduct(product);
 		RequestContext.getCurrentInstance().execute("PF('viewProduct').show();");
 	}
 
 	//Edit Product
-	public void openEditProduct(ActionEvent actionEvent){
+	public void openEditProduct(){
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		ProductType categoryProductType = new ProductType();
+		for(Category category : categories){
+			if(category.getCategoryId().equals(selectedBasicListItem.getCategoryId())){
+				categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+				break;
+			}
+		}
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedBasicListItem.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedBasicListItem.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedBasicListItem.setProduct(product);
 		RequestContext.getCurrentInstance().execute("PF('editProduct').show();");
 	}
 	public void editProduct(ActionEvent actionEvent){
+		Product product = selectedBasicListItem.getProduct();
+		ArrayList<String> additionInfos = new ArrayList<String>();
+		if(product.getAdditionalInfoItems() != null){
+			for(AdditionalInfoItem item : product.getAdditionalInfoItems()){
+				additionInfos.add(item.getValue());
+			}
+		}
+
+		product.setAdditionalInformation(additionInfos);
+		selectedBasicListItem.setProduct(product);
+
 		basicListItemDao.updateProduct(selectedBasicListItem);
 		RequestContext.getCurrentInstance().execute("PF('editProduct').hide();");
 	}
@@ -336,15 +420,6 @@ public class FranchiserProduct implements Serializable{
 
 	public void setSelectedNodeForMove(TreeNode selectedNodeForMove) {
 		this.selectedNodeForMove = selectedNodeForMove;
-	}
-
-	public List<AdditionalInfoItem> getNewProductAdditionalInfos() {
-		return newProductAdditionalInfos;
-	}
-
-	public void setNewProductAdditionalInfos(
-			List<AdditionalInfoItem> newProductAdditionalInfos) {
-		this.newProductAdditionalInfos = newProductAdditionalInfos;
 	}
 
 }

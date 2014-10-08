@@ -16,39 +16,39 @@ xmlns:p="http://primefaces.org/ui">
 			<p:panel styleClass="divStyle autoHeightPanel floatLeft">
 			    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
 			            <h:outputLabel for="name" value="Name:" />
-		            <h:outputLabel id="name" value="#{monitor.selectedItem.regionListItem.product.name}"/>
+		            <h:outputLabel id="name" value="#{storeMonitor.selectedItem.regionListItem.product.name}"/>
 
 		            <h:outputLabel for="createTime" value="Create Time:" />
-		            <h:outputLabel id="createTime" value="#{monitor.selectedItem.regionListItem.product.productCreateTime}">
+		            <h:outputLabel id="createTime" value="#{storeMonitor.selectedItem.regionListItem.product.productCreateTime}">
 		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 		            </h:outputLabel>
 
 		            <h:outputLabel for="brand" value="Brand:" />
-		            <h:outputLabel id="brand" value="#{monitor.selectedItem.regionListItem.product.brand}" />
+		            <h:outputLabel id="brand" value="#{storeMonitor.selectedItem.regionListItem.product.brand}" />
 
 		            <h:outputLabel for="itemWeight" value="Weight:" />
-		            <h:outputLabel id="itemWeight" value="#{monitor.selectedItem.regionListItem.product.itemWeight}" />
+		            <h:outputLabel id="itemWeight" value="#{storeMonitor.selectedItem.regionListItem.product.itemWeight}" />
 
 		            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-		            <h:outputLabel id="manufacturer" value="#{monitor.selectedItem.regionListItem.product.manufacturer}" />
+		            <h:outputLabel id="manufacturer" value="#{storeMonitor.selectedItem.regionListItem.product.manufacturer}" />
 
 		            <h:outputLabel for="price" value="Price:" />
-		            <h:outputLabel id="price" value="#{monitor.selectedItem.regionListItem.product.price}" />
+		            <h:outputLabel id="price" value="#{storeMonitor.selectedItem.regionListItem.product.price}" />
 
 		            <h:outputLabel for="unit" value="Unit:" />
-		            <h:outputLabel id="unit" value="#{monitor.selectedItem.regionListItem.product.unit}" />
+		            <h:outputLabel id="unit" value="#{storeMonitor.selectedItem.regionListItem.product.unit}" />
 
 		            <h:outputLabel for="minInventory" value="MinInventory:" />
-		            <h:outputLabel id="minInventory" value="#{monitor.selectedItem.regionListItem.product.minInventory}" />
+		            <h:outputLabel id="minInventory" value="#{storeMonitor.selectedItem.regionListItem.product.minInventory}" />
 
 					<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
-			        <h:outputLabel id="deliveryFrequency" value="#{monitor.selectedItem.regionListItem.product.deliveryFrequency}" />
+			        <h:outputLabel id="deliveryFrequency" value="#{storeMonitor.selectedItem.regionListItem.product.deliveryFrequency}" />
 			        <h:outputLabel for="uploadedImg" value="Product Image:" />
 	  					<p:panel id="uploadedImg" styleClass="divStyle">
 	  					<p:lightBox styleClass="imagebox">
-	  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{monitor.selectedItem.regionListItem.product.image}" title="Nature 1">
-	  					<p:graphicImage library="uploadImg" name="#{monitor.selectedItem.regionListItem.product.image}"
-	  					width="100" height="60" rendered="#{not empty monitor.selectedItem.regionListItem.product.image}"/>
+	  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{storeMonitor.selectedItem.regionListItem.product.image}" title="Nature 1">
+	  					<p:graphicImage library="uploadImg" name="#{storeMonitor.selectedItem.regionListItem.product.image}"
+	  					width="100" height="60" rendered="#{not empty storeMonitor.selectedItem.regionListItem.product.image}"/>
 	  					</h:outputLink>
 	  					</p:lightBox>
 		            </p:panel>
@@ -57,7 +57,7 @@ xmlns:p="http://primefaces.org/ui">
 		     <p:panel styleClass="divStyle autoHeightPanel floatLeft">
 		     	<p:tabView>
 		     		<p:tab title="Sales Record">
-   							<p:dataTable id="dataTableForSales" var="item" value="#{monitor.selectedItemRecord.salesRecords}"
+   							<p:dataTable id="dataTableForSales" var="item" value="#{storeMonitor.selectedItemRecord.salesRecords}"
 	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 	                         rows="15" scrollable="true" style="width:550px;">
 
@@ -74,7 +74,7 @@ xmlns:p="http://primefaces.org/ui">
 					    	</p:dataTable>
 		     		</p:tab>
 		     		<p:tab title="Stock-Out Virtual Sales Record">
-		     			   	<p:dataTable id="dataTableForVirtualSales" var="item" value="#{monitor.selectedItemRecord.stockOutVirtualSalesRecords}"
+		     			   	<p:dataTable id="dataTableForVirtualSales" var="item" value="#{storeMonitor.selectedItemRecord.stockOutVirtualSalesRecords}"
 	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 	                         rows="15" scrollable="true" style="width:550px;">
 
@@ -91,7 +91,7 @@ xmlns:p="http://primefaces.org/ui">
 					    	</p:dataTable>
 		     		</p:tab>
 		     		<p:tab title="Waste Record">
-		     				<p:dataTable id="dataTableForWaste" var="item" value="#{monitor.selectedItemRecord.wasteRecords}"
+		     				<p:dataTable id="dataTableForWaste" var="item" value="#{storeMonitor.selectedItemRecord.wasteRecords}"
 	                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 	                         rows="15" scrollable="true" style="width:550px;">
 
@@ -121,19 +121,19 @@ xmlns:p="http://primefaces.org/ui">
 			<h:form id="virtualSalesHeadForm">
 				<p:panel styleClass="divStyle autoHeightPanel">
 				<h:outputText value="Stock-out Occurrence Time: " style="float:left;font-weight:bold;margin-right:3px"/>
-				<h:outputText value="#{monitor.selectedItem.stockoutOccurrenceTime}" style="float:left;margin-right:20px">
+				<h:outputText value="#{storeMonitor.selectedItem.stockoutOccurrenceTime}" style="float:left;margin-right:20px">
 	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 	            </h:outputText>
 				<h:outputText value="Stock-out Time Of Duration: " style="float:left;font-weight:bold;margin-right:3px"/>
-				<h:outputText value="#{monitor.selectedItem.stockoutDuration}" style="float:left;margin-right:20px"/>
+				<h:outputText value="#{storeMonitor.selectedItem.stockoutDuration}" style="float:left;margin-right:20px"/>
 				<p:separator styleClass="forizontalSeparator"/>
 				</p:panel>
 			</h:form>
 			<h:form id="addVirtualSalesForm">
 			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
 		        <h:outputLabel for="volume" value="Forecast Virtual Sales Volume For The Duration:  " />
-				<p:inputText id="volume" value="#{monitor.vitualSales}" required="true" label="brand" />
-				<p:commandButton action="#{monitor.addVirtualSales}" process="@form"
+				<p:inputText id="volume" value="#{storeMonitor.vitualSales}" required="true" label="brand" />
+				<p:commandButton action="#{storeMonitor.addVirtualSales}" process="@form"
 				 icon="ui-icon-plus" value="Add Virtual Sales For Stock-out"/>
 	        </p:panel>
 	        </h:form>
@@ -144,22 +144,22 @@ xmlns:p="http://primefaces.org/ui">
 				<p:panel styleClass="divStyle autoHeightPanel floatLeft">
 					<h:outputText value="Data Source:" style="font-weight:bold;margin-right:3px"/>
 					<h:outputText value="Start:" style="margin-right:3px"/>
-					<p:calendar id="startTime" value="#{monitor.startDate}"  required="true"
-					pattern="yyyy-MM-dd" maxdate="#{monitor.endDate}">
+					<p:calendar id="startTime" value="#{storeMonitor.startDate}"  required="true"
+					pattern="yyyy-MM-dd" maxdate="#{storeMonitor.endDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd" />
 					</p:calendar>
 					<h:outputText value="End:" style="margin-right:3px"/>
 
-	                <p:calendar id="endTime" value="#{monitor.endDate}"  required="true"
-					pattern="yyyy-MM-dd" maxdate="#{monitor.endDate}">
+	                <p:calendar id="endTime" value="#{storeMonitor.endDate}"  required="true"
+					pattern="yyyy-MM-dd" maxdate="#{storeMonitor.endDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd" />
 					</p:calendar>
 
-					<p:commandButton action="#{monitor.refreshSalesStatistics}" update="weekdayAverSalesLineChart" process="@form"
+					<p:commandButton action="#{storeMonitor.refreshSalesStatistics}" update="weekdayAverSalesLineChart" process="@form"
 					 icon="ui-icon-arrowrefresh-1-e" value="Refresh Statistics"/>
 				</p:panel>
 				<p:panel id="weekdayAverSalesLineChart" styleClass="divStyle autoHeightPanel floatLeft">
-	            	<p:chart rendered="#{monitor.weekdayAverSalesModel!=null}" type="line" model="#{monitor.weekdayAverSalesModel}" style="width:600px;height:300px" />
+	            	<p:chart rendered="#{storeMonitor.weekdayAverSalesModel!=null}" type="line" model="#{storeMonitor.weekdayAverSalesModel}" style="width:600px;height:300px" />
 	            </p:panel>
 			</p:panel>
 			</h:form>
@@ -170,23 +170,23 @@ xmlns:p="http://primefaces.org/ui">
 			<h:form id="addWasteRecordForm">
 			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
 				<h:outputText value="ProductName: " style="float:left;font-weight:bold;margin-right:3px"/>
-				<h:outputText value="#{monitor.selectedItem.regionListItem.product.name}" style="float:left;margin-right:20px"/>
+				<h:outputText value="#{storeMonitor.selectedItem.regionListItem.product.name}" style="float:left;margin-right:20px"/>
 				<h:outputText value="ProductId: " style="float:left;font-weight:bold;margin-right:3px"/>
-				<h:outputText value="#{monitor.selectedItem.productId}" style="float:left;margin-right:20px"/>
+				<h:outputText value="#{storeMonitor.selectedItem.productId}" style="float:left;margin-right:20px"/>
 				<h:outputText value="Inventory: " style="float:left;font-weight:bold;margin-right:3px"/>
-				<h:outputText value="#{monitor.selectedItem.currentInventory}" style="float:left;margin-right:20px"/>
+				<h:outputText value="#{storeMonitor.selectedItem.currentInventory}" style="float:left;margin-right:20px"/>
 				<p:separator styleClass="forizontalSeparator"/>
 				<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 				<h:outputLabel for="volume" value="Waste Volume:" />
-				<p:inputText id="volume" value="#{monitor.wasteVolume}" required="true" />
-				
+				<p:inputText id="volume" value="#{storeMonitor.wasteVolume}" required="true" />
+
 				<h:outputLabel for="wasteReason" value="Waste Reason:" />
-		        <p:selectOneMenu id="wasteReason" value="#{monitor.wasteReasonId}">
+		        <p:selectOneMenu id="wasteReason" value="#{storeMonitor.wasteReasonId}">
 					<f:selectItems value="#{wasteReasonSelect.reasonsMap.entrySet()}" var="reason"
 					                    itemLabel="#{reason.value}" itemValue="#{reason.key}" />
 		        </p:selectOneMenu>
 		        </h:panelGrid>
-				<p:commandButton action="#{monitor.addWasteRecord}" process="@form" update=":tableForm :messagesForm:messages"
+				<p:commandButton action="#{storeMonitor.addWasteRecord}" process="@form" update=":tableForm :messagesForm:messages"
 				 icon="ui-icon-plus" value="Add Waste Record"/>
 	        </p:panel>
 	        </h:form>

@@ -1,4 +1,4 @@
-package inventorybean.region;
+package inventorybean.utils;
 
 import java.util.ArrayList;
 

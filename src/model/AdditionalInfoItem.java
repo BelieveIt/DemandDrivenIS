@@ -1,4 +1,4 @@
-package merchandise.utils;
+package model;
 
 public class AdditionalInfoItem {
 	private String label;

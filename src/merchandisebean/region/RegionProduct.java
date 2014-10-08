@@ -1,6 +1,7 @@
 package merchandisebean.region;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +13,10 @@ import javax.faces.context.FacesContext;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.ProductUtil;
 import merchandise.utils.RegionListItemDiff;
+import model.AdditionalInfoItem;
+import model.Category;
 import model.Product;
+import model.ProductType;
 import model.RegionListCategory;
 import model.RegionListItem;
 import model.RegionListUpdateInfo;
@@ -25,6 +29,7 @@ import org.primefaces.model.TreeNode;
 
 import utils.FileUpload;
 
+import dao.ProductTypeDao;
 import dao.RegionListCategoryDao;
 import dao.RegionListItemDao;
 import dao.RegionListUpdateInfoDao;
@@ -36,6 +41,7 @@ public class RegionProduct implements Serializable{
 	private RegionListCategoryDao categoryDao;
 	private RegionListItemDao regionListItemDao;
 	private RegionListUpdateInfoDao regionListUpdateInfoDao;
+	private ProductTypeDao productTypeDao;
 
 	private RegionListUpdateInfo regionListUpdateInfo;
 
@@ -69,6 +75,7 @@ public class RegionProduct implements Serializable{
 		categoryDao = new RegionListCategoryDao();
 		regionListItemDao = new RegionListItemDao();
 		regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+		productTypeDao = new ProductTypeDao();
 
 		List<RegionListUpdateInfo> regionListUpdateInfos= regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(currentRegionId);
 		if(regionListUpdateInfos!=null && regionListUpdateInfos.size()!=0)regionListUpdateInfo = regionListUpdateInfos.get(0);
@@ -192,7 +199,27 @@ public class RegionProduct implements Serializable{
 	public void viewItemDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
 	}
-
+	//View Product
+	public void openViewProduct(){
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		Category category = (Category) selectedNode.getData();
+		System.out.println(category.getProductTypeId());
+		ProductType categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedViewItem.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedViewItem.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedViewItem.setProduct(product);
+		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
+	}
 	public TreeNode getRootNode() {
 		return rootNode;
 	}

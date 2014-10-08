@@ -23,6 +23,27 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
+
+			<!-- View -->
+			<h:form id="viewCategoryForm">
+			<p:dialog header="View Category" widgetVar="viewCategory" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel for="categoryName" value="Category Name:" styleClass="right-content-header-label" style="font-weight:bold;"/>
+		            <h:outputLabel id="categoryName" value="#{regionCategory.selectedCategory.categoryName}" label="categoryName" />
+
+					<p:outputLabel for="productType" value="Product Type:" styleClass="right-content-header-label" style="font-weight:bold;"/>
+					<h:outputLabel id="productType" value="#{regionCategory.selectedCategory.productTypeName}" label="productType" />
+
+		            <h:outputLabel for="categoryDescription" value="Category Description:" styleClass="right-content-header-label" style="font-weight:bold;"/>
+		            <h:outputLabel id="categoryDescription" value="#{regionCategory.selectedCategory.description}" label="categoryDescription" />
+
+		            <f:facet name="footer">
+		                <p:commandButton action="#{franchiserCategory.addCategory}" update=":treeForm"
+		                id="addCategoryButton" value="Add" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

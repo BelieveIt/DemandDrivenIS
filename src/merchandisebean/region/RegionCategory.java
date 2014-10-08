@@ -13,12 +13,14 @@ import javax.faces.event.ActionEvent;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.VersionUtil;
 import model.Category;
+import model.ProductType;
 import model.RegionListCategory;
 import model.RegionListUpdateInfo;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.TreeNode;
 
+import dao.ProductTypeDao;
 import dao.RegionListCategoryDao;
 import dao.RegionListUpdateInfoDao;
 
@@ -28,10 +30,11 @@ public class RegionCategory implements Serializable{
 	private static final long serialVersionUID = -7352088192758822869L;
 
 	private RegionListCategoryDao categoryDao;
-
+	private ProductTypeDao productTypeDao;
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 	private String selectedNodeName;
+	private RegionListCategory selectedCategory;
 
 	private String currentVersion;
 
@@ -44,11 +47,14 @@ public class RegionCategory implements Serializable{
 	private String leftMenuUpdateAlert;
 
 	private TreeNode newestRootNode;
+
+	private List<ProductType> productTypes;
 	@PostConstruct
 	public void init(){
 		//TODO
 		currentRegionId = "1";
 		categoryDao = new RegionListCategoryDao();
+		productTypeDao = new ProductTypeDao();
 		if(isHeadNull()){
 			headStatus = null;
 		}else {
@@ -63,6 +69,7 @@ public class RegionCategory implements Serializable{
 			newestStatus = "normal";
 		}
 		doVersionCampare();
+		setProductTypes(productTypeDao.queryProductTypes());
 	}
 
 	public void doVersionCampare(){
@@ -106,7 +113,7 @@ public class RegionCategory implements Serializable{
 
 	public void initRootNodeByVersionId(String versionId){
 		rootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
-		rootNode.setExpanded(true);
+		if(rootNode!=null)rootNode.setExpanded(true);
 		selectedNode = null;
 		selectedNodeName = null;
 
@@ -115,7 +122,7 @@ public class RegionCategory implements Serializable{
 
 	public void initNewestRootNodeByVersionId(String versionId){
 		newestRootNode = getCurrentTree(CategoryUtil.ORDER_BY_NAME, versionId);
-		newestRootNode.setExpanded(true);
+		if(newestRootNode!=null)newestRootNode.setExpanded(true);
 	}
 
 	//Update to Retrieved Newest Version
@@ -143,6 +150,21 @@ public class RegionCategory implements Serializable{
 		categoryDao.updateCategory((RegionListCategory)selectedCategory);
 		RequestContext.getCurrentInstance().execute("PF('renameCategory').hide();");
 	}
+
+	//View Category
+	public void openViewCategory(){
+		selectedCategory = (RegionListCategory) selectedNode.getData();
+		if(productTypes!=null){
+			for(ProductType productType : productTypes){
+				if(productType.getProductTypeId().equals(selectedCategory.getProductTypeId())){
+					selectedCategory.setProductTypeName(productType.getProductTypeName());
+				}
+			}
+		}
+
+		RequestContext.getCurrentInstance().execute("PF('viewCategory').show();");
+	}
+
 
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);
@@ -229,5 +251,22 @@ public class RegionCategory implements Serializable{
 	public void setLeftMenuUpdateAlert(String leftMenuUpdateAlert) {
 		this.leftMenuUpdateAlert = leftMenuUpdateAlert;
 	}
+
+	public RegionListCategory getSelectedCategory() {
+		return selectedCategory;
+	}
+
+	public void setSelectedCategory(RegionListCategory selectedCategory) {
+		this.selectedCategory = selectedCategory;
+	}
+
+	public List<ProductType> getProductTypes() {
+		return productTypes;
+	}
+
+	public void setProductTypes(List<ProductType> productTypes) {
+		this.productTypes = productTypes;
+	}
+
 
 }

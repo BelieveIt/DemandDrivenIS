@@ -208,7 +208,7 @@ xmlns:p="http://primefaces.org/ui">
 	            </f:facet>
 	        </p:panelGrid>
 	        </p:panel>
-	        
+
 	        <p:panel header="Newest Retrieved:#{regionProduct.selectedForEdit.versionId}" style="float:left;width:320px">
 		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
 		            <h:outputLabel for="name2" value="Name:" />
@@ -239,7 +239,7 @@ xmlns:p="http://primefaces.org/ui">
 
 				<h:outputLabel for="deliveryFrequency2" value="Delivery Frequency:" />
 		        <h:outputLabel id="deliveryFrequency2" value="#{regionProduct.selectedForEdit.product.deliveryFrequency}" />
-		        <h:outputLabel for="image2" value="Product Image:" />
+		        <h:outputLabel for="uploadedImg2" value="Product Image:" />
   					<p:panel id="uploadedImg2" styleClass="divStyle">
   					<p:lightBox styleClass="imagebox">
   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedForEdit.product.image}" title="Nature 1">
@@ -287,7 +287,7 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
 		        <h:outputLabel id="deliveryFrequency" value="#{regionProduct.selectedViewItem.product.deliveryFrequency}" />
 		        <h:outputLabel for="image" value="Product Image:" />
-  					<p:panel id="uploadedImg" styleClass="divStyle">
+  				<p:panel id="uploadedImg" styleClass="divStyle">
   					<p:lightBox styleClass="imagebox">
   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedViewItem.product.image}" title="Nature 1">
   					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedViewItem.product.image}"
@@ -295,6 +295,14 @@ xmlns:p="http://primefaces.org/ui">
   					</h:outputLink>
   					</p:lightBox>
 	            </p:panel>
+
+	            <ui:repeat var="viewItem" value="#{regionProduct.selectedViewItem.product.additionalInfoItems}">
+	            <tr class="ui-widget-content">
+	            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{viewItem.label}:" /></td>
+	            <td class="ui-panelgrid-cell value"><h:outputLabel value="#{viewItem.value}" /></td>
+	            </tr>
+	            </ui:repeat>
+
 	        </p:panelGrid>
 		</p:dialog>
 		</h:form>

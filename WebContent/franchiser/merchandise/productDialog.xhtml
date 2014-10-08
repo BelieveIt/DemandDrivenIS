@@ -47,14 +47,14 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
-			            
-			            <ui:repeat var="item" value="#{franchiserProduct.newProductAdditionalInfos}">
+
+			            <ui:repeat var="addItem" value="#{franchiserProduct.newProduct.additionalInfoItems}">
 			            <tr>
-			            <td><h:outputLabel value="#{item.label}:" /></td>
-			            <td><p:inputText value="#{item.value}" required="true" /></td>
+			            <td><h:outputLabel value="#{addItem.label}:" /></td>
+			            <td><p:inputText value="#{addItem.value}" required="true" /></td>
 			            </tr>
 			            </ui:repeat>
-			            
+
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
 			                id="addProductButton" value="Add" />
@@ -104,6 +104,13 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
+
+			            <ui:repeat var="viewItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
+			            <tr class="ui-widget-content">
+			            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{viewItem.label}:" /></td>
+			            <td class="ui-panelgrid-cell value"><h:outputLabel value="#{viewItem.value}" /></td>
+			            </tr>
+			            </ui:repeat>
 			        </p:panelGrid>
 				</p:dialog>
 				</h:form>
@@ -145,6 +152,14 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
+
+			            <ui:repeat var="editItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
+			            <tr>
+			            <td><h:outputLabel value="#{editItem.label}:" /></td>
+			            <td><p:inputText value="#{editItem.value}" required="true" /></td>
+			            </tr>
+			            </ui:repeat>
+
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.editProduct}" update=":tableForm"
 			                id="editProductButton" value="Edit" />
@@ -194,6 +209,13 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
+
+			            <ui:repeat var="deleteItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
+			            <tr>
+			            <td><h:outputLabel value="#{deleteItem.label}:" /></td>
+			            <td><h:outputLabel value="#{deleteItem.value}" /></td>
+			            </tr>
+						</ui:repeat>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.deleteProduct}" update=":tableForm"
 			                id="deleteProductButton" value="Confirm Delete" />

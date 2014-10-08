@@ -60,7 +60,7 @@ public void createVersion(){
 public void openViewVersionDetail(){
 	List<BasicListCategory> categories1 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicList.getVersionId());
 	viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-	CategoryUtil.expandAllTree(viewRoot);
+	if(viewRoot!=null)viewRoot.setExpanded(true);
 
 	int index = -1;
 	for(int i = 0; i < basicLists.size(); i++){
@@ -72,7 +72,7 @@ public void openViewVersionDetail(){
 		selectedBasicListNext = basicLists.get(index+1);
 		List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
 		viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-		CategoryUtil.expandAllTree(viewRootNext);
+		if(viewRootNext!=null)viewRootNext.setExpanded(true);
 
 		basicListDiff = ProductUtil.generateBasicListDiff(selectedBasicListNext.getVersionId(), selectedBasicList.getVersionId());
 	}else {

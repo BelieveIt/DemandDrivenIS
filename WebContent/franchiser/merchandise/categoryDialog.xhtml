@@ -13,27 +13,48 @@ xmlns:p="http://primefaces.org/ui">
 	    	<!-- Init -->
 			<h:form id="initCategoryForm">
 			<p:dialog header="Init Category" widgetVar="initCategory" width="650">
-			    <h:panelGrid columns="2" cellpadding="5">
-		            <h:outputLabel styleClass="floatLeft" for="categoryName" value="Dear user, your categories repository is empty. Please select initialization method." />
+					<p:panel styleClass="autoHeightPanel divStyle">
+		            <h:outputLabel styleClass="floatLeft text-align-left"
+		            value="Dear user, your categories repository and product type repository are empty.
+		            Please select initialization method." />
+		            </p:panel>
+		            <p:panel styleClass="autoHeightPanel divStyle">
+		            <h:outputLabel styleClass="floatLeft text-align-left" value="(Note:Categories are the folders for the products which are placed in,
+		            product type decides the attributes of the product. In one certain category, it will be associated to a product type)" />
+		            </p:panel>
 		            <f:facet name="footer">
 		                <p:commandButton actionListener="#{franchiserCategory.initByPreparedCategories}" update=":treeForm"
-		                value="Init With General Categories(Recommended)" />
-		                
+		                value="Init With General Data(Recommended)" id="initButton" />
+
 		                <p:commandButton actionListener="#{franchiserCategory.initWithoutPreparedCategories}" update=":treeForm"
 		                value="Init Without Data" />
 		            </f:facet>
-		        </h:panelGrid>
+
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- Add -->
 			<h:form id="addCategoryForm">
 			<p:dialog header="Add Category" widgetVar="addCategory" width="450">
 			    <h:panelGrid columns="2" cellpadding="5">
-		            <h:outputLabel for="categoryName" value="Category Name:" />
-		            <p:inputText id="categoryName" value="#{franchiserCategory.categoryName}" required="true" label="categoryName" />
+		            <h:outputLabel for="categoryName" value="Category Name:" styleClass="right-content-header-label"/>
+		            <p:inputText id="categoryName" value="#{franchiserCategory.newBasicListCategory.categoryName}"
+		            required="true" label="categoryName" style="float:left"/>
+
+					<p:outputLabel for="versionSelect"
+					value="Product Type:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="versionSelect" value="#{franchiserCategory.newBasicListCategory.productTypeId}"
+			        styleClass="right-content-header-select">
+			             <f:selectItems value="#{franchiserCategory.productTypes}" var="item"
+	                    itemLabel="#{item.productTypeName}" itemValue="#{item.productTypeId}" />
+			        </p:selectOneMenu>
+
+		            <h:outputLabel for="categoryDescription" value="Category Description:" styleClass="right-content-header-label"/>
+		            <p:inputTextarea rows="3" cols="20" style="float:left"
+		            id="categoryDescription" value="#{franchiserCategory.newBasicListCategory.description}" label="categoryDescription" />
+
 		            <f:facet name="footer">
-		                <p:commandButton actionListener="#{franchiserCategory.addCategory}" update=":treeForm"
+		                <p:commandButton action="#{franchiserCategory.addCategory}" update=":treeForm"
 		                id="addCategoryButton" value="Add" />
 		            </f:facet>
 		        </h:panelGrid>
@@ -62,18 +83,19 @@ xmlns:p="http://primefaces.org/ui">
 			<p:dialog header="Edit Category" widgetVar="editCategory" width="450">
 			    <h:panelGrid columns="2" cellpadding="5">
 		            <h:outputLabel for="categoryName" value="Category Name:" styleClass="right-content-header-label"/>
-		            <p:inputText id="categoryName" value="#{franchiserCategory.selectedCategory.categoryName}" required="true" label="categoryName" />
-		            
-					<p:outputLabel for="versionSelect"
+		            <p:inputText id="categoryName" value="#{franchiserCategory.selectedCategory.categoryName}"
+		            required="true" label="categoryName" style="float:left"/>
+
+					<h:outputLabel for="versionSelect"
 					value="Product Type:" styleClass="right-content-header-label"/>
 			        <p:selectOneMenu id="versionSelect" value="#{franchiserCategory.selectedCategory.productTypeId}"
 			        styleClass="right-content-header-select">
 			             <f:selectItems value="#{franchiserCategory.productTypes}" var="item"
 	                    itemLabel="#{item.productTypeName}" itemValue="#{item.productTypeId}" />
-			        </p:selectOneMenu>		   
-			                 
+			        </p:selectOneMenu>
+
 		            <h:outputLabel for="categoryDescription" value="Category Description:" styleClass="right-content-header-label"/>
-		            <p:inputTextarea rows="3" cols="20"
+		            <p:inputTextarea rows="3" cols="20" style="float:left"
 		            id="categoryDescription" value="#{franchiserCategory.selectedCategory.description}" label="categoryDescription" />
 
 		            <f:facet name="footer">
@@ -83,7 +105,7 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- Product Type -->
 			<h:form id="manageProductTypeForm">
 			<p:dialog header="Manage Product Type" widgetVar="manageProductType" width="950">
@@ -96,11 +118,11 @@ xmlns:p="http://primefaces.org/ui">
 						</p:commandButton>
 						</div>
 						<p:dataTable id="ProductTypesDataTable" var="item" value="#{franchiserCategory.productTypes}"
-						rowKey="#{item.productTypeId}" scrollable="true" >		    			
+						rowKey="#{item.productTypeId}" scrollable="true" >
 					        <p:column headerText="Type Name" styleClass="noPadding" id="TypeName">
 					            <h:outputText value="#{item.productTypeName}"/>
 					        </p:column>
-					        
+
 						    <p:column styleClass="noPadding" id="VersionStatus">
 						        <p:commandButton action="#{franchiserCategory.viewProductType}" update=":manageProductTypeForm:productTypeDetail"
 								value="View" styleClass="right-content-header-button" icon="ui-icon-search">
@@ -109,7 +131,7 @@ xmlns:p="http://primefaces.org/ui">
 					        </p:column>
 					    </p:dataTable>
 					</div>
-					<p:panel id="productTypeDetail" header="Product Type Attrbutes - #{franchiserCategory.selectedProductType.productTypeName}" style="float:left;width:480px;margin-right:20px;">
+					<p:panel id="productTypeDetail" header="Product Type Attributes - #{franchiserCategory.selectedProductType.productTypeName}" style="float:left;width:480px;margin-right:20px;">
 						<p:panel id="productTypeBasicInfo" header="Basic Attrbutes" style="float:left;width:40%;" styleClass="autoHeightPanel divStyle">
 						<p:panelGrid columns="1" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
 		            		<h:outputLabel value="Name" />
@@ -120,10 +142,10 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputLabel value="Unit" />
 				            <h:outputLabel value="MinInventory" />
 							<h:outputLabel value="Delivery Frequency" />
-					        <h:outputLabel value="Product Image" />				
+					        <h:outputLabel value="Product Image" />
 	        			</p:panelGrid>
 	        			</p:panel>
-						<p:panel id="productTypeAdditionalInfo" header="Addtional Attrbutes" style="float:left;width:55%;margin-left:10px;" styleClass="autoHeightPanel divStyle">
+						<p:panel id="productTypeAdditionalInfo" header="Addtional Attributes" style="float:left;width:55%;margin-left:10px;" styleClass="autoHeightPanel divStyle">
 
 							<table class="ui-panelgrid ui-widget text-align-left">
 					    		<ui:repeat var="item" value="#{franchiserCategory.selectedProductType.additionalInformationLable}">
@@ -132,7 +154,7 @@ xmlns:p="http://primefaces.org/ui">
 						    				<h:outputText value="#{item}"/>
 						    			</td>
 						    			<td class="ui-panelgrid-cell label">
-						    				<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" action="#{franchiserCategory.deleteAttribute}" update=":manageProductTypeForm:productTypeDetail"
+						    				<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" action="#{franchiserCategory.openDeleteAttribute}" update=":deleteAttributeForm"
 											icon="ui-icon-trash" style="display:block">
 											<f:setPropertyActionListener value="#{item}" target="#{franchiserCategory.selectedAttributeName}" />
 										 	</p:commandButton>
@@ -143,8 +165,8 @@ xmlns:p="http://primefaces.org/ui">
 						    			</td>
 						    		  </tr>
 					    		</ui:repeat>
-				    		</table>		
-						<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}" 
+				    		</table>
+						<p:commandButton rendered="#{franchiserCategory.selectedProductType ne null}"
 						actionListener="#{franchiserCategory.openAddAttribute}" update=":addAttributeForm"
 						value="Add Attribute" icon="ui-icon-plus" style="display:block">
 						</p:commandButton>
@@ -153,7 +175,21 @@ xmlns:p="http://primefaces.org/ui">
 				</p:panel>
 			</p:dialog>
 			</h:form>
-			
+			<!-- Delete Attribute -->
+			<h:form id="deleteAttributeForm">
+			<p:dialog header="Confirm Delete Attribute" widgetVar="deleteAttribute" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel value="Are you sure? Deletion can not be restored." />
+		            <f:facet name="footer">
+		                <p:commandButton action="#{franchiserCategory.deleteAttribute}" update=":manageProductTypeForm:productTypeDetail :deleteAttributeForm"
+		                id="deleteAttributeButton" value="Confirm Deletion" style="float:left;"/>
+		                <p:commandButton action="#{franchiserCategory.deleteAttributeCancel}" update=":deleteAttributeForm"
+		                id="deleteAttributeCancelButton" value="Cancel" style="float:left;"/>
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+
 			<!-- Add ProductType -->
 			<h:form id="addProductTypeForm">
 			<p:dialog header="Add Product Type" widgetVar="addProductType" width="450">
@@ -167,7 +203,7 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
-						
+
 			<!-- Add Attribute -->
 			<h:form id="addAttributeForm">
 			<p:dialog header="Add Attribute" widgetVar="addAttribute" width="450">
@@ -181,7 +217,7 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- Edit Attribute -->
 			<h:form id="editAttributeForm">
 			<p:dialog header="Edit Attribute" widgetVar="editAttribute" width="450">

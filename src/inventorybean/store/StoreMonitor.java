@@ -1,7 +1,8 @@
-package inventorybean.region;
+package inventorybean.store;
 
 import inventorybean.utils.AnalysisUtil;
 import inventorybean.utils.MonitorUtil;
+import inventorybean.utils.SelectedItemRecord;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -43,9 +44,9 @@ import dao.StockOutVirtualSalesDao;
 import dao.StoreDao;
 import dao.WasteRecordDao;
 
-@ManagedBean(name="monitor")
+@ManagedBean(name="storeMonitor")
 @ViewScoped
-public class Monitor implements Serializable{
+public class StoreMonitor implements Serializable{
 	private static final long serialVersionUID = -4596394594859307482L;
 	@ManagedProperty(value="#{analysisUtil}")
 	private AnalysisUtil analysisUtil;
@@ -93,7 +94,7 @@ public class Monitor implements Serializable{
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId("head", currentRegion.getRegionId());
 		rootNode = CategoryUtil.generateTreeForProduct(categories);
 		if(rootNode !=null){
-			CategoryUtil.expandAllTree(rootNode);
+			if(rootNode.getChildCount() > 1)rootNode.getChildren().get(1).setExpanded(true);
 			rootNode.getChildren().get(0).setSelected(true);
 			selectedNode = rootNode.getChildren().get(0);
 		}
@@ -191,14 +192,14 @@ public class Monitor implements Serializable{
 		wasteRecord.setWasteReason(wasteReason);
 		wasteRecordDao.insertWasteRecord(wasteRecord);
 		analysisUtil.initWasteRecordMap();
-		
+
 		int newInventory = selectedItem.getCurrentInventory() - wasteVolume;
 		selectedItem.setCurrentInventory(newInventory);
 		if((newInventory) == 0)
 			selectedItem.setStockoutOccurrenceTime(new Date());
 		storeDao.updateStoreSellingItem(selectedItem);
 		setItemsBySelectedNode();
-		
+
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "Saved Successfully!");
         FacesContext.getCurrentInstance().addMessage(null, message);
 		RequestContext.getCurrentInstance().execute("PF('addWasteRecord').hide();");

@@ -197,7 +197,11 @@ public static void updateToNewestBasiclistCategory(String regionId){
 }
 public static RegionListCategory getIncludedInRegionCategoryHead(Category category, List<RegionListCategory> list){
 	for(RegionListCategory regionListCategory : list){
-		if(category.getCategoryId().equals(regionListCategory.getCategoryId()))return regionListCategory;
+		if(category.getCategoryId().equals(regionListCategory.getCategoryId())){
+			regionListCategory.setProductTypeId(category.getProductTypeId());
+			regionListCategory.setDescription(category.getDescription());
+			return regionListCategory;
+		}
 	}
 	return null;
 }
@@ -235,6 +239,8 @@ public static void setBasicListCategoryToRegion(RegionListCategory regionListCat
 	regionListCategory.setCategoryName(basicListCategory.getCategoryName());
 	regionListCategory.setVersionId(basicListCategory.getVersionId());
 	regionListCategory.setCreateTime(basicListCategory.getCreateTime());
+	regionListCategory.setProductTypeId(basicListCategory.getProductTypeId());
+	regionListCategory.setDescription(basicListCategory.getDescription());
 }
 //Convert Basic List Item to Region List Item
 public static void setBasicListItemToRegion(RegionListItem regionListItem, BasicListItem basicListItem){

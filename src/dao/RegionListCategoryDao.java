@@ -45,6 +45,8 @@ public class RegionListCategoryDao implements Serializable{
 		parameters.put("CATEGORY_FATHERID", regionListCategory.getCategoryFatherId());
 		parameters.put("CATEGORY_NAME", regionListCategory.getCategoryName());
 		parameters.put("CREATE_TIME", regionListCategory.getCreateTime());
+		parameters.put("PRODUCT_TYPE_ID", regionListCategory.getProductTypeId());
+		parameters.put("DESCRIPTION", regionListCategory.getDescription());
 		simpleJdbcInsert.execute(parameters);
 	}
 	public int deleteAll(){
@@ -71,6 +73,8 @@ public class RegionListCategoryDao implements Serializable{
 	    	regionListCategory.setCategoryFatherId(rs.getString("CATEGORY_FATHERID"));
 	    	regionListCategory.setCategoryName(rs.getString("CATEGORY_NAME"));
 	    	regionListCategory.setCreateTime(rs.getTimestamp("CREATE_TIME"));
+	    	regionListCategory.setProductTypeId(rs.getString("PRODUCT_TYPE_ID"));
+	    	regionListCategory.setDescription(rs.getString("DESCRIPTION"));
 	        return regionListCategory;
 	    }
 	}

@@ -1,4 +1,4 @@
-package inventorybean.region;
+package inventorybean.store;
 
 import inventorybean.utils.AnalysisUtil;
 import inventorybean.utils.ChartUtil;
@@ -40,13 +40,13 @@ import model.RegionListCategory;
 import model.Store;
 import model.StoreSellingItem;
 
-@ManagedBean(name="analysisOfRegion")
+@ManagedBean(name="storeAnalysis")
 @ViewScoped
-public class AnalysisOfRegion implements Serializable{
+public class StoreAnalysis implements Serializable{
 	private static final long serialVersionUID = 5265661455745070133L;
 	@ManagedProperty(value="#{analysisUtil}")
 	private AnalysisUtil analysisUtil;
-
+//analysisOfRegion
 	private StoreDao storeDao;
 	private RegionDao regionDao;
 	private RegionListCategoryDao categoryDao;
@@ -70,12 +70,12 @@ public class AnalysisOfRegion implements Serializable{
 	private String currentYear;
 	private Integer currentNum;
 	private LinkedHashMap<String, String> years;
-	
+
 	private PieChartModel salesShareForCategoryIncludeCategory;
 	private LineChartModel salesTrendForCategoryIncludeCategory;
 	private ArrayList<SalesVolumeLowMoving> salesLowMovingForCategory;
-	
-	
+
+
 	private String productAnalysisType;
 	private boolean isForecast;
 	private LineChartModel salesTrendForCategoryIncludeProduct;
@@ -107,7 +107,7 @@ public class AnalysisOfRegion implements Serializable{
 		}
 
 		currentNum = 10;
-		
+
 		productAnalysisType = "forYear";
 		isForecast = false;
 	}
@@ -193,7 +193,7 @@ public class AnalysisOfRegion implements Serializable{
 		refreshSalesTrendForCategoryIncludeCategory();
 		refreshLowMovingForCategoryIncludeCategory();
 	}
-	
+
 	//Show Low-Moving of products
 	public void refreshLowMovingListForCategoryIncludeProduct(){
 		List<StoreSellingItem> items  = MonitorUtil.generateStoreSellingItemsBySelectedNode(selectedNode, currentStore);
@@ -210,31 +210,31 @@ public class AnalysisOfRegion implements Serializable{
 	}
 
 	//Show sales trend of products
-	public void refreshSalesVolumeTrendForProduct(){	
+	public void refreshSalesVolumeTrendForProduct(){
 		if(productAnalysisType.equals("forYear")){
 			isForecast=false;
 			refreshSalesVolumeTrendForProductForYear();
 		}
-		
+
 		if(productAnalysisType.equals("forMonth")){
 			isForecast=false;
 			refreshSalesVolumeTrendForProductForMonth();
 		}
-		
+
 	}
 	public void refreshSalesVolumeTrendForProductSwitchForecast(){
 		if(isForecast == true){
 			if(productAnalysisType.equals("forYear")){
 				addSalesVolumeTrendForProductForYear();
 			}
-			
+
 			if(productAnalysisType.equals("forMonth")){
 				final Set<Entry<String, String>> mapValues = years.entrySet();
 			    final int maplength = mapValues.size();
 				@SuppressWarnings("unchecked")
 				final Entry<String,String>[] entries = new Entry[maplength];
 			    mapValues.toArray(entries);
-			    
+
 			    if(maplength >= 1){
 			    	currentYear = entries[maplength-1].getKey();
 			    	addSalesVolumeTrendForProductForMonth();
@@ -244,14 +244,14 @@ public class AnalysisOfRegion implements Serializable{
 			if(productAnalysisType.equals("forYear")){
 				refreshSalesVolumeTrendForProductForYear();
 			}
-			
+
 			if(productAnalysisType.equals("forMonth")){
 				refreshSalesVolumeTrendForProductForMonth();
 			}
 		}
 
 	}
-	
+
 	public void refreshSalesVolumeTrendForProductForYear(){
 		String currentProductId = selectedItem.getProductId();
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
@@ -265,8 +265,8 @@ public class AnalysisOfRegion implements Serializable{
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		LinkedHashMap<String, Double> itemHashMap = analysisUtil.getForecastSalesDataForYear(currentStore.getStoreId(), currentProductId);
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), itemHashMap);
-		
-		
+
+
 		final Set<Entry<String, Double>> mapValues = itemHashMap.entrySet();
 	    final int maplength = mapValues.size();
 	    if(maplength >= 2){
@@ -275,19 +275,19 @@ public class AnalysisOfRegion implements Serializable{
 		    mapValues.toArray(entries);
 		    LinkedHashMap<String, Double> itemHashMapForForecast = new LinkedHashMap<String, Double>();
 		    itemHashMapForForecast.put(entries[maplength-1].getKey(), entries[maplength-1].getValue());
-		    
+
 			SimpleRegression forecastRegression = LeastSquareUtil.generateForecast(itemHashMap);
 			String startYearString = entries[maplength-1].getKey();
 			double startYearDouble = new Double(startYearString).doubleValue();
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+1).intValue()), new Double(forecastRegression.predict(startYearDouble+1)));
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+2).intValue()), new Double(forecastRegression.predict(startYearDouble+2)));
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+3).intValue()), new Double(forecastRegression.predict(startYearDouble+3)));
-			
+
 			dataMap.put(selectedItem.getRegionListItem().getProduct().getName()+"(Forecast)", itemHashMapForForecast);
 	    }
 		salesTrendForCategoryIncludeProduct = ChartUtil.generateLineChartModel("Sales Trend of Product - Forecast From History Data", "Time", "Sales Volume", dataMap);
 	}
-	
+
 	public void refreshSalesVolumeTrendForProductForMonth(){
 		String currentProductId = selectedItem.getProductId();
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
@@ -295,13 +295,13 @@ public class AnalysisOfRegion implements Serializable{
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), itemHashMap);
 		salesTrendForCategoryIncludeProduct = ChartUtil.generateLineChartModel("Sales Trend of Product", "Time", "Sales Volume", dataMap);
 	}
-	
+
 	public void addSalesVolumeTrendForProductForMonth(){
 		String currentProductId = selectedItem.getProductId();
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		LinkedHashMap<String, Double> itemHashMap = analysisUtil.getForecastSalesDataForMonthForForecast(currentStore.getStoreId(), currentProductId);
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), itemHashMap);
-		
+
 		final Set<Entry<String, Double>> mapValues = itemHashMap.entrySet();
 	    final int maplength = mapValues.size();
 	    if(maplength >= 2){
@@ -309,7 +309,7 @@ public class AnalysisOfRegion implements Serializable{
 			final Entry<String,Double>[] entries = new Entry[maplength];
 		    mapValues.toArray(entries);
 		    LinkedHashMap<String, Double> itemHashMapForForecast = new LinkedHashMap<String, Double>();
-		    
+
 		    Iterator<String> iterator = itemHashMap.keySet().iterator();
 		    LinkedHashMap<String, Double> mapForForecast = new LinkedHashMap<String, Double>();
 		    String i = "1";
@@ -318,7 +318,7 @@ public class AnalysisOfRegion implements Serializable{
 		    	mapForForecast.put(i, itemHashMap.get(iterator.next()));
 		    	i = Integer.toString(new Integer(i) + new Integer(1));
 		    }
-		    
+
 		    SimpleRegression forecastRegression = LeastSquareUtil.generateForecast(mapForForecast);
 		    ArrayList<String> futureDateList = DateUtil.getFutureYearAndMonthList(new Date(), 3);
 		    itemHashMapForForecast.put(DateUtil.getYearAndMonth(new Date()), new Double(new Double(forecastRegression.predict(7)).intValue()));
@@ -329,7 +329,7 @@ public class AnalysisOfRegion implements Serializable{
 	    }
 		salesTrendForCategoryIncludeProduct = ChartUtil.generateLineChartModel("Sales Trend of Product - Forecast From History Data", "Time", "Sales Volume", dataMap);
 	}
-	
+
 	private void initTable(){
 		selectedItems = null;
 		filteredItems = null;

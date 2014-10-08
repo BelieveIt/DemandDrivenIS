@@ -30,9 +30,9 @@ xmlns:p="http://primefaces.org/ui">
     			<!-- Category Tree -->
     			<p:panel styleClass="floatLeft width20 divStyle">
     			<h:form id="treeForm">
-			    <p:tree value="#{monitor.rootNode}" var="category" selectionMode="single"
-			    selection="#{monitor.selectedNode}" styleClass="leftTree">
-			        <p:ajax event="select" listener="#{monitor.onNodeSelect}" update=":tableForm"/>
+			    <p:tree value="#{storeMonitor.rootNode}" var="category" selectionMode="single"
+			    selection="#{storeMonitor.selectedNode}" styleClass="leftTree">
+			        <p:ajax event="select" listener="#{storeMonitor.onNodeSelect}" update=":tableForm"/>
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
@@ -44,8 +44,8 @@ xmlns:p="http://primefaces.org/ui">
 				<p:panel styleClass="floatLeft width78 divStyle">
 				<h:form id="tableForm">
 
-					<p:dataTable id="dataTable" var="item" value="#{monitor.storeSellingItems}"
-				                         filteredValue="#{monitor.filteredItems}"  selection="#{monitor.selectedItems}"
+					<p:dataTable id="dataTable" var="item" value="#{storeMonitor.storeSellingItems}"
+				                         filteredValue="#{storeMonitor.filteredItems}"  selection="#{storeMonitor.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
 		    			<f:facet name="header" >
@@ -65,9 +65,9 @@ xmlns:p="http://primefaces.org/ui">
  					    <!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:70px;height:40px">
- 			             <p:commandButton action="#{monitor.openViewProduct}" update=":viewProductForm :messagesForm:messages"
+ 			             <p:commandButton action="#{storeMonitor.openViewProduct}" update=":viewProductForm :messagesForm:messages"
 			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
-			                <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
+			                <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
 			             </p:commandButton>
 			            </div>
 			            </p:column>
@@ -104,9 +104,9 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Stock-out -->
 			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{monitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
+			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Virtual Sales For Stock-out">
-			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
 			             </p:commandButton>
 
 			             <p:commandButton rendered="#{item.currentInventory ne 0}"
@@ -115,14 +115,14 @@ xmlns:p="http://primefaces.org/ui">
 
 						<!-- Waste -->
 			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Waste Record" disabled="true">
-			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}"/>
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}"/>
 			             </p:commandButton>
-			             
-			             <p:commandButton rendered="#{item.currentInventory ne 0}" action="#{monitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+
+			             <p:commandButton rendered="#{item.currentInventory ne 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Waste Record">
-			              <f:setPropertyActionListener value="#{item}" target="#{monitor.selectedItem}" />
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
 			             </p:commandButton>
 			            </p:column>
 				    </p:dataTable>

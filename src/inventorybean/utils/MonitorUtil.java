@@ -26,7 +26,6 @@ public class MonitorUtil {
 
 		StoreDao storeDao = new StoreDao();
 		List<StoreSellingItem> items = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
-
 		for(StoreSellingItem item : items){
 			if(item.getRegionListItem() != null && categoryIdList.contains(item.getRegionListItem().getCategoryId())){
 				list.add(item);

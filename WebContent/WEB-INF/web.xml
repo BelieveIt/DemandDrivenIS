@@ -10,7 +10,7 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>*.xhtml</url-pattern>
   </servlet-mapping>
-  
+
   <filter>
   <filter-name>PrimeFaces FileUpload Filter</filter-name>
     <filter-class>
@@ -34,7 +34,7 @@
     <param-value>0</param-value>
   </context-param>
   <context-param>
-   <param-name>facelets.SKIP_COMMENTS</param-name>
+   <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
    <param-value>true</param-value>
   </context-param>
   <context-param>

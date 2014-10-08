@@ -23,7 +23,7 @@ xmlns:p="http://primefaces.org/ui">
     			<div class="right-content-header-buttons-panel">
 
     			<!-- Add/Delete/Rename -->
-    			<p:commandButton actionListener="#{franchiserCategory.openAddCategory}" update="messages :addCategoryForm"
+    			<p:commandButton action="#{franchiserCategory.openAddCategory}" update="messages :addCategoryForm"
     			value="Add" styleClass="right-content-header-button" icon="ui-icon-plus" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
 				<p:commandButton actionListener="#{franchiserCategory.openDeleteCategory}" update="messages :deleteCategoryForm"
 				value="Delete" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserCategory.currentVersion eq 'head'}" />
@@ -60,13 +60,13 @@ xmlns:p="http://primefaces.org/ui">
 		             <f:selectItems value="#{franchiserCategory.versionIdList}" var="version"
                     itemLabel="#{version}" itemValue="#{version}" />
 		        </p:selectOneMenu>
-		        
+
 		        <span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
 		        <!-- Search -->
 		        <p:inputText id="search" value="#{franchiserCategory.searchValue}" style="width:50px;margin-top:1px;" styleClass="right-content-header-button"/>
 		        <p:commandButton actionListener="#{franchiserCategory.searchCategory}" update=":treeForm"
 				value="Search" styleClass="right-content-header-button" icon="ui-icon-search" process="@this,search"/>
-				
+
     			</div>
     			</div>
     			</h:form>
@@ -89,13 +89,14 @@ xmlns:p="http://primefaces.org/ui">
 				<p:blockUI
 				block=":rightContentLayout"
 				trigger=":buttonForm:orderSelect :buttonForm:versionSelect
-				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :editCategoryForm:editCategoryButton">
+				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :editCategoryForm:editCategoryButton
+				 :initCategoryForm:initButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>
-				
+
 				<!-- Dialogs -->
-				<ui:include src="categoryDialog.xhtml" />				
+				<ui:include src="categoryDialog.xhtml" />
     		</ui:define>
     	</ui:composition>
     </h:body>

@@ -45,9 +45,11 @@ public class BasicListCategoryDao implements Serializable{
 		parameters.put("CATEGORY_FATHERID", basicListCategory.getCategoryFatherId());
 		parameters.put("CATEGORY_NAME", basicListCategory.getCategoryName());
 		parameters.put("CREATE_TIME", basicListCategory.getCreateTime());
+		parameters.put("PRODUCT_TYPE_ID", basicListCategory.getProductTypeId());
+		parameters.put("DESCRIPTION", basicListCategory.getDescription());
 		simpleJdbcInsert.execute(parameters);
 	}
-	
+
 	public void insertCategories(List<BasicListCategory> basicListCategories){
 		for(BasicListCategory basicListCategory : basicListCategories){
 			Map<String, Object> parameters = new HashMap<String, Object>();

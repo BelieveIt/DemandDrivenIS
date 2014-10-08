@@ -50,7 +50,7 @@ public class RegionVersion implements Serializable{
 	private BasicListItemDiff basicListDiff;
 
 	private String currentRegionId;
-	
+
 	private List<BasicList> viewItems;
 	private BasicListItem selectedViewItem;
 	@PostConstruct
@@ -114,13 +114,13 @@ public class RegionVersion implements Serializable{
 		}
 		List<BasicListCategory> categories1 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItem.getVersionId());
 		viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-		CategoryUtil.expandAllTree(viewRoot);
+		if(viewRoot!=null)viewRoot.setExpanded(true);
 
 		List<BasicListCategory> categories2;
 		if(selectedRegionVersionListItemNext!=null){
 			categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItemNext.getVersionId());
 			viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
-			CategoryUtil.expandAllTree(viewRootNext);
+			if(viewRootNext!=null)viewRootNext.setExpanded(true);
 
 			basicListDiff = ProductUtil.generateBasicListDiff(selectedRegionVersionListItemNext.getVersionId(), selectedRegionVersionListItem.getVersionId());
 		}else{
@@ -139,7 +139,7 @@ public class RegionVersion implements Serializable{
 	public void viewItemDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
 	}
-	
+
 	public List<RegionVersionListItem> getRegionVersionListItems() {
 		return regionVersionListItems;
 	}

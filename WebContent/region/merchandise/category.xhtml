@@ -29,6 +29,8 @@ xmlns:p="http://primefaces.org/ui">
     			<div class="treeHeader">
     			<span class="treeHeaderText">Current Local Categories</span>
     			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
+    			<p:commandButton action="#{regionCategory.openViewCategory}" update=":messagesForm:messages :viewCategoryForm"
+		    			value="View" styleClass="right-content-header-button" icon="ui-icon-pencil"/>
     			<p:commandButton rendered="#{regionCategory.newestStatus ne null}"
     					actionListener="#{regionCategory.openRenameCategory}" update=":messagesForm:messages :renameCategoryForm"
 		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-pencil"/>
@@ -98,9 +100,9 @@ xmlns:p="http://primefaces.org/ui">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>
-				
+
 				<!-- Dialogs -->
-				<ui:include src="categoryDialog.xhtml" />				
+				<ui:include src="categoryDialog.xhtml" />
     		</ui:define>
     	</ui:composition>
     </h:body>

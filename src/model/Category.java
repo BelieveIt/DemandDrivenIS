@@ -8,6 +8,7 @@ public class Category implements Comparable<Category>{
 	private String categoryName;
 	private Date createTime;
 	private String productTypeId;
+	private String productTypeName;
 	private String description;
 	public Category(){}
 	public Category(String categoryId, String categoryFatherId,
@@ -58,5 +59,11 @@ public class Category implements Comparable<Category>{
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getProductTypeName() {
+		return productTypeName;
+	}
+	public void setProductTypeName(String productTypeName) {
+		this.productTypeName = productTypeName;
 	}
 }

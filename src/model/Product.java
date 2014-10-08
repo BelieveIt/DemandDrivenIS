@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 import utils.StringUtil;
 
 public class Product implements Serializable{
@@ -22,6 +23,7 @@ public class Product implements Serializable{
 	private ArrayList<String>  additionalInformation;
 	@SuppressWarnings("unused")
 	private String  additionalInformationString;
+	private ArrayList<AdditionalInfoItem> additionalInfoItems;
 	public String getName() {
 		return name;
 	}
@@ -94,6 +96,12 @@ public class Product implements Serializable{
 	public void setAdditionalInformationString(
 			String additionalInformationString) {
 		this.additionalInformationString = additionalInformationString;
+	}
+	public ArrayList<AdditionalInfoItem> getAdditionalInfoItems() {
+		return additionalInfoItems;
+	}
+	public void setAdditionalInfoItems(ArrayList<AdditionalInfoItem> additionalInfoItems) {
+		this.additionalInfoItems = additionalInfoItems;
 	}
 
 

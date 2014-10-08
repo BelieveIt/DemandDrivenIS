@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
+    			<h:form id="buttonForm">
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Inventory Analysis</span>
+    			</div>
+    			</h:form>
+
+    			<p:panel styleClass="autoHeightPanel">
+				<p:panel styleClass="autoHeightPanel divStyle">
+    			<!-- Category Tree -->
+    			<p:panel styleClass="floatLeft width20 divStyle">
+    			<h:form id="treeForm">
+			    <p:tree id="categoryTree" value="#{storeAnalysis.rootNode}" var="category" selectionMode="single"
+			    selection="#{storeAnalysis.selectedNode}" styleClass="leftTree">
+			        <p:ajax event="select" listener="#{storeAnalysis.onNodeSelect}" update=":tableForm :analysisChartsForm"/>
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+				</h:form>
+				</p:panel>
+
+    			<!-- Products List -->
+				<p:panel styleClass="floatLeft width80 divStyle">
+				<h:form id="tableForm">
+
+					<p:dataTable id="dataTable" var="item" value="#{storeAnalysis.storeSellingItems}" scrollable="true" scrollHeight="180"
+				                         filteredValue="#{storeAnalysis.filteredItems}"  selection="#{storeAnalysis.selectedItems}"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" >
+
+ 					    <!-- View -->
+			            <p:column style="width:100px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:100px;height:40px">
+ 			             <p:commandButton action="#{storeAnalysis.viewProductAnalysis}" update=":analysisChartsForm"
+			             value="Analysis" style="float:left;width:100px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="analysisButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeAnalysis.selectedItem}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="Image" styleClass="searchHintClass"
+				        style="padding:0px;">
+				        <p:lightBox styleClass="imagebox" rendered="#{not empty item.regionListItem.product.image}">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.regionListItem.product.image}">
+				        <p:graphicImage library="uploadImg" name="#{item.regionListItem.product.image}"
+    					width="100" height="60"/>
+    					</h:outputLink>
+    					</p:lightBox>
+				        </p:column>
+				        <p:column headerText="ProductId" styleClass="ProductId noPadding"
+				        sortBy="#{item.regionListItem.productId}" filterBy="#{item.regionListItem.productId}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.productId}" />
+				            <p:watermark for="@(.ProductId)" value="ProductId" />
+				        </p:column>
+				        <p:column headerText="Name" styleClass="Name noPadding" id="Name"
+				        sortBy="#{item.regionListItem.product.name}" filterBy="#{item.regionListItem.product.name}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				            <p:watermark for="@(.Name)" value="Name" />
+				        </p:column>
+				        <p:column headerText="Brand" styleClass="Brand noPadding" id="Brand"
+				        sortBy="#{item.regionListItem.product.brand}" filterBy="#{item.regionListItem.product.brand}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.product.brand}" />
+				            <p:watermark for="@(.Brand)" value="Brand" />
+				        </p:column>
+				        <p:column headerText="Inventory" styleClass="Inventory noPadding" id="Inventory"
+				        sortBy="#{item.currentInventory}" filterBy="#{item.currentInventory}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.currentInventory}" />
+				            <p:watermark for="@(.Inventory)" value="Inventory" />
+				        </p:column>
+				    </p:dataTable>
+				</h:form>
+				</p:panel>
+				</p:panel>
+
+
+				<p:panel styleClass="autoHeightPanel divStyle" >
+					<ui:include src="analysisTabView.xhtml" />
+				</p:panel>
+    			</p:panel>
+
+				<!-- BlockUI -->
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout"
+				trigger=":treeForm:categoryTree :tableForm:dataTable:analysisButton">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form>
+
+
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

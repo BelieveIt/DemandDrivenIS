@@ -99,7 +99,7 @@ public class AnalysisUtil {
 				if(!years.contains(yearString))years.add(yearString);
 			}
 		}
-		
+
 		Collections.sort(years, new Comparator<String>() {
 	        @Override
 	        public int compare(String  str1, String  str2)
@@ -107,14 +107,14 @@ public class AnalysisUtil {
 	        	return  str1.compareTo(str2);
 	        }
 	    });
-		
+
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 		for(String year : years){
 			map.put(year, year);
 		}
 		return map;
 	}
-	
+
 	public ArrayList<SalesRecord> querySalesRecords(String storeId, String productId){
 		ArrayList<SalesRecord> allRecordsOfStore = salesRecordsMap.get(storeId);
 		ArrayList<SalesRecord> records = new ArrayList<SalesRecord>();
@@ -246,40 +246,46 @@ public class AnalysisUtil {
 		for(StoreSellingItem sellingItem : items){
 			productHashMap.put(sellingItem.getProductId(), sellingItem);
 		}
-		
-		for(SalesRecord record : records){
-			if(productHashMap.containsKey(record.getProductId())){
-				int year = DateUtil.getYearOfDate(record.getCreateTime());
-				int month = DateUtil.getMonthOfDate(record.getCreateTime());
-				BigDecimal salesValue = productHashMap.get(record.getProductId()).getRegionListItem().getProduct().getPrice().multiply(new BigDecimal(record.getSalesNumber()));
-				Double salesValueDouble = salesValue.doubleValue();
-				if(Integer.toString(year).equals(currentYear)){
-					Double currentValue = chartDataMap.get(DateUtil.month[month-1]);
-					chartDataMap.put(DateUtil.month[month-1], currentValue + salesValueDouble);
+
+		if(records != null){
+			for(SalesRecord record : records){
+				if(productHashMap.containsKey(record.getProductId())){
+					int year = DateUtil.getYearOfDate(record.getCreateTime());
+					int month = DateUtil.getMonthOfDate(record.getCreateTime());
+					BigDecimal salesValue = productHashMap.get(record.getProductId()).getRegionListItem().getProduct().getPrice().multiply(new BigDecimal(record.getSalesNumber()));
+					Double salesValueDouble = salesValue.doubleValue();
+					if(Integer.toString(year).equals(currentYear)){
+						Double currentValue = chartDataMap.get(DateUtil.month[month-1]);
+						chartDataMap.put(DateUtil.month[month-1], currentValue + salesValueDouble);
+					}
 				}
 			}
 		}
+
 		return chartDataMap;
 	}
 //Return data for one product analysis
 	public LinkedHashMap<String, Double> getForecastSalesDataForYear(String storeId, String productId){
 		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
 		TreeMap<String, Double> chartDataMap = new TreeMap<String, Double>();
-		for(SalesRecord record : records){
-			if(record.getProductId().equals(productId)){
-				int year = DateUtil.getYearOfDate(record.getCreateTime());
-				String yearString = Integer.toString(year);
-				if(chartDataMap.containsKey(yearString)){
-					Double currentNum = chartDataMap.get(yearString);
-					chartDataMap.put(yearString, currentNum + record.getSalesNumber());
-				}else {
-					chartDataMap.put(yearString, new Double(0) + record.getSalesNumber());
+		if(records != null){
+			for(SalesRecord record : records){
+				if(record.getProductId().equals(productId)){
+					int year = DateUtil.getYearOfDate(record.getCreateTime());
+					String yearString = Integer.toString(year);
+					if(chartDataMap.containsKey(yearString)){
+						Double currentNum = chartDataMap.get(yearString);
+						chartDataMap.put(yearString, currentNum + record.getSalesNumber());
+					}else {
+						chartDataMap.put(yearString, new Double(0) + record.getSalesNumber());
+					}
 				}
 			}
-		}	
+		}
+
 		return new LinkedHashMap<String, Double>(chartDataMap);
 	}
-	
+
 	public LinkedHashMap<String, Double> getForecastSalesDataForMonth(String storeId, String productId, String currentYear){
 		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
 		LinkedHashMap<String, Double> chartDataMap = new LinkedHashMap<String, Double>();
@@ -293,7 +299,7 @@ public class AnalysisUtil {
 					chartDataMap.put(DateUtil.month[month-1], currentValue + record.getSalesNumber());
 				}
 			}
-		}	
+		}
 		return chartDataMap;
 	}
 	public LinkedHashMap<String, Double> getForecastSalesDataForMonthForForecast(String storeId, String productId){
@@ -316,11 +322,11 @@ public class AnalysisUtil {
 					}
 				}
 			}
-		}	
+		}
 		return new LinkedHashMap<String, Double>(chartDataMap);
-	}	
-	
-	
+	}
+
+
 //Return number of one category's items
 	public Integer getSalesShareDataByYear(List<StoreSellingItem> items, String storeId, String currentYear){
 		ArrayList<SalesRecord> records = salesRecordsMap.get(storeId);
@@ -328,16 +334,19 @@ public class AnalysisUtil {
 		for(StoreSellingItem sellingItem : items){
 			productHashMap.put(sellingItem.getProductId(), sellingItem);
 		}
-		
+
 		Integer number = 0;
-		for(SalesRecord record : records){
-			int year = DateUtil.getYearOfDate(record.getCreateTime());
-			if(Integer.toString(year).equals(currentYear)){
-				if(productHashMap.containsKey(record.getProductId())){
-					number = number + record.getSalesNumber();
+		if(records != null){
+			for(SalesRecord record : records){
+				int year = DateUtil.getYearOfDate(record.getCreateTime());
+				if(Integer.toString(year).equals(currentYear)){
+					if(productHashMap.containsKey(record.getProductId())){
+						number = number + record.getSalesNumber();
+					}
 				}
 			}
 		}
+
 		return number;
 	}
 
@@ -347,23 +356,41 @@ public class AnalysisUtil {
 		for(StoreSellingItem sellingItem : items){
 			productHashMap.put(sellingItem.getProductId(), sellingItem);
 		}
-		
-		HashMap<String, Integer> salesSumById = new HashMap<String, Integer>();
-		
-		for(SalesRecord record : records){
-			if(productHashMap.containsKey(record.getProductId())){
-				int year = DateUtil.getYearOfDate(record.getCreateTime());
-				if(Integer.toString(year).equals(currentYear)){
-					if(salesSumById.containsKey(record.getProductId())){
-						Integer currentSalesVolume = salesSumById.get(record.getProductId());
-						salesSumById.put(record.getProductId(), currentSalesVolume + record.getSalesNumber());
-					}else {
-						salesSumById.put(record.getProductId(), record.getSalesNumber());
-					}
-				}
 
+		HashMap<String, Integer> salesSumById = new HashMap<String, Integer>();
+		if(records != null){
+			for(SalesRecord record : records){
+				if(productHashMap.containsKey(record.getProductId())){
+					int year = DateUtil.getYearOfDate(record.getCreateTime());
+					if(Integer.toString(year).equals(currentYear)){
+						if(salesSumById.containsKey(record.getProductId())){
+							Integer currentSalesVolume = salesSumById.get(record.getProductId());
+							salesSumById.put(record.getProductId(), currentSalesVolume + record.getSalesNumber());
+						}else {
+							salesSumById.put(record.getProductId(), record.getSalesNumber());
+						}
+					}
+
+				}
 			}
-		}	
+		}
+		if(records != null){
+			for(SalesRecord record : records){
+				if(productHashMap.containsKey(record.getProductId())){
+					int year = DateUtil.getYearOfDate(record.getCreateTime());
+					if(Integer.toString(year).equals(currentYear)){
+						if(salesSumById.containsKey(record.getProductId())){
+							Integer currentSalesVolume = salesSumById.get(record.getProductId());
+							salesSumById.put(record.getProductId(), currentSalesVolume + record.getSalesNumber());
+						}else {
+							salesSumById.put(record.getProductId(), record.getSalesNumber());
+						}
+					}
+
+				}
+			}
+		}
+
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		ValueComparator comparator =  new ValueComparator(salesSumById);
 		@SuppressWarnings("unchecked")
@@ -383,18 +410,18 @@ public class AnalysisUtil {
 		}
 		return lowMovingList;
 	}
-	
 
-	
-	
+
+
+
 	@SuppressWarnings("rawtypes")
 	static class ValueComparator<K, V extends Comparable> implements Comparator<K> {
-		  
+
 		  private final Map<K,V> map;
 		  public ValueComparator(Map<K,V> map) {
 		  this.map = map;
 		  }
-		  
+
 		  public int compare(K key1, K key2) {
 		   V v1 = this.map.get(key1);
 		   V v2 = this.map.get(key2);
@@ -413,9 +440,9 @@ public class AnalysisUtil {
 			chartDataMap.put(DateUtil.month[i], new Double(0));
 		}
 	}
-	
 
-	
+
+
 	public HashMap<String, ArrayList<StockOutVirtualSales>> getVirtualSalesRecordsMap() {
 		return virtualSalesRecordsMap;
 	}

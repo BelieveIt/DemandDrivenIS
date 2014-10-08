@@ -66,16 +66,15 @@ xmlns:p="http://primefaces.org/ui">
 		    			</div>
 		    			</f:facet>
 
-					    <p:column selectionMode="multiple" style="width:16px;text-align:center" toggleable="false" exportable="false"/>
-
  					    <!-- View/Edit/Delete -->
 			            <p:column style="width:105px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:125px;height:40px">
-<!-- 			             <p:commandButton actionListener="#{franchiserProduct.openViewProduct}" update=":viewProductForm :messagesForm:messages"
+			             <p:commandButton action="#{regionProduct.openViewProduct}" update=":viewItemDetailForm :messagesForm:messages"
 			             style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
-			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
+			                <f:setPropertyActionListener value="#{item}" target="#{regionProduct.selectedViewItem}" />
 			             </p:commandButton>
-			             <p:commandButton actionListener="#{franchiserProduct.openEditProduct}" update=":editProductForm :messagesForm:messages"
+
+			             <!--<p:commandButton actionListener="#{franchiserProduct.openEditProduct}" update=":editProductForm :messagesForm:messages"
 			            style="float:left;width:32px;margin-right:3px;text-align:center;" icon="ui-icon-pencil" id="openEditProductButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{franchiserProduct.selectedBasicListItem}" />
 			             </p:commandButton>
@@ -122,7 +121,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:panel>
 
     			</p:panel>
-    			
+
 				<!-- Dialogs -->
 				<ui:include src="productDialog.xhtml" />
 <!-- 				BlockUI
