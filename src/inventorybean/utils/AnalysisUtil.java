@@ -1,10 +1,9 @@
 package inventorybean.utils;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -13,12 +12,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
 import utils.DateUtil;
 import utils.NumberUtil;
@@ -30,9 +28,10 @@ import model.SalesRecord;
 import model.StockOutVirtualSales;
 import model.StoreSellingItem;
 import model.WasteRecord;
-@ManagedBean(name="analysisUtil", eager = true)
-@ApplicationScoped
-public class AnalysisUtil {
+@ManagedBean(name="analysisUtil")
+@ViewScoped
+public class AnalysisUtil implements Serializable{
+	private static final long serialVersionUID = 8136935922723391920L;
 	public static final String CATEGORY_INCLUDE_NONE = "CATEGORY_INCLUDE_NONE";
 	public static final String CATEGORY_INCLUDE_CATEGORY = "CATEGORY_INCLUDE_CATEGORY";
 	public static final String CATEGORY_INCLUDE_PRODUCT = "CATEGORY_INCLUDE_PRODUCT";
@@ -99,7 +98,6 @@ public class AnalysisUtil {
 				if(!years.contains(yearString))years.add(yearString);
 			}
 		}
-
 		Collections.sort(years, new Comparator<String>() {
 	        @Override
 	        public int compare(String  str1, String  str2)

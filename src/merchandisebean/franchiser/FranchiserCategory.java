@@ -105,6 +105,7 @@ public class FranchiserCategory implements Serializable{
 		FranchiserCategoryInit.initCategory();
 		productTypes = productTypeDao.queryProductTypes();
 		initByVersionId("head");
+		System.out.println("here");
 		RequestContext.getCurrentInstance().execute("PF('initCategory').hide();");
 	}
 	public void initWithoutPreparedCategories(){

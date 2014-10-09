@@ -3,6 +3,7 @@ package dao;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public StoreDao(){
 	jdbcTemplate = new JdbcTemplate(DaoUtil.getDataSource());
 	simpleJdbcInsert = new SimpleJdbcInsert(DaoUtil.getDataSource())
 	.withTableName("STORE");
-	
+
 	simpleJdbcInsertForRelaStoreProduct = new SimpleJdbcInsert(DaoUtil.getDataSource())
 	.withTableName("RELA_STORE_PRODUCT");
 	namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(DaoUtil.getDataSource());
@@ -55,11 +56,12 @@ public Store queryStoreById(String storeId){
 	return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new StoreMapper());
 }
 
-public void insertStoreSellingItemForStore(String storeId, String productId){
+public void insertStoreSellingItemForStore(String storeId, String productId, int inventory, Date date){
 	Map<String, Object> parameters = new HashMap<String, Object>();
 	parameters.put("STORE_ID", storeId);
 	parameters.put("PRODUCT_ID", productId);
-	parameters.put("CURRENT_INVENTORY", 0);
+	parameters.put("CURRENT_INVENTORY", inventory);
+	parameters.put("STOCKOUT_OCCURRENCE_TIME", date);
 	simpleJdbcInsertForRelaStoreProduct.execute(parameters);
 }
 public int deleteAllStoreSellingItemForStore(){

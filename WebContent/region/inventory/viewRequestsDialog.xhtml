@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+			<!-- View Item -->
+			<h:form id="viewItemForm">
+			<p:dialog header="View Replenishment Item" widgetVar="viewItem" width="900">
+				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
+					<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+						<h:outputLabel value="Product Id:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.productId}"/>
+
+				    	<h:outputLabel value="Product Name:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.regionListItem.product.name}"/>
+
+				    	<h:outputLabel value="Waste Forecast:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.wasteForecast}"/>
+
+				    	<h:outputLabel value="Sales Forecast Between Deliveries:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.salesForecast}"/>
+
+				    	<h:outputLabel value="Min Inventory Before Next Delivery:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.minInventoryOnNextDelivery}"/>
+
+				    	<h:outputLabel value="Current Inventory:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.currentInventory}"/>
+
+				    	<h:outputLabel value="Number of Replenishment:" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.replenishmentNumber}"/>
+			        </h:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+						<p:chart rendered="#{regionViewRequest.selectedItemSalesLine!=null}" type="line" model="#{regionViewRequest.selectedItemSalesLine}"
+						style="width:550px;height:350px" />
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+			<!-- View Report -->
+			<h:form id="viewReportForm">
+			<p:dialog header="View Replenishment Report" widgetVar="viewReport" width="1000">
+				<p:panel styleClass="autoHeightPanel divStyle" id="viewHeaderPanel">
+				<h:outputText
+					value="Deliver Frequency Type:" styleClass="right-content-header-label floatLeft text-bold"/>
+			    <h:outputText
+					value="#{regionViewRequest.selectedReport.deliveryType}" styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText
+					value="Delivery Date(After Request Date):" styleClass="right-content-header-label floatLeft text-bold"/>
+				<h:outputText
+					value="#{regionViewRequest.selectedReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
+	            <f:convertDateTime pattern="yyyy-MM-dd" />
+	            </h:outputText>
+
+				<h:outputText
+					value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText
+					value="#{regionViewRequest.selectedReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText rendered="#{regionViewRequest.selectedReport.status ne 'WaitingForApproval'}"
+					value="Status:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText rendered="#{regionViewRequest.selectedReport.status ne 'WaitingForApproval'}"
+					value="#{regionViewRequest.selectedReport.status}" styleClass="right-content-header-label floatLeft"/>
+
+				<p:commandButton rendered="#{regionViewRequest.selectedReport.status eq 'WaitingForApproval'}" action="#{regionViewRequest.openApprove}" update=":approvalForm"
+    			value="Approve" styleClass="right-content-header-button" icon="ui-icon-check" style="margin-left:15px;" />
+    			<p:commandButton rendered="#{regionViewRequest.selectedReport.status eq 'WaitingForApproval'}" action="#{regionViewRequest.openReject}" update=":rejectForm"
+    			value="Reject" styleClass="right-content-header-button" icon="ui-icon-close" style="margin-left:15px;" />
+
+				<p:separator styleClass="forizontalSeparator"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle">
+					<p:dataTable id="dataTable" var="item" value="#{regionViewRequest.selectedReport.replenishmentReportItems}"  style="width:900px"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+
+						<!-- View -->
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:70px;height:40px">
+ 			             <p:commandButton action="#{regionViewRequest.openViewItem}" update=":viewItemForm"
+			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{regionViewRequest.selectedItem}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="ProductName" styleClass="noPadding"
+				        sortBy="#{item.regionListItem.product.name}" >
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="ReplenishmentNumber" styleClass="noPadding"
+				        sortBy="#{item.replenishmentNumber}" >
+				            <h:outputText value="#{item.replenishmentNumber}" />
+				        </p:column>
+				    </p:dataTable>
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+	    	<!-- Approval -->
+			<h:form id="approvalForm">
+			<p:dialog header="Approve the Request" widgetVar="approve" width="650">
+					<p:panel styleClass="autoHeightPanel divStyle">
+		            <h:outputLabel styleClass="floatLeft text-align-left"
+		            value="Are you sure this replenishment request will be approved?" />
+		            </p:panel>
+		            <f:facet name="footer">
+		                <p:commandButton action="#{regionViewRequest.approve}" update=":viewReportForm:viewHeaderPanel :tableForm :leftMenuForm :approvalForm"
+		                value="Yes" />
+		                <p:commandButton action="#{regionViewRequest.approveCancel}" update=":approvalForm"
+		                value="No" />
+		            </f:facet>
+
+			</p:dialog>
+			</h:form>
+
+	    	<!-- Reject -->
+			<h:form id="rejectForm">
+			<p:dialog header="Reject the Request" widgetVar="reject" width="650">
+					<p:panel styleClass="autoHeightPanel divStyle">
+		            <h:outputLabel styleClass="floatLeft text-align-left"
+		            value="Are your sure this replenishment request will be rejected?" />
+		            </p:panel>
+		            <f:facet name="footer">
+		                <p:commandButton action="#{regionViewRequest.reject}" update=":viewReportForm:viewHeaderPanel :tableForm :leftMenuForm :rejectForm"
+		                value="Yes" />
+
+		                <p:commandButton action="#{regionViewRequest.rejectCancel}" update=":rejectForm"
+		                value="No" />
+		            </f:facet>
+
+			</p:dialog>
+			</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

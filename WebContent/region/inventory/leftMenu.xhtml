@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+	    <h:form id="leftMenuForm">
+		<div class="ui-menu ui-widget ui-widget-content ui-corner-all ui-helper-clearfix leftMenu">
+		<ul class="ui-menu-list ui-helper-reset">
+		<li class="ui-widget-header ui-corner-all"><h3>Replenishment Request Management</h3></li>
+		<li class="ui-menuitem ui-widget ui-corner-all" >
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/region/inventory/viewRequests.xhtml"
+		data-badge="#{regionViewRequest.waitingNum}">
+		<span class="ui-menuitem-icon ui-icon ui-icon-document"></span>
+		<span class="ui-menuitem-text">Requests From Stores</span>
+		</a>
+		</li>
+		</ul>
+		</div>
+		</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

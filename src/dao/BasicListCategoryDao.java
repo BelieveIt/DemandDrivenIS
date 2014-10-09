@@ -62,7 +62,6 @@ public class BasicListCategoryDao implements Serializable{
 			parameters.put("DESCRIPTION", basicListCategory.getDescription());
 			simpleJdbcInsert.execute(parameters);
 		}
-
 	}
 	public int deleteAll(){
 		String sql = "delete from BASIC_LIST_CATEGORIES";

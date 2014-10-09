@@ -23,7 +23,7 @@ xmlns:p="http://primefaces.org/ui">
 		            product type decides the attributes of the product. In one certain category, it will be associated to a product type)" />
 		            </p:panel>
 		            <f:facet name="footer">
-		                <p:commandButton actionListener="#{franchiserCategory.initByPreparedCategories}" update=":treeForm"
+		                <p:commandButton actionListener="#{franchiserCategory.initByPreparedCategories}" update=":treeForm :initCategoryForm"
 		                value="Init With General Data(Recommended)" id="initButton" />
 
 		                <p:commandButton actionListener="#{franchiserCategory.initWithoutPreparedCategories}" update=":treeForm"

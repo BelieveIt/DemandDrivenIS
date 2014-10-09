@@ -201,7 +201,7 @@ public class FranchiserCategoryInit {
 
 		icedCoffeeProduct.setUnit("g");
 		icedCoffee.setProduct(icedCoffeeProduct);
-		
+
 		////From the Fridge
 		BasicListItem cocaCola = new BasicListItem();
 		cocaCola.setCategoryId(cate2_3.getCategoryId());
@@ -282,20 +282,21 @@ public class FranchiserCategoryInit {
 
 		freshOrgangeJuiceProduct.setUnit("g");
 		freshOrgangeJuice.setProduct(freshOrgangeJuiceProduct);
-		
+
 		BasicListItemDao basicListItemDao = new BasicListItemDao();
 		basicListItemDao.insertProduct(cocaCola);
 		basicListItemDao.insertProduct(icedCoffee);
 		basicListItemDao.insertProduct(hotCoffee);
 		basicListItemDao.insertProduct(freshOrgangeJuice);
-		
+
 		StoreDao storeDao = new StoreDao();
-		storeDao.insertStoreSellingItemForStore("1", cocaCola.getProductId());
-		storeDao.insertStoreSellingItemForStore("1", icedCoffee.getProductId());
-		storeDao.insertStoreSellingItemForStore("1", hotCoffee.getProductId());
-		storeDao.insertStoreSellingItemForStore("1", freshOrgangeJuice.getProductId());
-		
-		
+		Calendar stockOutCalendar = Calendar.getInstance();
+		stockOutCalendar.setTime(new Date());
+		stockOutCalendar.add(Calendar.DATE, -3);
+		storeDao.insertStoreSellingItemForStore("1", cocaCola.getProductId(), 20, null);
+		storeDao.insertStoreSellingItemForStore("1", icedCoffee.getProductId(), 0, stockOutCalendar.getTime());
+		storeDao.insertStoreSellingItemForStore("1", hotCoffee.getProductId(), 15, null);
+		storeDao.insertStoreSellingItemForStore("1", freshOrgangeJuice.getProductId(), 0, stockOutCalendar.getTime());
 
 	}
 }

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
+    			<h:form id="buttonForm">
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Replenishment Request List</span>
+    			<div class="right-content-header-buttons-panel">
+
+    			<!-- Create -->
+    			<p:commandButton action="#{storeRequest.openCreateRequest}" update=":messagesForm:messages :createRequestForm"
+    			value="Create New Request" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			</div>
+    			</div>
+    			</h:form>
+
+    			<p:panel styleClass="autoHeightPanel">
+
+    			<!-- Products List -->
+				<p:panel styleClass="divStyle autoHeightPanel">
+				<h:form id="tableForm">
+
+					<p:dataTable id="dataTable" var="item" value="#{storeRequest.reports}"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.reportId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+
+ 					    <!-- View -->
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:70px;height:40px">
+ 			             <p:commandButton action="#{storeRequest.openViewReport}" update=":viewReportForm"
+			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewReportButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeRequest.selectedReport}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="ReportId" styleClass="noPadding"
+				        sortBy="#{item.reportId}" >
+				            <h:outputText value="#{item.reportId}" />
+				        </p:column>
+
+				        <p:column headerText="CreateTime" styleClass="noPadding"
+				        sortBy="#{item.createTime}" >
+				            <h:outputText value="#{item.createTime}" >
+				            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+				            </h:outputText>
+				        </p:column>
+
+				        <p:column headerText="Deliver Date" styleClass="noPadding"
+				        sortBy="#{item.deliveryTime}" >
+				            <h:outputText value="#{item.deliveryTime}" >
+				            <f:convertDateTime pattern="yyyy-MM-dd" />
+				            </h:outputText>
+				        </p:column>
+
+				        <p:column headerText="DeliverFrequencyType" styleClass="noPadding"
+				        sortBy="#{item.deliveryType}" >
+				            <h:outputText value="#{item.deliveryType}" />
+				        </p:column>
+
+				        <p:column headerText="Status" styleClass="noPadding"
+				        sortBy="#{item.status}" >
+				            <h:outputText value="#{item.status}" />
+				        </p:column>
+
+				    </p:dataTable>
+				</h:form>
+				</p:panel>
+
+    			</p:panel>
+
+				<!-- Dialogs -->
+				<ui:include src="requestDialog.xhtml" />
+<!-- 				BlockUI
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout"
+				trigger=":tableForm:dataTable:versionSelect :tableForm:dataTable:openViewProductButton :tableForm:dataTable:openEditProductButton :tableForm:dataTable:openDeleteProductButton
+				 :addProductForm:addProductButton :editProductForm:editProductButton :deleteProductForm:deleteProductButton :deleteProductsForm:deleteProductsButton :moveProductsForm:moveProductsButton">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form> -->
+
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

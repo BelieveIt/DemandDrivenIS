@@ -19,6 +19,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
+import org.apache.commons.math3.ml.neuralnet.MapUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
@@ -103,12 +104,13 @@ public class StoreAnalysis implements Serializable{
 				rootNode.getChildren().get(0).setSelected(true);
 				selectedNode = rootNode.getChildren().get(0);
 			}
-			
+
 		}
 		setItemsBySelectedNode();
 		initChartsForSelectedNode();
+
+		years = analysisUtil.queryYearsOfStores(currentStore.getStoreId());
 		if(years != null){
-			years = analysisUtil.queryYearsOfStores(currentStore.getStoreId());
 			currentYear = years.keySet().iterator().next();
 		}
 
@@ -272,19 +274,26 @@ public class StoreAnalysis implements Serializable{
 		LinkedHashMap<String, Double> itemHashMap = analysisUtil.getForecastSalesDataForYear(currentStore.getStoreId(), currentProductId);
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), itemHashMap);
 
-
 		final Set<Entry<String, Double>> mapValues = itemHashMap.entrySet();
 	    final int maplength = mapValues.size();
+
+	    Iterator<String> iterator = itemHashMap.keySet().iterator();
+	    LinkedHashMap<String, Double> itemHashMapWithoutLast = new LinkedHashMap<String, Double>();
+	    for(int i = 0; i < maplength - 1; i++){
+	    	String key = iterator.next();
+	    	itemHashMapWithoutLast.put(key, itemHashMap.get(key));
+	    }
+
 	    if(maplength >= 2){
 		    @SuppressWarnings("unchecked")
 			final Entry<String,Double>[] entries = new Entry[maplength];
 		    mapValues.toArray(entries);
 		    LinkedHashMap<String, Double> itemHashMapForForecast = new LinkedHashMap<String, Double>();
-		    itemHashMapForForecast.put(entries[maplength-1].getKey(), entries[maplength-1].getValue());
 
-			SimpleRegression forecastRegression = LeastSquareUtil.generateForecast(itemHashMap);
+			SimpleRegression forecastRegression = LeastSquareUtil.generateForecast(itemHashMapWithoutLast);
 			String startYearString = entries[maplength-1].getKey();
 			double startYearDouble = new Double(startYearString).doubleValue();
+			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble).intValue()), new Double(forecastRegression.predict(startYearDouble)));
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+1).intValue()), new Double(forecastRegression.predict(startYearDouble+1)));
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+2).intValue()), new Double(forecastRegression.predict(startYearDouble+2)));
 			itemHashMapForForecast.put(Integer.toString(new Double(startYearDouble+3).intValue()), new Double(forecastRegression.predict(startYearDouble+3)));

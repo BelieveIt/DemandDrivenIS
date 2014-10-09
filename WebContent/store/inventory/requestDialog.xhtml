@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+			<!-- Create Request -->
+			<h:form id="createRequestForm">
+			<p:dialog header="Create Replenishment Request" widgetVar="createRequest" width="450">
+			    <h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel for="deliveryFrenquencySelect"
+					value="Select Delivery Frequency Type:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="deliveryFrenquencySelect" value="#{storeRequest.newReplenishmentReport.deliveryType}"
+			        styleClass="right-content-header-select">
+			              <f:selectItem itemLabel="For Every Day Delivery" itemValue="everyday" />
+			              <f:selectItem itemLabel="For Every Week Delivery" itemValue="everyweek" />
+			              <f:selectItem itemLabel="For Every Month Delivery" itemValue="everymonth" />
+			        </p:selectOneMenu>
+
+		            <f:facet name="footer">
+		                <p:commandButton action="#{storeRequest.openCreateRequest2}" update=":createRequestForm :createRequestForm2"
+		                id="createRequestNextButton" value="Next" />
+		            </f:facet>
+		        </h:panelGrid>
+			</p:dialog>
+			</h:form>
+
+			<h:form id="createRequestForm2">
+			<p:dialog header="Create Replenishment Request" widgetVar="createRequest2" width="1000">
+				<p:panel styleClass="autoHeightPanel divStyle">
+				<h:outputText
+					value="Deliver Frequency Type:" styleClass="right-content-header-label floatLeft text-bold"/>
+			    <h:outputText
+					value="#{storeRequest.newReplenishmentReport.deliveryType}" styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText
+					value="Delivery Date(After Request Date):" styleClass="right-content-header-label floatLeft text-bold"/>
+				<h:outputText
+					value="#{storeRequest.newReplenishmentReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
+	            <f:convertDateTime pattern="yyyy-MM-dd" />
+	            </h:outputText>
+
+				<h:outputText
+					value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText
+					value="#{storeRequest.newReplenishmentReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+				<p:separator styleClass="forizontalSeparator"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle">
+					<p:dataTable id="dataTable" var="item" value="#{storeRequest.newReplenishmentReport.replenishmentReportItems}"  style="width:900px"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+
+						<!-- View -->
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:70px;height:40px">
+ 			             <p:commandButton action="#{storeRequest.openViewItem}" update=":viewItemForm"
+			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeRequest.selectedItem}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="ProductName" styleClass="noPadding"
+				        sortBy="#{item.regionListItem.product.name}" >
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="ReplenishmentNumber" styleClass="noPadding"
+				        sortBy="#{item.replenishmentNumber}" >
+				            <h:outputText value="#{item.replenishmentNumber}" />
+				        </p:column>
+
+
+				    </p:dataTable>
+
+				</p:panel>
+				<p:commandButton action="#{storeRequest.createRequest}" update=":createRequestForm2 :tableForm"
+				id="addCategoryButton" value="Create and Send Request" />
+			</p:dialog>
+			</h:form>
+
+			<!-- View Item -->
+			<h:form id="viewItemForm">
+			<p:dialog header="View Replenishment Item" widgetVar="viewItem" width="900">
+				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
+					<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+						<h:outputLabel value="Product Id:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.productId}"/>
+
+				    	<h:outputLabel value="Product Name:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.regionListItem.product.name}"/>
+
+				    	<h:outputLabel value="Waste Forecast:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.wasteForecast}"/>
+
+				    	<h:outputLabel value="Sales Forecast Between Deliveries:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.salesForecast}"/>
+
+				    	<h:outputLabel value="Min Inventory Before Next Delivery:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.minInventoryOnNextDelivery}"/>
+
+				    	<h:outputLabel value="Current Inventory:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.currentInventory}"/>
+
+				    	<h:outputLabel value="Number of Replenishment:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.replenishmentNumber}"/>
+			        </h:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+						<p:chart rendered="#{storeRequest.selectedItemSalesLine!=null}" type="line" model="#{storeRequest.selectedItemSalesLine}"
+						style="width:550px;height:350px" />
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+			<!-- View Report -->
+			<h:form id="viewReportForm">
+			<p:dialog header="View Replenishment Report" widgetVar="viewReport" width="1000">
+				<p:panel styleClass="autoHeightPanel divStyle">
+				<h:outputText
+					value="Deliver Frequency Type:" styleClass="right-content-header-label floatLeft text-bold"/>
+			    <h:outputText
+					value="#{storeRequest.selectedReport.deliveryType}" styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText
+					value="Delivery Date(After Request Date):" styleClass="right-content-header-label floatLeft text-bold"/>
+				<h:outputText
+					value="#{storeRequest.selectedReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
+	            <f:convertDateTime pattern="yyyy-MM-dd" />
+	            </h:outputText>
+
+				<h:outputText
+					value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText
+					value="#{storeRequest.selectedReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+				<p:separator styleClass="forizontalSeparator"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle">
+					<p:dataTable id="dataTable" var="item" value="#{storeRequest.selectedReport.replenishmentReportItems}"  style="width:900px"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+
+						<!-- View -->
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:70px;height:40px">
+ 			             <p:commandButton action="#{storeRequest.openViewItem}" update=":viewItemForm"
+			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeRequest.selectedItem}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="ProductName" styleClass="noPadding"
+				        sortBy="#{item.regionListItem.product.name}" >
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="ReplenishmentNumber" styleClass="noPadding"
+				        sortBy="#{item.replenishmentNumber}" >
+				            <h:outputText value="#{item.replenishmentNumber}" />
+				        </p:column>
+
+
+				    </p:dataTable>
+
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+	    </ui:composition>
+    </h:body>
+</html>

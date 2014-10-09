@@ -7,10 +7,143 @@ xmlns:p="http://primefaces.org/ui">
     <h:head>
     	<meta charset="utf-8"/>
         <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
     </h:head>
     <h:body>
-	    <ui:composition>
-    			<!-- Add -->
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
+    			<h:form id="buttonForm">
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Inventory Info</span>
+    			</div>
+    			</h:form>
+
+    			<p:panel styleClass="autoHeightPanel">
+
+    			<!-- Category Tree -->
+    			<p:panel styleClass="floatLeft width20 divStyle">
+    			<h:form id="treeForm">
+			    <p:tree value="#{storeMonitor.rootNode}" var="category" selectionMode="single"
+			    selection="#{storeMonitor.selectedNode}" styleClass="leftTree">
+			        <p:ajax event="select" listener="#{storeMonitor.onNodeSelect}" update=":tableForm"/>
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText value="#{category.categoryName}" />
+			        </p:treeNode>
+			    </p:tree>
+				</h:form>
+				</p:panel>
+
+    			<!-- Products List -->
+				<p:panel styleClass="floatLeft width78 divStyle">
+				<h:form id="tableForm">
+
+					<p:dataTable id="dataTable" var="item" value="#{storeMonitor.storeSellingItems}"
+				                         filteredValue="#{storeMonitor.filteredItems}"  selection="#{storeMonitor.selectedItems}"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+		    			<f:facet name="header" >
+		    			<div class="right-content-header-buttons-panel">
+
+		    			<!-- Add/Delete/Move
+		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForm:messages :addProductForm"
+		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":messagesForm:messages"
+						value="Delete" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":messagesForm:messages"
+						value="Move To Other Category" styleClass="right-content-header-button" icon="ui-icon-calculator" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+						-->
+		    			</div>
+		    			</f:facet>
+
+ 					    <!-- View -->
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:70px;height:40px">
+ 			             <p:commandButton action="#{storeMonitor.openViewProduct}" update=":viewProductForm :messagesForm:messages"
+			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
+			             </p:commandButton>
+			            </div>
+			            </p:column>
+
+				        <p:column headerText="Image" styleClass="searchHintClass"
+				        style="padding:0px;">
+				        <p:lightBox styleClass="imagebox" rendered="#{not empty item.regionListItem.product.image}">
+    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{item.regionListItem.product.image}">
+				        <p:graphicImage library="uploadImg" name="#{item.regionListItem.product.image}"
+    					width="100" height="60"/>
+    					</h:outputLink>
+    					</p:lightBox>
+				        </p:column>
+				        <p:column headerText="ProductId" styleClass="ProductId noPadding"
+				        sortBy="#{item.regionListItem.productId}" filterBy="#{item.regionListItem.productId}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.productId}" />
+				            <p:watermark for="@(.ProductId)" value="ProductId" />
+				        </p:column>
+				        <p:column headerText="Name" styleClass="Name noPadding" id="Name"
+				        sortBy="#{item.regionListItem.product.name}" filterBy="#{item.regionListItem.product.name}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				            <p:watermark for="@(.Name)" value="Name" />
+				        </p:column>
+				        <p:column headerText="Brand" styleClass="Brand noPadding" id="Brand"
+				        sortBy="#{item.regionListItem.product.brand}" filterBy="#{item.regionListItem.product.brand}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.regionListItem.product.brand}" />
+				            <p:watermark for="@(.Brand)" value="Brand" />
+				        </p:column>
+				        <p:column headerText="Inventory" styleClass="Inventory noPadding" id="Inventory"
+				        sortBy="#{item.currentInventory}" filterBy="#{item.currentInventory}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.currentInventory}" />
+				            <p:watermark for="@(.Inventory)" value="Inventory" />
+				        </p:column>
+
+						<!-- Stock-out -->
+			            <p:column toggleable="false"  exportable="false"  >
+			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
+			              icon="ui-icon-plus" value="Virtual Sales For Stock-out">
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
+			             </p:commandButton>
+
+			             <p:commandButton rendered="#{item.currentInventory ne 0}"
+			              icon="ui-icon-plus" value="Virtual Sales For Stock-out" disabled="true" />
+			            </p:column>
+
+						<!-- Waste -->
+			            <p:column toggleable="false"  exportable="false"  >
+			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			              icon="ui-icon-plus" value="Waste Record" disabled="true">
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}"/>
+			             </p:commandButton>
+
+			             <p:commandButton rendered="#{item.currentInventory ne 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			              icon="ui-icon-plus" value="Waste Record">
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
+			             </p:commandButton>
+			            </p:column>
+				    </p:dataTable>
+				</h:form>
+				</p:panel>
+
+    			</p:panel>
+
+				<!-- Dialogs -->
+				<ui:include src="monitorDialog.xhtml" />
+<!-- 				BlockUI
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout"
+				trigger=":tableForm:dataTable:versionSelect :tableForm:dataTable:openViewProductButton :tableForm:dataTable:openEditProductButton :tableForm:dataTable:openDeleteProductButton
+				 :addProductForm:addProductButton :editProductForm:editProductButton :deleteProductForm:deleteProductButton :deleteProductsForm:deleteProductsButton :moveProductsForm:moveProductsButton">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form> -->
+
+<!--     			Add
 				<h:form id="addProductForm" enctype="multipart/form-data">
 				<p:dialog header="Add Product" widgetVar="addProduct" width="650">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
@@ -47,14 +180,6 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
-
-			            <ui:repeat var="addItem" value="#{franchiserProduct.newProduct.additionalInfoItems}">
-			            <tr>
-			            <td><h:outputLabel value="#{addItem.label}:" /></td>
-			            <td><p:inputText value="#{addItem.value}" required="true" /></td>
-			            </tr>
-			            </ui:repeat>
-
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.addProduct}" update=":tableForm"
 			                id="addProductButton" value="Add" />
@@ -63,7 +188,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:dialog>
 				</h:form>
 
-    			<!-- View -->
+    			View
 				<h:form id="viewProductForm" enctype="multipart/form-data">
 				<p:dialog header="View Product" widgetVar="viewProduct" width="350">
 				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
@@ -104,18 +229,11 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
-
-			            <ui:repeat var="viewItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
-			            <tr class="ui-widget-content">
-			            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{viewItem.label}:" /></td>
-			            <td class="ui-panelgrid-cell value"><h:outputLabel value="#{viewItem.value}" /></td>
-			            </tr>
-			            </ui:repeat>
 			        </p:panelGrid>
 				</p:dialog>
 				</h:form>
 
-    			<!-- Edit -->
+    			Edit
 				<h:form id="editProductForm" enctype="multipart/form-data">
 				<p:dialog header="Edit Product" widgetVar="editProduct" width="650">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
@@ -152,14 +270,6 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
-
-			            <ui:repeat var="editItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
-			            <tr>
-			            <td><h:outputLabel value="#{editItem.label}:" /></td>
-			            <td><p:inputText value="#{editItem.value}" required="true" /></td>
-			            </tr>
-			            </ui:repeat>
-
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.editProduct}" update=":tableForm"
 			                id="editProductButton" value="Edit" />
@@ -168,11 +278,11 @@ xmlns:p="http://primefaces.org/ui">
 				</p:dialog>
 				</h:form>
 
-				<!-- Delete Product -->
+				Delete Product
 				<h:form id="deleteProductForm" enctype="multipart/form-data">
 				<p:dialog header="Delete Product" widgetVar="deleteProduct" width="350">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
-				    	<h:outputLabel for="name" value="Name:" />
+				    	 			            <h:outputLabel for="name" value="Name:" />
 			            <h:outputLabel id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}"/>
 
 			            <h:outputLabel for="createTime" value="Create Time:" />
@@ -209,13 +319,6 @@ xmlns:p="http://primefaces.org/ui">
     					</h:outputLink>
     					</p:lightBox>
 			            </p:panel>
-
-			            <ui:repeat var="deleteItem" value="#{franchiserProduct.selectedBasicListItem.product.additionalInfoItems}">
-			            <tr>
-			            <td><h:outputLabel value="#{deleteItem.label}:" /></td>
-			            <td><h:outputLabel value="#{deleteItem.value}" /></td>
-			            </tr>
-						</ui:repeat>
 			            <f:facet name="footer">
 			                <p:commandButton actionListener="#{franchiserProduct.deleteProduct}" update=":tableForm"
 			                id="deleteProductButton" value="Confirm Delete" />
@@ -224,7 +327,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:dialog>
 				</h:form>
 
-				<!-- Delete Products -->
+				Delete Products
 				<h:form id="deleteProductsForm">
 				<p:dialog header="Delete Product" widgetVar="deleteProducts" width="350">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
@@ -236,7 +339,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:dialog>
 				</h:form>
 
-				<!-- Move Products -->
+				Move Products
 				<h:form id="moveProductsForm">
 				<p:dialog header="Move Products" widgetVar="moveProducts" width="250">
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
@@ -253,7 +356,8 @@ xmlns:p="http://primefaces.org/ui">
 			            </f:facet>
 			        </h:panelGrid>
 				</p:dialog>
-				</h:form>
-	    </ui:composition>
+				</h:form> -->
+    		</ui:define>
+    	</ui:composition>
     </h:body>
 </html>
