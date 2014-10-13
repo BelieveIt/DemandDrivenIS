@@ -56,6 +56,11 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.reportId}" />
 				        </p:column>
 
+				        <p:column headerText="StoreName" styleClass="noPadding"
+				        sortBy="#{item.store.name}" >
+				            <h:outputText value="#{item.store.name}" />
+				        </p:column>
+
 				        <p:column headerText="CreateTime" styleClass="noPadding"
 				        sortBy="#{item.createTime}" >
 				            <h:outputText value="#{item.createTime}" >

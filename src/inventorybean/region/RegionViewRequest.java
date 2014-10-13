@@ -27,6 +27,7 @@ import model.DeliveryReport;
 import model.DeliveryReportItem;
 import model.ReplenishmentReport;
 import model.ReplenishmentReportItem;
+import model.Store;
 
 import dao.DeliveryReportDao;
 import dao.ReplenishmentReportDao;
@@ -39,12 +40,6 @@ public class RegionViewRequest implements Serializable{
 	private ReplenishmentReportDao replenishmentReportDao;
 	private StoreDao storeDao;
 	private DeliveryReportDao deliveryReportDao;
-	public RequestUtil getRequestUtil() {
-		return requestUtil;
-	}
-	public void setRequestUtil(RequestUtil requestUtil) {
-		this.requestUtil = requestUtil;
-	}
 
 	@ManagedProperty(value="#{requestUtil}")
 	private RequestUtil requestUtil;
@@ -60,10 +55,18 @@ public class RegionViewRequest implements Serializable{
 	public void init(){
 		replenishmentReportDao = new ReplenishmentReportDao();
 		deliveryReportDao = new DeliveryReportDao();
+		storeDao = new StoreDao();
 		initProcess();
 	}
 	public void initProcess(){
 		reports = replenishmentReportDao.queryReplenishmentReports();
+		if(reports != null){
+			for(ReplenishmentReport report : reports){
+				Store store = storeDao.queryStoreById(report.getStoreId());
+				report.setStore(store);
+			}
+		}
+
 		waitingNum = countWaitingNum(reports);
 	}
 
@@ -172,5 +175,12 @@ public class RegionViewRequest implements Serializable{
 
 	public void setWaitingNum(Integer waitingNum) {
 		this.waitingNum = waitingNum;
+	}
+
+	public RequestUtil getRequestUtil() {
+		return requestUtil;
+	}
+	public void setRequestUtil(RequestUtil requestUtil) {
+		this.requestUtil = requestUtil;
 	}
 }

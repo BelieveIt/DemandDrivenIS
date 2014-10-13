@@ -21,6 +21,7 @@ import javax.faces.bean.ViewScoped;
 
 import org.apache.commons.math3.ml.neuralnet.MapUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.chart.LineChartModel;
@@ -107,7 +108,7 @@ public class StoreAnalysis implements Serializable{
 
 		}
 		setItemsBySelectedNode();
-		initChartsForSelectedNode();
+
 
 		years = analysisUtil.queryYearsOfStores(currentStore.getStoreId());
 		if(years != null){
@@ -118,6 +119,7 @@ public class StoreAnalysis implements Serializable{
 
 		productAnalysisType = "forYear";
 		isForecast = false;
+		initChartsForSelectedNode();
 	}
 
 	private void setItemsBySelectedNode(){
@@ -194,6 +196,10 @@ public class StoreAnalysis implements Serializable{
 			salesVolumeLowMoving.setSellingItem(key);
 			salesLowMovingForCategory.add(salesVolumeLowMoving);
 		}
+	}
+	public void viewProductAnalysisOfLowMoving(){
+		refreshSalesVolumeTrendForProduct();
+		RequestContext.getCurrentInstance().execute("PF('analysisOfLowMovingChart').show();");
 	}
 
 	public void refreshCategoryIncludeCategory(){

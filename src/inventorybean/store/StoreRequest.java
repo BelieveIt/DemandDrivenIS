@@ -84,6 +84,25 @@ public class StoreRequest implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('createRequest2').show();");
 	}
 
+	public void openViewItemForAdd(){
+		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
+		TreeMap<Integer, Integer> dayOfWeekAvgMap = salesRecordsMapForForecastOfStoreByProduct.get(selectedItem.getProductId());
+		LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+		Iterator<Integer> iterator = dayOfWeekAvgMap.keySet().iterator();
+		while(iterator.hasNext()){
+			Integer key = iterator.next();
+			dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
+		}
+		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
+		RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').show();");
+	}
+
+	public void confirmReplenishmentNumber(){
+		RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').hide();");
+	}
+
 	public void openViewItem(){
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
@@ -95,7 +114,7 @@ public class StoreRequest implements Serializable{
 			dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
 		}
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
-		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days", "Day of Week", "Sales Volume", dataMap);
+		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
 		RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
 	}
 
@@ -113,6 +132,10 @@ public class StoreRequest implements Serializable{
 
 	public void openViewReport(){
 		RequestContext.getCurrentInstance().execute("PF('viewReport').show();");
+	}
+
+	public void openRejectedReason(){
+		RequestContext.getCurrentInstance().execute("PF('rejectedReason').show();");
 	}
 	public List<ReplenishmentReport> getReports() {
 		return reports;

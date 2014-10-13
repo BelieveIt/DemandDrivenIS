@@ -7,11 +7,11 @@ xmlns:p="http://primefaces.org/ui">
     <h:head>
     	<meta charset="utf-8"/>
         <title>Demand-Driven IS</title>
-        
+
     </h:head>
     <h:body>
 		<ui:composition template="/common/standardLayout.xhtml">
-		
+
     		<ui:define name="leftMenu">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
@@ -74,6 +74,7 @@ xmlns:p="http://primefaces.org/ui">
 
     			<!-- Tree -->
 				<h:form id="treeForm">
+				<p:messages id="messagesForTree" showDetail="true" autoUpdate="true" closable="true" />
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
 			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />

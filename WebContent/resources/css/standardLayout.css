@@ -192,3 +192,97 @@ width:100%;
 .text-bold{
 font-weight:bold;
 }
+
+.loginPanel{
+width: 350px;
+margin: 30px auto;
+border: 1px solid #fff;
+border-radius: 5px;
+box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+padding-bottom:20px;
+}
+.loginPanelHeader{
+padding: 20px 20px 15px 20px;
+}
+.loginPanelHeaderText{
+font-family: 'Bree Serif', serif;
+font-weight: bold;
+font-size: 28px;
+line-height: 34px;
+color: #414848;
+text-shadow: 1px 1px 0 rgba(256,256,256,1.0);
+margin-bottom: 10px;
+float:left;
+}
+.loginInput{
+width: 188px;
+padding: 15px 25px;
+font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+font-weight: 400;
+font-size: 14px;
+color: #9d9e9e;
+text-shadow: 1px 1px 0 rgba(256,256,256,1.0);
+background: #fff;
+border: 1px solid #fff;
+border-radius: 5px;
+box-shadow: inset 0 1px 3px rgba(0,0,0,0.50);
+-moz-box-shadow: inset 0 1px 3px rgba(0,0,0,0.50);
+-webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,0.50);
+}
+.loginButton{
+margin：5px auto 5px;
+width:240px;
+padding: 7px 20px;
+font-family: 'Bree Serif', serif;
+font-weight: 300;
+font-size: 18px;
+color: #fff;
+text-shadow: 0px 1px 0 rgba(0,0,0,0.25);
+background: #56c2e1;
+border: 1px solid #46b3d3;
+border-radius: 5px;
+cursor: pointer;
+box-shadow: inset 0 0 2px rgba(256,256,256,0.75);
+-moz-box-shadow: inset 0 0 2px rgba(256,256,256,0.75);
+-webkit-box-shadow: inset 0 0 2px rgba(256,256,256,0.75);
+}
+
+.loginButton:hover{
+background: #3f9db8;
+border: 1px solid rgba(256,256,256,0.75);
+box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+-moz-box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+-webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+color: #fff;
+}
+
+.testDataNoticePanel{
+padding-left:25px;
+}
+.testDataNotice{
+text-align:left;
+display:block;
+font-size: 11px;
+line-height: 16px;
+color: #678889;
+text-shadow: 1px 1px 0 rgba(256,256,256,1.0);
+}
+.ui-wizard-step-title{
+font-size:15px;
+}
+.ui-wizard-nav-back{
+padding:4px 6px 4px;
+width:120px;
+}
+.ui-wizard-nav-next{
+padding:4px 6px 4px;
+width:120px;
+}
+.stockout{
+background-color:#F2B3A0;
+background:#F2B3A0;
+}
+.available{
+}

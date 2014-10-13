@@ -4,6 +4,7 @@ public class ReplenishmentReportItem {
 private String reportId;
 private String productId;
 private Integer replenishmentNumber;
+private Integer autoCalculatedReplenishmentNumber;
 private Integer currentInventory;
 private Integer wasteForecast;
 private Integer salesForecast;
@@ -57,6 +58,13 @@ public RegionListItem getRegionListItem() {
 }
 public void setRegionListItem(RegionListItem regionListItem) {
 	this.regionListItem = regionListItem;
+}
+public Integer getAutoCalculatedReplenishmentNumber() {
+	return autoCalculatedReplenishmentNumber;
+}
+public void setAutoCalculatedReplenishmentNumber(
+		Integer autoCalculatedReplenishmentNumber) {
+	this.autoCalculatedReplenishmentNumber = autoCalculatedReplenishmentNumber;
 }
 
 }

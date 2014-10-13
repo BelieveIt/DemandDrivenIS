@@ -44,7 +44,10 @@ public class StockOutVirtualSalesDao {
 		}
 		return map;
 	}
-
+	public int deleteAll(){
+		String sql = "delete from STOCK_OUT_VIRTUAL_SALES";
+		return jdbcTemplate.update(sql);
+	}
 	public void insertStockOutVirtualSales(StockOutVirtualSales stockOutVirtualSales){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("STORE_ID", stockOutVirtualSales.getStoreId());

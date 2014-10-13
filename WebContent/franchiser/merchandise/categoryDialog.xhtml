@@ -54,7 +54,7 @@ xmlns:p="http://primefaces.org/ui">
 		            id="categoryDescription" value="#{franchiserCategory.newBasicListCategory.description}" label="categoryDescription" />
 
 		            <f:facet name="footer">
-		                <p:commandButton action="#{franchiserCategory.addCategory}" update=":treeForm"
+		                <p:commandButton action="#{franchiserCategory.addCategory}" update=":treeForm :treeForm:messagesForTree"
 		                id="addCategoryButton" value="Add" />
 		            </f:facet>
 		        </h:panelGrid>

@@ -19,8 +19,6 @@ xmlns:p="http://primefaces.org/ui">
 			        <p:selectOneMenu id="deliveryFrenquencySelect" value="#{storeRequest.newReplenishmentReport.deliveryType}"
 			        styleClass="right-content-header-select">
 			              <f:selectItem itemLabel="For Every Day Delivery" itemValue="everyday" />
-			              <f:selectItem itemLabel="For Every Week Delivery" itemValue="everyweek" />
-			              <f:selectItem itemLabel="For Every Month Delivery" itemValue="everymonth" />
 			        </p:selectOneMenu>
 
 		            <f:facet name="footer">
@@ -61,7 +59,7 @@ xmlns:p="http://primefaces.org/ui">
 						<!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:70px;height:40px">
- 			             <p:commandButton action="#{storeRequest.openViewItem}" update=":viewItemForm"
+ 			             <p:commandButton action="#{storeRequest.openViewItemForAdd}" update=":viewItemForAddForm"
 			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{storeRequest.selectedItem}" />
 			             </p:commandButton>
@@ -83,7 +81,48 @@ xmlns:p="http://primefaces.org/ui">
 
 				</p:panel>
 				<p:commandButton action="#{storeRequest.createRequest}" update=":createRequestForm2 :tableForm"
-				id="addCategoryButton" value="Create and Send Request" />
+				id="createAndSendButton" value="Create and Send Request" />
+			</p:dialog>
+			</h:form>
+
+			<!-- View Item For Add-->
+			<h:form id="viewItemForAddForm">
+			<p:dialog header="View Replenishment Item" widgetVar="viewItemForAdd" width="900">
+				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
+					<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+						<h:outputLabel value="Product Id:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.productId}"/>
+
+				    	<h:outputLabel value="Product Name:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.regionListItem.product.name}"/>
+
+				    	<h:outputLabel value="Waste Forecast:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.wasteForecast}"/>
+
+				    	<h:outputLabel value="Sales Forecast Between Deliveries:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.salesForecast}"/>
+
+				    	<h:outputLabel value="Min Inventory Before Next Delivery:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.minInventoryOnNextDelivery}"/>
+
+				    	<h:outputLabel value="Current Inventory:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.currentInventory}"/>
+
+				    	<h:outputLabel value="Auto Calculated Replenishment Number:" />
+			            <h:outputLabel value="#{storeRequest.selectedItem.autoCalculatedReplenishmentNumber}"/>
+
+			            <h:outputLabel value="Confirm Replenishment Number:" />
+			            <p:inputText value="#{storeRequest.selectedItem.replenishmentNumber}" style="width:40px;" id="confirmReplenishNumber"/>
+
+			            <p:commandButton action="#{storeRequest.confirmReplenishmentNumber}" update=":createRequestForm2:dataTable"
+						id="createAndSendButton" value="Confirm" />
+			        </h:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+						<p:chart rendered="#{storeRequest.selectedItemSalesLine!=null}" type="line" model="#{storeRequest.selectedItemSalesLine}"
+						style="width:550px;height:350px" />
+				</p:panel>
 			</p:dialog>
 			</h:form>
 
@@ -110,7 +149,7 @@ xmlns:p="http://primefaces.org/ui">
 				    	<h:outputLabel value="Current Inventory:" />
 			            <h:outputLabel value="#{storeRequest.selectedItem.currentInventory}"/>
 
-				    	<h:outputLabel value="Number of Replenishment:" />
+				    	<h:outputLabel value="Replenishment Number:" />
 			            <h:outputLabel value="#{storeRequest.selectedItem.replenishmentNumber}"/>
 			        </h:panelGrid>
 				</p:panel>
@@ -143,6 +182,15 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputText
 					value="#{storeRequest.selectedReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
 
+				<h:outputText
+					value="Status:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText
+					value="#{storeRequest.selectedReport.status}" styleClass="right-content-header-label floatLeft"/>
+
+				<p:commandButton rendered="#{storeRequest.selectedReport.status eq 'Rejected'}" action="#{storeRequest.openRejectedReason}" update=":rejectedReasonForm"
+				   value="View Reason" style="float:left;width:150px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openRejectedReasonButton">
+					<f:setPropertyActionListener value="#{storeRequest.selectedReport}" target="#{storeRequest.selectedReport}" />
+				</p:commandButton>
 				<p:separator styleClass="forizontalSeparator"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle">
@@ -177,6 +225,17 @@ xmlns:p="http://primefaces.org/ui">
 			</p:dialog>
 			</h:form>
 
+			<!-- View Reason -->
+			<h:form id="rejectedReasonForm">
+			<p:dialog header="View Rejected Reason" widgetVar="rejectedReason" width="900">
+				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
+					<h:outputText value="Report ID: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{storeRequest.selectedReport.reportId}" style="float:left;margin-right:20px"/>
+					<p:separator styleClass="forizontalSeparator"/>
+					<h:outputText value="#{storeRequest.selectedReport.commentFromRegion}" style="float:left;margin-right:20px"/>
+				</p:panel>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

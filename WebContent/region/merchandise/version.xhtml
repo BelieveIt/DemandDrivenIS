@@ -21,12 +21,19 @@ xmlns:p="http://primefaces.org/ui">
 
 					<!-- Version List  -->
     				<h:form id="tableForm">
+	    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+	    			<span class="right-content-header-text">BASIC LIST Version List</span>
+	    			<div class="right-content-header-buttons-panel">
+
+	    			<!-- Add/Delete/Rename -->
+	    			<p:commandButton action="#{regionVersion.viewUsageWizard}"
+	    			value="View Usage Guide Wizard" styleClass="right-content-header-button"
+	    			icon="ui-icon-info" style="margin-left:30px;"/>
+	    			</div>
+	    			</div>
 					<p:dataTable id="dataTable" var="item" value="#{regionVersion.regionVersionListItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.versionId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
-		    			<f:facet name="header" >
-		    			<h:outputText value="BASIC LIST Version List" style="font-size:19px;font-weight:bold;"/>
-		    			</f:facet>
 
 				        <p:column headerText="VersionStatus" styleClass="VersionStatus noPadding" id="VersionStatus"
 				        sortBy="#{item.versionId}" filterBy="#{item.versionId}" filterMatchMode="startsWith">
@@ -123,7 +130,7 @@ xmlns:p="http://primefaces.org/ui">
 				        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 				    </p:blockUI>
 					</h:form>
-					
+
 					<!-- Dialogs -->
 					<ui:include src="versionDialog.xhtml" />
     		</ui:define>

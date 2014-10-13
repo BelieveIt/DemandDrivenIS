@@ -10,10 +10,12 @@ import java.util.Map;
 import model.BasicListCategory;
 import model.DeliveryReport;
 import model.DeliveryReportItem;
+import model.ReplenishmentReport;
 import model.Store;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -39,12 +41,27 @@ public class DeliveryReportDao implements Serializable{
 		parameters.put("DELIVERY_TIME", deliveryReport.getDeliveryTime());
 		parameters.put("REPORT_ID", deliveryReport.getReportId());
 		parameters.put("STORE_ID", deliveryReport.getStoreId());
+		parameters.put("UPDATED", DeliveryReport.NOT_UPDATED);
 		simpleJdbcInsert.execute(parameters);
 
 		DeliveryReportItemDao deliveryReportItemDao = new DeliveryReportItemDao();
 		deliveryReportItemDao.insertItems(deliveryReport.getDeliveryReportItems());
 	}
 
+	public int updateDeliveryReport(DeliveryReport deliveryReport){
+		String sql = "update DELIVERY_REPORT set " +
+				"CREATE_TIME = :createTime, DELIVERY_TIME = :deliveryTime, " +
+				"UPDATED = :updated " +
+				"where REPORT_ID = :reportId";
+		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(deliveryReport);
+		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+	}
+
+	public List<DeliveryReport> queryDeliveryReportsByStoreId(String storeId){
+		String sql = "select * from DELIVERY_REPORT where STORE_ID = :storeId order by CREATE_TIME DESC";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("storeId", storeId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new DeliveryReportMapper());
+	}
 	public int deleteAll(){
 		String sql = "delete from DELIVERY_REPORT";
 		return jdbcTemplate.update(sql);
@@ -56,7 +73,7 @@ public class DeliveryReportDao implements Serializable{
 	    	deliveryReport.setDeliveryTime(rs.getTimestamp("DELIVERY_TIME"));
 	    	deliveryReport.setReportId(rs.getString("REPORT_ID"));
 	    	deliveryReport.setStoreId(rs.getString("STORE_ID"));
-
+	    	deliveryReport.setUpdated(rs.getString("UPDATED"));
 	    	StoreDao storeDao = new StoreDao();
 	    	Store store = storeDao.queryStoreById(deliveryReport.getStoreId());
 	    	String regionId = store.getRegionId();

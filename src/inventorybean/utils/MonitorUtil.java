@@ -31,7 +31,6 @@ public class MonitorUtil {
 				list.add(item);
 			}
 		}
-
 		if(categoryIdList.contains(CategoryUtil.NOT_CLASSIFIED_FOR_PRODUCT_ID)){
 			List<StoreSellingItem> notInHeadCategoryTree = new ArrayList<StoreSellingItem>();
 			RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();

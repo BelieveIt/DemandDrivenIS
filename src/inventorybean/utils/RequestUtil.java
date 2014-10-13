@@ -13,6 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import utils.NumberUtil;
+
 import dao.SalesRecordDao;
 import dao.StockOutVirtualSalesDao;
 import dao.StoreDao;
@@ -129,7 +131,7 @@ public class RequestUtil implements Serializable{
 					Integer sum = mapForSum.get(productId).get(i);
 					Integer num = mapForDayNum.get(productId).get(i);
 					if(sum!=null && num!=null){
-						salesRecordsMapForForecastOfStoreByProduct.get(productId).put(i, sum / num);
+						salesRecordsMapForForecastOfStoreByProduct.get(productId).put(i, new Double(NumberUtil.divide(sum, num)).intValue());
 					}
 				}
 			}
@@ -152,7 +154,13 @@ public class RequestUtil implements Serializable{
 
 		List<ReplenishmentReportItem> items = new ArrayList<ReplenishmentReportItem>();
 		StoreDao storeDao = new StoreDao();
-		List<StoreSellingItem> products = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
+		List<StoreSellingItem> tempProducts = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
+		List<StoreSellingItem> products = new ArrayList<StoreSellingItem>();
+		for(StoreSellingItem item : tempProducts){
+			if(item.getRegionListItem()!=null && item.getRegionListItem().getProduct().getDeliveryFrequency().equals("everyday")){
+				products.add(item);
+			}
+		}
 
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
@@ -176,6 +184,7 @@ public class RequestUtil implements Serializable{
 				replenishmentReportItem.setProductId(productId);
 				replenishmentReportItem.setRegionListItem(item.getRegionListItem());
 				replenishmentReportItem.setReplenishmentNumber(replenishmentVolume);
+				replenishmentReportItem.setAutoCalculatedReplenishmentNumber(replenishmentVolume);
 				replenishmentReportItem.setSalesForecast(salesForecast);
 				replenishmentReportItem.setWasteForecast(wasteForecast);
 				items.add(replenishmentReportItem);

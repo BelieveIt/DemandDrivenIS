@@ -35,7 +35,8 @@ xmlns:p="http://primefaces.org/ui">
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/store/inventory/receive.xhtml" >
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/store/inventory/receive.xhtml"
+		data-badge="#{storeReceive.needToUpdateNum}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-cart"></span>
 		<span class="ui-menuitem-text">Receive Goods</span>
 		</a>

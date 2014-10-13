@@ -10,7 +10,7 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
 	    <ui:composition>
-	    
+
 			<!-- Create Version -->
 			<h:form id="createVersionForm">
 			<p:dialog header="Create Version" widgetVar="createVersion" width="400">
@@ -22,7 +22,7 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- View Version -->
 			<h:form id="viewVersionForm">
 			<p:dialog header="View Version Diff" widgetVar="viewVersion">
@@ -73,7 +73,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserVersion.basicListDiff.deletedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.deletedItems}" target="#{franchiserVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -87,7 +87,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserVersion.basicListDiff.editedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.editedItems}" target="#{franchiserVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -101,7 +101,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{franchiserVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-search" rendered="#{franchiserVersion.basicListDiff.addedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{franchiserVersion.basicListDiff.addedItems}" target="#{franchiserVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 				        </p:tab>
@@ -109,7 +109,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:panel>
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- View Items Detail -->
 			<h:form id="viewItemsDetailForm">
 			<p:dialog header="View Items" widgetVar="viewItemsDetail">
@@ -144,54 +144,54 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputText value="#{item.product.name}" />
 			            <p:watermark for="@(.Name)" value="Name" />
 			        </p:column>
-			    </p:dataTable>			   
+			    </p:dataTable>
 			</p:panel>
 			</p:dialog>
 			</h:form>
    			<!-- View Item -->
-				<h:form id="viewItemDetailForm">
-				<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
-				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
- 			            <h:outputLabel for="name" value="Name:" />
-			            <h:outputLabel id="name" value="#{franchiserVersion.selectedViewItem.product.name}"/>
+			<h:form id="viewItemDetailForm">
+			<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
+			    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+			            <h:outputLabel for="name" value="Name:" />
+		            <h:outputLabel id="name" value="#{franchiserVersion.selectedViewItem.product.name}"/>
 
-			            <h:outputLabel for="createTime" value="Create Time:" />
-			            <h:outputLabel id="createTime" value="#{franchiserVersion.selectedViewItem.product.productCreateTime}">
-			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-			            </h:outputLabel>
+		            <h:outputLabel for="createTime" value="Create Time:" />
+		            <h:outputLabel id="createTime" value="#{franchiserVersion.selectedViewItem.product.productCreateTime}">
+		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+		            </h:outputLabel>
 
-			            <h:outputLabel for="brand" value="Brand:" />
-			            <h:outputLabel id="brand" value="#{franchiserVersion.selectedViewItem.product.brand}" />
+		            <h:outputLabel for="brand" value="Brand:" />
+		            <h:outputLabel id="brand" value="#{franchiserVersion.selectedViewItem.product.brand}" />
 
-			            <h:outputLabel for="itemWeight" value="Weight:" />
-			            <h:outputLabel id="itemWeight" value="#{franchiserVersion.selectedViewItem.product.itemWeight}" />
+		            <h:outputLabel for="itemWeight" value="Weight:" />
+		            <h:outputLabel id="itemWeight" value="#{franchiserVersion.selectedViewItem.product.itemWeight}" />
 
-			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <h:outputLabel id="manufacturer" value="#{franchiserVersion.selectedViewItem.product.manufacturer}" />
+		            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+		            <h:outputLabel id="manufacturer" value="#{franchiserVersion.selectedViewItem.product.manufacturer}" />
 
-			            <h:outputLabel for="price" value="Price:" />
-			            <h:outputLabel id="price" value="#{franchiserVersion.selectedViewItem.product.price}" />
+		            <h:outputLabel for="price" value="Price:" />
+		            <h:outputLabel id="price" value="#{franchiserVersion.selectedViewItem.product.price}" />
 
-			            <h:outputLabel for="unit" value="Unit:" />
-			            <h:outputLabel id="unit" value="#{franchiserVersion.selectedViewItem.product.unit}" />
+		            <h:outputLabel for="unit" value="Unit:" />
+		            <h:outputLabel id="unit" value="#{franchiserVersion.selectedViewItem.product.unit}" />
 
-			            <h:outputLabel for="minInventory" value="MinInventory:" />
-			            <h:outputLabel id="minInventory" value="#{franchiserVersion.selectedViewItem.product.minInventory}" />
+		            <h:outputLabel for="minInventory" value="MinInventory:" />
+		            <h:outputLabel id="minInventory" value="#{franchiserVersion.selectedViewItem.product.minInventory}" />
 
-						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
-				        <h:outputLabel id="deliveryFrequency" value="#{franchiserVersion.selectedViewItem.product.deliveryFrequency}" />
-				        <h:outputLabel for="image" value="Product Image:" />
-    					<p:panel id="uploadedImg" styleClass="divStyle">
-    					<p:lightBox styleClass="imagebox">
-    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserVersion.selectedViewItem.product.image}" title="Nature 1">
-    					<p:graphicImage library="uploadImg" name="#{franchiserVersion.selectedViewItem.product.image}"
-    					width="100" height="60" rendered="#{not empty franchiserVersion.selectedViewItem.product.image}"/>
-    					</h:outputLink>
-    					</p:lightBox>
-			            </p:panel>
-			        </p:panelGrid>
-				</p:dialog>
-				</h:form>			
+					<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+			        <h:outputLabel id="deliveryFrequency" value="#{franchiserVersion.selectedViewItem.product.deliveryFrequency}" />
+			        <h:outputLabel value="Product Image:" />
+   					<p:panel id="uploadedImg" styleClass="divStyle">
+   					<p:lightBox styleClass="imagebox">
+   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{franchiserVersion.selectedViewItem.product.image}" title="Nature 1">
+   					<p:graphicImage library="uploadImg" name="#{franchiserVersion.selectedViewItem.product.image}"
+   					width="100" height="60" rendered="#{not empty franchiserVersion.selectedViewItem.product.image}"/>
+   					</h:outputLink>
+   					</p:lightBox>
+		            </p:panel>
+		        </p:panelGrid>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+    <h:outputStylesheet name="standardLayout.css" library="css" />
+   	<h:outputStylesheet name="introjs.css" library="css" />
+   	<h:outputScript name="login.js" library="js"/>
+    <h:outputScript name="intro.js" library="js"/>
+	<p:layout id="pageLayout" fullPage="true">
+	    <p:layoutUnit position="north" size="70">
+	    <p:graphicImage library="img" name="logo.png" />
+	    <ui:include src="common/lanSelect.xhtml" />
+		<ui:insert name="headerContent" >
+	    </ui:insert>
+	    </p:layoutUnit>
+
+	    <p:layoutUnit position="south" size="50" >
+	        <h:outputText style="font-weight:bold; font-size:16px;" value="Demand-Driven IS © Works Applications Co., Ltd." />
+	    </p:layoutUnit>
+
+
+	    <p:layoutUnit position="center" id="rightContentLayout">
+	    <p:panel id="rightContentPanel" >
+		    <p:panel id="loginPanel" styleClass="loginPanel divStyle autoHeightPanel" >
+	        <h:form id="login-form">
+
+	        <p:panel styleClass="loginPanelHeader divStyle autoHeightPanel">
+	        	<h:outputText value="Welcome!" styleClass="loginPanelHeaderText"/>
+	        </p:panel>
+	           <h:inputText value="#{loginBean.username}" id="username" styleClass="loginInput"/>
+	           <p:watermark for="username" value="username" id="watermark1" />
+	           <h:inputSecret value="#{loginBean.password}" id="password" styleClass="loginInput"/>
+	           <p:watermark for="password" value="password" id="watermark2" />
+
+	           <p:commandButton id="button" value="Sign In" actionListener="#{loginBean.doLogin}" styleClass="loginButton"
+	                                 onstart="PF('BUI').show()" oncomplete="handleLoginRequest(xhr, status, args)" />
+	           <br/>
+	           <p:panel styleClass="divStyle autoHeightPanel testDataNoticePanel">
+	            <h:outputText value="Test Account:" styleClass="testDataNotice"/>
+
+	            <h:outputText value="1.Franchiser - Merchandise Info Administrator" styleClass="testDataNotice"/>
+				<h:outputText value="username: f1 password: f1" styleClass="testDataNotice"/>
+
+	            <h:outputText value="2.Region - Merchandise Info Administrator" styleClass="testDataNotice"/>
+				<h:outputText value="username: r1 password: r1" styleClass="testDataNotice"/>
+
+				<h:outputText value="3.Store - Inventory Administrator" styleClass="testDataNotice"/>
+				<h:outputText value="username: s1 password: s1" styleClass="testDataNotice"/>
+
+				<h:outputText value="4.Region - Supply Chain Administrator" styleClass="testDataNotice"/>
+				<h:outputText value="username: r2 password: r2" styleClass="testDataNotice"/>
+	           </p:panel>
+	           <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+	        </h:form>
+	        </p:panel>
+	    </p:panel>
+	    </p:layoutUnit>
+
+	</p:layout>
+
+
+    <p:blockUI widgetVar="BUI" block="loginPanel">
+    <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+    </p:blockUI>
+    </h:body>
+</html>

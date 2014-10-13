@@ -72,7 +72,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{regionVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{regionVersion.basicListDiff.deletedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{regionVersion.basicListDiff.deletedItems}" target="#{regionVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -86,7 +86,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{regionVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{regionVersion.basicListDiff.editedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{regionVersion.basicListDiff.editedItems}" target="#{regionVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -100,7 +100,7 @@ xmlns:p="http://primefaces.org/ui">
 									<p:commandButton action="#{regionVersion.viewItemsDetail}" update=":messagesForm:messages :viewItemsDetailForm"
 									value="View" styleClass="right-content-header-button" icon="ui-icon-search" rendered="#{regionVersion.basicListDiff.addedItems.size() ne 0}">
 										<f:setPropertyActionListener value="#{regionVersion.basicListDiff.addedItems}" target="#{regionVersion.viewItems}" />
-									</p:commandButton>								
+									</p:commandButton>
 								</p:panel>
 							</p:panel>
 				        </p:tab>
@@ -108,7 +108,7 @@ xmlns:p="http://primefaces.org/ui">
 				</p:panel>
 			</p:dialog>
 			</h:form>
-			
+
 			<!-- View Items Detail -->
 			<h:form id="viewItemsDetailForm">
 			<p:dialog header="View Items" widgetVar="viewItemsDetail">
@@ -143,54 +143,241 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputText value="#{item.product.name}" />
 			            <p:watermark for="@(.Name)" value="Name" />
 			        </p:column>
-			    </p:dataTable>			   
+			    </p:dataTable>
 			</p:panel>
 			</p:dialog>
 			</h:form>
    			<!-- View Item -->
-				<h:form id="viewItemDetailForm">
-				<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
-				    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
- 			            <h:outputLabel for="name" value="Name:" />
-			            <h:outputLabel id="name" value="#{regionVersion.selectedViewItem.product.name}"/>
+			<h:form id="viewItemDetailForm">
+			<p:dialog header="View Item" widgetVar="viewItemDetail" width="350">
+			    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+			            <h:outputLabel for="name" value="Name:" />
+		            <h:outputLabel id="name" value="#{regionVersion.selectedViewItem.product.name}"/>
 
-			            <h:outputLabel for="createTime" value="Create Time:" />
-			            <h:outputLabel id="createTime" value="#{regionVersion.selectedViewItem.product.productCreateTime}">
-			            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-			            </h:outputLabel>
+		            <h:outputLabel for="createTime" value="Create Time:" />
+		            <h:outputLabel id="createTime" value="#{regionVersion.selectedViewItem.product.productCreateTime}">
+		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+		            </h:outputLabel>
 
-			            <h:outputLabel for="brand" value="Brand:" />
-			            <h:outputLabel id="brand" value="#{regionVersion.selectedViewItem.product.brand}" />
+		            <h:outputLabel for="brand" value="Brand:" />
+		            <h:outputLabel id="brand" value="#{regionVersion.selectedViewItem.product.brand}" />
 
-			            <h:outputLabel for="itemWeight" value="Weight:" />
-			            <h:outputLabel id="itemWeight" value="#{regionVersion.selectedViewItem.product.itemWeight}" />
+		            <h:outputLabel for="itemWeight" value="Weight:" />
+		            <h:outputLabel id="itemWeight" value="#{regionVersion.selectedViewItem.product.itemWeight}" />
 
-			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <h:outputLabel id="manufacturer" value="#{regionVersion.selectedViewItem.product.manufacturer}" />
+		            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+		            <h:outputLabel id="manufacturer" value="#{regionVersion.selectedViewItem.product.manufacturer}" />
 
-			            <h:outputLabel for="price" value="Price:" />
-			            <h:outputLabel id="price" value="#{regionVersion.selectedViewItem.product.price}" />
+		            <h:outputLabel for="price" value="Price:" />
+		            <h:outputLabel id="price" value="#{regionVersion.selectedViewItem.product.price}" />
 
-			            <h:outputLabel for="unit" value="Unit:" />
-			            <h:outputLabel id="unit" value="#{regionVersion.selectedViewItem.product.unit}" />
+		            <h:outputLabel for="unit" value="Unit:" />
+		            <h:outputLabel id="unit" value="#{regionVersion.selectedViewItem.product.unit}" />
 
-			            <h:outputLabel for="minInventory" value="MinInventory:" />
-			            <h:outputLabel id="minInventory" value="#{regionVersion.selectedViewItem.product.minInventory}" />
+		            <h:outputLabel for="minInventory" value="MinInventory:" />
+		            <h:outputLabel id="minInventory" value="#{regionVersion.selectedViewItem.product.minInventory}" />
 
-						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
-				        <h:outputLabel id="deliveryFrequency" value="#{regionVersion.selectedViewItem.product.deliveryFrequency}" />
-				        <h:outputLabel for="image" value="Product Image:" />
-    					<p:panel id="uploadedImg" styleClass="divStyle">
-    					<p:lightBox styleClass="imagebox">
-    					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionVersion.selectedViewItem.product.image}" title="Nature 1">
-    					<p:graphicImage library="uploadImg" name="#{regionVersion.selectedViewItem.product.image}"
-    					width="100" height="60" rendered="#{not empty regionVersion.selectedViewItem.product.image}"/>
-    					</h:outputLink>
-    					</p:lightBox>
+					<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+			        <h:outputLabel id="deliveryFrequency" value="#{regionVersion.selectedViewItem.product.deliveryFrequency}" />
+			        <h:outputLabel value="Product Image:" />
+   					<p:panel id="uploadedImg" styleClass="divStyle">
+   					<p:lightBox styleClass="imagebox">
+   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionVersion.selectedViewItem.product.image}" title="Nature 1">
+   					<p:graphicImage library="uploadImg" name="#{regionVersion.selectedViewItem.product.image}"
+   					width="100" height="60" rendered="#{not empty regionVersion.selectedViewItem.product.image}"/>
+   					</h:outputLink>
+   					</p:lightBox>
+		            </p:panel>
+		        </p:panelGrid>
+			</p:dialog>
+			</h:form>
+
+  			<!-- See Usage Wizard -->
+			<h:form id="viewUsageWizardForm">
+			<p:dialog header="Usage Guide Wizard" widgetVar="viewUsageWizard" width="900">
+				<p:wizard flowListener="#{regionVersion.onFlowProcess}">
+			        <p:tab id="step1" title="Step1: Retrive Version">
+			            <p:panel header="Retrive Version">
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Position" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="Column In Table: Version Retrived Status" styleClass="right-content-header-label floatLeft"/>
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/1_1.png">
+					        <p:graphicImage library="img" name="1_1.png"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Description" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="When the button &quot;Retrive&quot; showed, it means that the region has publish a new version of merchandise. The categories and products may have changes." styleClass="right-content-header-label floatLeft"/>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Example Screenshot" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/1_2.png">
+					        <p:graphicImage library="img" name="1_2.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/1_3.png">
+					        <p:graphicImage library="img" name="1_3.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
 			            </p:panel>
-			        </p:panelGrid>
-				</p:dialog>
-				</h:form>
+			        </p:tab>
+
+			        <p:tab id="step2" title="Step2: Update Categories">
+			            <p:panel header="Update Categories">
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Position" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="Column In Table: Category Update Status" styleClass="right-content-header-label floatLeft"/>
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/2_1.png">
+					        <p:graphicImage library="img" name="2_1.png"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Description" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="When the button &quot;Go To Update&quot; of Category Update Status showed, it means that the new version of category has been retrived and the system finds that there are differences between the local and the new. It needs to update." styleClass="right-content-header-label floatLeft"/>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Example Screenshot" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/2_2.png">
+					        <p:graphicImage library="img" name="2_2.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/2_3.png">
+					        <p:graphicImage library="img" name="2_3.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+			            </p:panel>
+			        </p:tab>
+
+			        <p:tab id="step3" title="Step3: Update Products">
+			            <p:panel header="Update Products">
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Position" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="Column In Table: Product Update Status" styleClass="right-content-header-label floatLeft"/>
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/3_1.png">
+					        <p:graphicImage library="img" name="3_1.png"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Description" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="When the button &quot;Go To Update&quot; of Product Update Status showed, it means that the new version of products has been retrived and the system finds that there are differences between the local and the new. It needs to update." styleClass="right-content-header-label floatLeft"/>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Example Screenshot" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/3_2.png">
+					        <p:graphicImage library="img" name="3_2.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/3_3.png">
+					        <p:graphicImage library="img" name="3_3.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/3_4.png">
+					        <p:graphicImage library="img" name="3_4.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+			            </p:panel>
+			        </p:tab>
+
+			        <p:tab id="step4" title="Step4: Confirm Finishing Update">
+			            <p:panel header="Confirm Finishing Update">
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Position" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="Column In Table: Update Status" styleClass="right-content-header-label floatLeft"/>
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/4_1.png">
+					        <p:graphicImage library="img" name="4_1.png"
+	    					width="100" height="60"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Description" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+							<h:outputText
+								value="When the button &quot;Confirm Finishing Update&quot; of Update Status showed, it means that the categoies and the products have been updated to the newest and the new retrived version can be marked as finished. After confirmation, the newest categories and products can be used by the stores." styleClass="right-content-header-label floatLeft"/>
+							</p:panel>
+
+							<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+							<h:outputText
+								value="Operation Example Screenshot" styleClass="right-content-header-label floatLeft text-bold"/>
+							<p:separator styleClass="forizontalSeparator"/>
+
+					        <p:lightBox styleClass="imagebox">
+	    					<h:outputLink value="#{request.contextPath}/resources/img/4_2.png">
+					        <p:graphicImage library="img" name="4_2.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/4_3.png">
+					        <p:graphicImage library="img" name="4_3.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					<h:outputLink value="#{request.contextPath}/resources/img/4_4.png">
+					        <p:graphicImage library="img" name="4_4.png"
+	    					width="100" height="60" style="margin:5px;"/>
+	    					</h:outputLink>
+	    					</p:lightBox>
+							</p:panel>
+			            </p:panel>
+			        </p:tab>
+			    </p:wizard>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

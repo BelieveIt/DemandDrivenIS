@@ -111,7 +111,7 @@ public class FranchiserProduct implements Serializable{
 	        return;
 		}
 		if(!CategoryUtil.isLeafNode(selectedNode)){
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "The Category includes categories.");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Notice", "The Category includes categories. You should change to a category that doesn't have other categories.");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        return;
 		}

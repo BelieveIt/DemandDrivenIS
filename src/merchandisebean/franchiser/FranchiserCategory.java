@@ -174,22 +174,49 @@ public class FranchiserCategory implements Serializable{
 		newBasicListCategory.setCategoryId(IdentityUtil.randomUUID());
 		newBasicListCategory.setCreateTime(new Date());
 
-		categoryDao.insertCategory(newBasicListCategory);
-		new CategoryDefaultTreeNode(newBasicListCategory, selectedNode);
+		List<Category> list = CategoryUtil.getCategoriesFormTree(rootNode);
+		@SuppressWarnings("unused")
+		boolean duplicated = false;
+		for(Category category : list){
+			if(category.getCategoryName().toLowerCase().equals(newBasicListCategory.getCategoryName().toLowerCase())){
+				duplicated = true;
+			}
+		}
+		if(duplicated){
+			List<TreeNode> allNodes = CategoryUtil.getListFromTree(rootNode);
+			CategoryUtil.collapseAllTree(rootNode);
+			for(TreeNode treeNode : allNodes){
+				treeNode.setSelected(false);
+			}
+			for(TreeNode treeNode : allNodes){
+				if( ((Category) treeNode.getData()).getCategoryName().toLowerCase().equals(newBasicListCategory.getCategoryName().toLowerCase())){
+					CategoryUtil.expandCertainTree(treeNode);
+					treeNode.setSelected(true);
+				}
+			}
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Notice", "Duplicated name(see highlighted item)! Please change the new category's name.");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
+		}else {
+			categoryDao.insertCategory(newBasicListCategory);
+			new CategoryDefaultTreeNode(newBasicListCategory, selectedNode);
 
-//		ArrayList<String> expandIds = CategoryUtil.getExpendList(rootNode);
-//		Category selectedCategory = (Category) selectedNode.getData();
-//		expandIds.add(selectedCategory.getCategoryId());
-// 		rootNode= getCurrentTree();
-//
-//		selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
-//		selectedNode.setSelected(true);
-//		CategoryUtil.expandTree(rootNode, expandIds);
+//			ArrayList<String> expandIds = CategoryUtil.getExpendList(rootNode);
+//			Category selectedCategory = (Category) selectedNode.getData();
+//			expandIds.add(selectedCategory.getCategoryId());
+//	 		rootNode= getCurrentTree();
+	//
+//			selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
+//			selectedNode.setSelected(true);
+//			CategoryUtil.expandTree(rootNode, expandIds);
 
-		rootNode = CategoryUtil.restoreTreeStatus(rootNode, getCurrentTree(order, currentVersion), selectedNode);
-		Category selectedCategory = (Category) selectedNode.getData();
-		selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
-		RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
+			rootNode = CategoryUtil.restoreTreeStatus(rootNode, getCurrentTree(order, currentVersion), selectedNode);
+			Category selectedCategory = (Category) selectedNode.getData();
+			selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
+			RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
+		}
+
+
 	}
 
 	//Delete Category

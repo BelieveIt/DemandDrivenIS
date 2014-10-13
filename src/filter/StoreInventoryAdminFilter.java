@@ -8,11 +8,17 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import model.SysUser;
+
+import commonbean.LoginBean;
 
 /**
  * Servlet Filter implementation class StoreInventoryAdmin
  */
-@WebFilter("/StoreInventoryAdmin/*")
+@WebFilter("/store/inventory/*")
 public class StoreInventoryAdminFilter implements Filter {
 
 	public void destroy() {
@@ -20,11 +26,19 @@ public class StoreInventoryAdminFilter implements Filter {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		// place your code here
-
-		// pass the request along the filter chain
-		chain.doFilter(request, response);
+		LoginBean loginBean = (LoginBean)((HttpServletRequest)request).getSession().getAttribute("loginBean");
+        if (loginBean != null && loginBean.getSysUser()!=null) {
+        	SysUser sysUser = loginBean.getSysUser();
+        	if(sysUser.getUsertype().equals(SysUser.STORE_INVENTORY)){
+        		chain.doFilter(request, response);
+        	}else {
+        		String contextPath = ((HttpServletRequest)request).getContextPath();
+                ((HttpServletResponse)response).sendRedirect(contextPath + "/login.xhtml");
+			}
+        }else {
+        	String contextPath = ((HttpServletRequest)request).getContextPath();
+            ((HttpServletResponse)response).sendRedirect(contextPath + "/login.xhtml");
+		}
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {

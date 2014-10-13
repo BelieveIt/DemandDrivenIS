@@ -60,7 +60,10 @@ public HashMap<String, ArrayList<WasteRecord>> queryWasteRecords(){
 	}
 	return map;
 }
-
+public int deleteAll(){
+	String sql = "delete from WASTE_RECORD";
+	return jdbcTemplate.update(sql);
+}
 private static final class WasteRecordMapper implements RowMapper<WasteRecord> {
     public WasteRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
     	WasteRecord wasteRecord = new WasteRecord();

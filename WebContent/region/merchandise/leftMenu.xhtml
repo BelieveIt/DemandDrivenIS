@@ -15,34 +15,27 @@ xmlns:p="http://primefaces.org/ui">
 		<ul class="ui-menu-list ui-helper-reset">
 		<li class="ui-widget-header ui-corner-all"><h3>Merchandise Info Management</h3></li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/merchandise/category.xhtml" 
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/merchandise/category.xhtml"
 		data-step="2" data-intro="You can update the Product Categories here and could change the category name. And you can also see the differences of the current local categories with the new version." data-badge="#{regionVersion.regionCategory.leftMenuUpdateAlert}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-folder-collapsed"></span>
 		<span class="ui-menuitem-text">Category Management</span>
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/merchandise/product.xhtml" 
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-update" href="#{request.contextPath}/region/merchandise/product.xhtml"
 		data-step="3" data-intro="You can update the Products by the new version." data-badge="#{regionVersion.regionProduct.leftMenuUpdateAlert}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-document"></span>
 		<span class="ui-menuitem-text">Product Management</span>
 		</a>
 		</li>
 		<li class="ui-menuitem ui-widget ui-corner-all">
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/region/merchandise/version.xhtml" 
+		<a tabindex="-1" class="ui-menuitem-link ui-corner-all badge-new" href="#{request.contextPath}/region/merchandise/version.xhtml"
 		data-step="1" data-intro="You can retrive the New Version here. Then you can update the categories and products by the new retrived version. After update categories and products, DON't forget to come here to Confirm Finishing Update." data-badge="#{regionVersion.leftMenuNewAlert}">
 		<span class="ui-menuitem-icon ui-icon ui-icon-tag"></span>
 		<span class="ui-menuitem-text">Version Management</span>
 		</a>
 		</li>
 
-		<li class="ui-widget-header ui-corner-all"><h3>Product Addition Request Management</h3></li>
-		<li class="ui-menuitem ui-widget ui-corner-all" >
-		<a tabindex="-1" class="ui-menuitem-link ui-corner-all" href="#{request.contextPath}/region/merchandise/product.xhtml" >
-		<span class="ui-menuitem-icon ui-icon ui-icon-mail-closed"></span>
-		<span class="ui-menuitem-text">Request Management</span>
-		</a>
-		</li>
 		</ul>
 		</div>
 		</h:form>

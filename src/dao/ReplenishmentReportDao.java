@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.BasicListItem;
-import model.Product;
 import model.ReplenishmentReport;
 import model.ReplenishmentReportItem;
 import model.Store;
@@ -22,7 +20,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import utils.DaoUtil;
-import utils.StringUtil;
 
 public class ReplenishmentReportDao implements Serializable{
 	private static final long serialVersionUID = 6172703265083611143L;
@@ -62,7 +59,7 @@ public class ReplenishmentReportDao implements Serializable{
 	}
 
 	public List<ReplenishmentReport> queryReplenishmentReportsByStoreId(String storeId){
-		String sql = "select * from REPLENISHMENT_REPORT where STORE_ID = :storeId";
+		String sql = "select * from REPLENISHMENT_REPORT where STORE_ID = :storeId order by CREATE_TIME DESC";
 		SqlParameterSource namedParameters = new MapSqlParameterSource("storeId", storeId);
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new ReplenishmentReportMapper());
 	}
@@ -71,12 +68,15 @@ public class ReplenishmentReportDao implements Serializable{
 		String sql = "update REPLENISHMENT_REPORT set " +
 				"CREATE_TIME = :createTime, DELIVERY_TIME = :deliveryTime, " +
 				"STATUS = :status, STORE_ID = :storeId, " +
-				"DELIVERY_TYPE = :deliveryType " +
+				"DELIVERY_TYPE = :deliveryType, COMMENT_FROM_REGION = :commentFromRegion " +
 				"where REPORT_ID = :reportId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(replenishmentReport);
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 	}
-
+	public int deleteAll(){
+		String sql = "delete from REPLENISHMENT_REPORT";
+		return jdbcTemplate.update(sql);
+	}
 	private static final class ReplenishmentReportMapper implements RowMapper<ReplenishmentReport> {
 	    public ReplenishmentReport mapRow(ResultSet rs, int rowNum) throws SQLException {
 	    	ReplenishmentReport replenishmentReport = new ReplenishmentReport();
@@ -86,6 +86,7 @@ public class ReplenishmentReportDao implements Serializable{
 	    	replenishmentReport.setStatus(rs.getString("STATUS"));
 	    	replenishmentReport.setStoreId(rs.getString("STORE_ID"));
 	    	replenishmentReport.setDeliveryType(rs.getString("DELIVERY_TYPE"));
+	    	replenishmentReport.setCommentFromRegion(rs.getString("COMMENT_FROM_REGION"));
 	    	StoreDao storeDao = new StoreDao();
 	    	Store store = storeDao.queryStoreById(replenishmentReport.getStoreId());
 	    	String regionId = store.getRegionId();

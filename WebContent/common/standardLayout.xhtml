@@ -15,12 +15,23 @@ xmlns:p="http://primefaces.org/ui">
 	<p:layout id="pageLayout" fullPage="true">
 	    <p:layoutUnit position="north" size="70">
 	    <p:graphicImage library="img" name="logo.png" />
+	    <p:commandButton value="Logout" id="logout"  actionListener="#{loginBean.doLogout}" icon="ui-icon-extlink"
+                                  oncomplete="window.location.reload()" style="float:right;margin-top:6px;margin-right:20px;"/>
 	    <ui:include src="lanSelect.xhtml" />
 		<ui:insert name="headerContent" >
 				<h:form id="headerForm" style="float:right;">
 				<p:commandButton type="button" value="How To Use"  icon="ui-icon-info" style="margin-top:10px;float:right;"
 				onclick="introJs().start();" />
 				</h:form>
+
+				<div style="float:right;margin-top:15px;margin-right:20px;">
+				<p:outputLabel value="Hello, " style="font-weight:bold;font-size:16px;"/>  <h:outputText value="&#160;" />
+				<p:outputLabel value="#{loginBean.sysUser.username}" style="font-size:16px;"/>  <h:outputText value="&#160;" /><h:outputText value="&#160;" />
+				<p:outputLabel value="Operating Unit: " style="font-weight:bold;font-size:16px;"/>  <h:outputText value="&#160;" />
+				<p:outputLabel value="#{loginBean.sysUser.operatingUnit}" style="font-size:16px;"/>  <h:outputText value="&#160;" /><h:outputText value="&#160;" />
+				<p:outputLabel value="Role Name:"  style="font-weight:bold;font-size:16px;"/>  <h:outputText value="&#160;" />
+				<p:outputLabel value="#{loginBean.sysUser.roleName}" style="font-size:16px;"/>  <h:outputText value="&#160;" /><h:outputText value="&#160;" />
+				</div>
 	    </ui:insert>
 	    </p:layoutUnit>
 

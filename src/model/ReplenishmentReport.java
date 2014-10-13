@@ -13,8 +13,11 @@ private String storeId;
 private Date createTime;
 private Date deliveryTime;
 private String deliveryType;
+private String commentFromRegion;
 private String status;
 private List<ReplenishmentReportItem> replenishmentReportItems;
+private Store store;
+
 public String getReportId() {
 	return reportId;
 }
@@ -56,5 +59,17 @@ public String getDeliveryType() {
 }
 public void setDeliveryType(String deliveryType) {
 	this.deliveryType = deliveryType;
+}
+public Store getStore() {
+	return store;
+}
+public void setStore(Store store) {
+	this.store = store;
+}
+public String getCommentFromRegion() {
+	return commentFromRegion;
+}
+public void setCommentFromRegion(String commentFromRegion) {
+	this.commentFromRegion = commentFromRegion;
 }
 }

@@ -11,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
 
 import dao.BasicListCategoryDao;
@@ -138,6 +139,16 @@ public class RegionVersion implements Serializable{
 
 	public void viewItemDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
+	}
+
+	public void viewUsageWizard(){
+		RequestContext.getCurrentInstance().execute("PF('viewUsageWizard').show();");
+	}
+
+	public String onFlowProcess(FlowEvent event) {
+
+	    return event.getNewStep();
+
 	}
 
 	public List<RegionVersionListItem> getRegionVersionListItems() {

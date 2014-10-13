@@ -131,6 +131,11 @@ xmlns:p="http://primefaces.org/ui">
 		            <h:outputLabel styleClass="floatLeft text-align-left"
 		            value="Are your sure this replenishment request will be rejected?" />
 		            </p:panel>
+		            <p:panel styleClass="autoHeightPanel divStyle">
+		            <h:outputLabel for="rejectReason" value="Reject Reason:" styleClass="right-content-header-label"/>
+		            <p:inputTextarea rows="3" cols="20" style="float:left"
+		            id="rejectReason" value="#{regionViewRequest.selectedReport.commentFromRegion}" label="rejectReason" />
+		            </p:panel>
 		            <f:facet name="footer">
 		                <p:commandButton action="#{regionViewRequest.reject}" update=":viewReportForm:viewHeaderPanel :tableForm :leftMenuForm :rejectForm"
 		                value="Yes" />

@@ -47,7 +47,8 @@ xmlns:p="http://primefaces.org/ui">
 					<p:dataTable id="dataTable" var="item" value="#{storeMonitor.storeSellingItems}"
 				                         filteredValue="#{storeMonitor.filteredItems}"  selection="#{storeMonitor.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+				                         rowKey="#{item.regionListItem.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true"
+				                         rowStyleClass="#{item.currentInventory eq 0 ? 'stockout' : 'available'}">
 		    			<f:facet name="header" >
 		    			<div class="right-content-header-buttons-panel">
 
@@ -96,9 +97,12 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.regionListItem.product.brand}" />
 				            <p:watermark for="@(.Brand)" value="Brand" />
 				        </p:column>
+
+
 				        <p:column headerText="Inventory" styleClass="Inventory noPadding" id="Inventory"
 				        sortBy="#{item.currentInventory}" filterBy="#{item.currentInventory}" filterMatchMode="startsWith">
-				            <h:outputText value="#{item.currentInventory}" />
+				            <h:outputText rendered="#{item.currentInventory eq 0}" value="Stockout" />
+				            <h:outputText rendered="#{item.currentInventory ne 0}" value="#{item.currentInventory}" />
 				            <p:watermark for="@(.Inventory)" value="Inventory" />
 				        </p:column>
 

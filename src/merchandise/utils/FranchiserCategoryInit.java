@@ -284,6 +284,7 @@ public class FranchiserCategoryInit {
 		freshOrgangeJuice.setProduct(freshOrgangeJuiceProduct);
 
 		BasicListItemDao basicListItemDao = new BasicListItemDao();
+
 		basicListItemDao.insertProduct(cocaCola);
 		basicListItemDao.insertProduct(icedCoffee);
 		basicListItemDao.insertProduct(hotCoffee);
