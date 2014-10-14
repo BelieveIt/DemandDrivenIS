@@ -18,6 +18,9 @@ import model.RegionListCategory;
 import model.RegionListUpdateInfo;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
 import dao.ProductTypeDao;
@@ -150,6 +153,16 @@ public class RegionCategory implements Serializable{
 		categoryDao.updateCategory((RegionListCategory)selectedCategory);
 		RequestContext.getCurrentInstance().execute("PF('renameCategory').hide();");
 	}
+
+	public void onNodeSelect(NodeSelectEvent event) {
+        selectedNode = event.getTreeNode();
+    }
+	public void onNodeExpand(NodeExpandEvent event) {
+        event.getTreeNode().setExpanded(true);
+    }
+	public void onNodeCollapse(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
+    }
 
 	//View Category
 	public void openViewCategory(){

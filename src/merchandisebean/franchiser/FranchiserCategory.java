@@ -26,6 +26,7 @@ import model.ProductType;
 import oracle.net.aso.i;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
@@ -151,7 +152,7 @@ public class FranchiserCategory implements Serializable{
 	public void onNodeExpand(NodeExpandEvent event) {
         event.getTreeNode().setExpanded(true);
     }
-	public void onNodeCollapse(NodeExpandEvent event) {
+	public void onNodeCollapse(NodeCollapseEvent event) {
         event.getTreeNode().setExpanded(false);
     }
 

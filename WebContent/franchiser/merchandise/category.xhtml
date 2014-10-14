@@ -77,7 +77,7 @@ xmlns:p="http://primefaces.org/ui">
 				<p:messages id="messagesForTree" showDetail="true" autoUpdate="true" closable="true" />
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
 			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
-			        <p:ajax event="collapse" listener="#{treeEventsView.onNodeCollapse}" />
+			        <p:ajax event="collapse" listener="#{franchiserCategory.onNodeCollapse}" />
 			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
 			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">

@@ -172,19 +172,25 @@ public static boolean compareLocalTreeAndBasicList(String regionId, String basic
 		return false;
 	}else {
 		for(int i = 0; i < regionCategoriesByOrder.size(); i++){
-			if(!regionCategoriesByOrder.get(i).getCategoryId().equals(franchiserCategoriesByOrder.get(i).getCategoryId()))
+			if(!regionCategoriesByOrder.get(i).getCategoryId().equals(franchiserCategoriesByOrder.get(i).getCategoryId())){
 				return false;
+			}
+
 			if(!(regionCategoriesByOrder.get(i).getProductTypeId() == null && franchiserCategoriesByOrder.get(i).getProductTypeId() == null)){
 				if((regionCategoriesByOrder.get(i).getProductTypeId() == null && franchiserCategoriesByOrder.get(i).getProductTypeId() != null)
 						||(regionCategoriesByOrder.get(i).getProductTypeId() != null && franchiserCategoriesByOrder.get(i).getProductTypeId() == null)
-						|| !regionCategoriesByOrder.get(i).getProductTypeId().equals(franchiserCategoriesByOrder.get(i).getProductTypeId()))
+						|| !regionCategoriesByOrder.get(i).getProductTypeId().equals(franchiserCategoriesByOrder.get(i).getProductTypeId())){
 					return false;
+				}
+
 			}
 			if(!(regionCategoriesByOrder.get(i).getDescription() == null && franchiserCategoriesByOrder.get(i).getDescription() == null)){
 				if(!regionCategoriesByOrder.get(i).getDescription().equals(franchiserCategoriesByOrder.get(i).getDescription())
 						||(regionCategoriesByOrder.get(i).getDescription() != null && franchiserCategoriesByOrder.get(i).getDescription() == null)
-						|| !regionCategoriesByOrder.get(i).getDescription().equals(franchiserCategoriesByOrder.get(i).getDescription()))
+						|| !regionCategoriesByOrder.get(i).getDescription().equals(franchiserCategoriesByOrder.get(i).getDescription())){
 					return false;
+				}
+
 			}
 
 		}
