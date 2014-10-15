@@ -84,6 +84,10 @@ public void openViewVersionDetail(){
 	RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 }
 
+public void openAboutRules(){
+	RequestContext.getCurrentInstance().execute("PF('aboutRules').show();");
+}
+
 public void viewItemsDetail(){
 	RequestContext.getCurrentInstance().execute("PF('viewItemsDetail').show();");
 }

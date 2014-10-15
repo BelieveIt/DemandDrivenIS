@@ -178,6 +178,9 @@ public class RegionCategory implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('viewCategory').show();");
 	}
 
+	public void openUpdateRules(){
+		RequestContext.getCurrentInstance().execute("PF('updateRules').show();");
+	}
 
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
 		List<RegionListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId, currentRegionId);

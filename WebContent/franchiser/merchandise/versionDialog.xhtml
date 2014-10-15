@@ -14,12 +14,16 @@ xmlns:p="http://primefaces.org/ui">
 			<!-- Create Version -->
 			<h:form id="createVersionForm">
 			<p:dialog header="Create Version" widgetVar="createVersion" width="400">
-			    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
+					<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+			            <h:outputText value="1. Update will create a version that includes the current categories and products." />
+			        </p:panel>
+			        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+			            <h:outputText value="2. Update info message will also be sent to all the regions. Regions' admin could receive the new version in Version Management" />
+			        </p:panel>
 		            <f:facet name="footer">
 		                <p:commandButton actionListener="#{franchiserVersion.createVersion}" update=":tableForm"
 		                id="createVersionButton" value="Confirm Creation And Send New Version To Regions" />
 		            </f:facet>
-		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
 
@@ -192,6 +196,7 @@ xmlns:p="http://primefaces.org/ui">
 		        </p:panelGrid>
 			</p:dialog>
 			</h:form>
+
 	    </ui:composition>
     </h:body>
 </html>

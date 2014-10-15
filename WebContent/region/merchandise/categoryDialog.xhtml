@@ -44,6 +44,21 @@ xmlns:p="http://primefaces.org/ui">
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
+
+			<!-- Update Rules -->
+			<h:form id="updateRulesForm">
+			<p:dialog header="Update Rules" widgetVar="updateRules" width="450">
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="1. All the deleted/added categories will be updated." />
+		        </p:panel>
+		        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="2. Categories' description and information will be updated." />
+		        </p:panel>
+		        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="3. Categories' name will not be updated. Local name will be kept" />
+		        </p:panel>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

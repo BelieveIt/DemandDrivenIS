@@ -169,6 +169,9 @@ public class ProductUtil {
 		if(!productA.getName().equals(productB.getName()))return false;
 		if(!productA.getPrice().equals(productB.getPrice()))return false;
 		if(!productA.getUnit().equals(productB.getUnit()))return false;
+		if(!productA.getAdditionalInformationString().equals(productB.getAdditionalInformationString())){
+			return false;
+		}
 		return true;
 	}
 	public static HashMap<String, BasicListItem> convertToMapForBasicListItem(List<BasicListItem> items){

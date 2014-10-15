@@ -37,6 +37,20 @@ public class RegionListCategoryDao implements Serializable{
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListCategoryMapper());
 	}
 
+	public List<RegionListCategory> queryCategoriesByVersionId(String versionId){
+		String sql = "select * from REGION_LIST_CATEGORIES where VERSION_ID = :versionId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new RegionListCategoryMapper());
+	}
+
+	public RegionListCategory queryCategory(String versionId, String regionId, String categorId){
+		String sql = "select * from REGION_LIST_CATEGORIES where VERSION_ID = :versionId and REGION_ID = :regionId and CATEGORY_ID = :categorId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("versionId", versionId)
+		.addValue("regionId", regionId).addValue("categorId", categorId);
+		return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new RegionListCategoryMapper());
+	}
+
+
 	public void insertCategory(RegionListCategory regionListCategory){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("CATEGORY_ID", regionListCategory.getCategoryId());

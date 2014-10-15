@@ -194,7 +194,7 @@ xmlns:p="http://primefaces.org/ui">
 		        <h:outputLabel for="image" value="Product Image:" />
 	            <p:fileUpload fileUploadListener="#{regionProduct.uploadProductImageForEditConfirm}" update=":messagesForm:messages uploadedImg @this"
                    id="image" fileLimit="1" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" auto="true"/>
-  					<p:panel id="uploadedImg" styleClass="divStyle">
+  				<p:panel id="uploadedImg" styleClass="divStyle">
   					<p:lightBox styleClass="imagebox">
   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedForEditHead.product.image}" title="Nature 1">
   					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedForEditHead.product.image}"
@@ -202,6 +202,12 @@ xmlns:p="http://primefaces.org/ui">
   					</h:outputLink>
   					</p:lightBox>
 	            </p:panel>
+	            <ui:repeat var="addItem" value="#{regionProduct.selectedForEditHead.product.additionalInfoItems}">
+			            <tr class="ui-widget-content">
+			            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{addItem.label}:" /></td>
+			            <td class="ui-panelgrid-cell label"><p:inputText value="#{addItem.value}" required="true" /></td>
+			            </tr>
+			    </ui:repeat>
 	            <f:facet name="footer">
 	                <p:commandButton actionListener="#{regionProduct.editConfirm}" update=":updateItemsForm:updatePanel :tableForm :messagesForm :leftMenuForm"
 	                id="editProductButton" value="Confirm and Update" />
@@ -240,7 +246,7 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputLabel for="deliveryFrequency2" value="Delivery Frequency:" />
 		        <h:outputLabel id="deliveryFrequency2" value="#{regionProduct.selectedForEdit.product.deliveryFrequency}" />
 		        <h:outputLabel for="uploadedImg2" value="Product Image:" />
-  					<p:panel id="uploadedImg2" styleClass="divStyle">
+  				<p:panel id="uploadedImg2" styleClass="divStyle">
   					<p:lightBox styleClass="imagebox">
   					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedForEdit.product.image}" title="Nature 1">
   					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedForEdit.product.image}"
@@ -248,6 +254,12 @@ xmlns:p="http://primefaces.org/ui">
   					</h:outputLink>
   					</p:lightBox>
 	            </p:panel>
+	            <ui:repeat var="addItem" value="#{regionProduct.selectedForEdit.product.additionalInfoItems}">
+			            <tr class="ui-widget-content">
+			            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{addItem.label}:" /></td>
+			            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{addItem.value}" required="true" /></td>
+			            </tr>
+			    </ui:repeat>
 	        </p:panelGrid>
 	        </p:panel>
 	        </p:panel>

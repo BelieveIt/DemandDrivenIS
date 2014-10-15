@@ -17,11 +17,14 @@ import merchandise.utils.CategoryDefaultTreeNode;
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.FranchiserCategoryInit;
 import merchandise.utils.ProductUtil;
+import model.AdditionalInfoItem;
 import model.BasicList;
 import model.BasicListCategory;
 import model.BasicListItem;
 import model.Category;
+import model.Product;
 import model.ProductType;
+import model.RegionListItem;
 
 import oracle.net.aso.i;
 
@@ -32,11 +35,14 @@ import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
 import utils.IdentityUtil;
+import utils.StringUtil;
 
 import dao.BasicListCategoryDao;
 import dao.BasicListDao;
 import dao.BasicListItemDao;
 import dao.ProductTypeDao;
+import dao.RegionListCategoryDao;
+import dao.RegionListItemDao;
 
 @ManagedBean(name="franchiserCategory")
 @ViewScoped
@@ -44,8 +50,9 @@ public class FranchiserCategory implements Serializable{
 	private static final long serialVersionUID = -9201081405856011379L;
 
 	private BasicListDao basicListDao;
-	private BasicListCategoryDao categoryDao;
+	private BasicListCategoryDao basicListCategoryDao;
 	private BasicListItemDao basicListItemDao;
+	private RegionListItemDao regionListItemDao;
 	private ProductTypeDao productTypeDao;
 
 	private TreeNode rootNode;
@@ -75,7 +82,8 @@ public class FranchiserCategory implements Serializable{
 	@PostConstruct
     public void init() {
 		basicListDao = new BasicListDao();
-		categoryDao = new BasicListCategoryDao();
+		basicListCategoryDao = new BasicListCategoryDao();
+		regionListItemDao = new RegionListItemDao();
 		basicListItemDao = new BasicListItemDao();
 		productTypeDao = new ProductTypeDao();
 		order = CategoryUtil.ORDER_BY_NAME;
@@ -87,7 +95,7 @@ public class FranchiserCategory implements Serializable{
     }
 
 	private void initIfHeadNull(){
-		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId("head");
+		List<BasicListCategory> categories = basicListCategoryDao.queryCategoriesByVersionId("head");
 		if(categories.size() == 0){
 			BasicListCategory basicListCategory = new BasicListCategory();
 			basicListCategory.setCategoryFatherId(CategoryUtil.ROOT_FATHER_ID);
@@ -95,7 +103,7 @@ public class FranchiserCategory implements Serializable{
 			basicListCategory.setCategoryName("Categories");
 			basicListCategory.setCreateTime(new Date());
 			basicListCategory.setVersionId("head");
-			categoryDao.insertCategory(basicListCategory);
+			basicListCategoryDao.insertCategory(basicListCategory);
 		}
 		if(categories.size() == 0 || categories.size() == 1){
 			RequestContext.getCurrentInstance().execute("PF('initCategory').show();");
@@ -199,7 +207,7 @@ public class FranchiserCategory implements Serializable{
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
 		}else {
-			categoryDao.insertCategory(newBasicListCategory);
+			basicListCategoryDao.insertCategory(newBasicListCategory);
 			new CategoryDefaultTreeNode(newBasicListCategory, selectedNode);
 
 //			ArrayList<String> expandIds = CategoryUtil.getExpendList(rootNode);
@@ -247,7 +255,7 @@ public class FranchiserCategory implements Serializable{
 				basicListItem.setCategoryId(CategoryUtil.NOT_CLASSIFIED_FOR_PRODUCT_ID);
 				basicListItemDao.updateProduct(basicListItem);
 			}
-			categoryDao.deleteCategory(category);
+			basicListCategoryDao.deleteCategory(category);
 		}
 		rootNode = CategoryUtil.restoreTreeStatus(rootNode, getCurrentTree(order,currentVersion), selectedNode);
 		RequestContext.getCurrentInstance().execute("PF('deleteCategory').hide();");
@@ -265,12 +273,12 @@ public class FranchiserCategory implements Serializable{
 	}
 
 	public void editCategory(){
-		categoryDao.updateCategory((BasicListCategory)selectedCategory);
+		basicListCategoryDao.updateCategory((BasicListCategory)selectedCategory);
 		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
 
 		for(Category category : categories){
 			category.setProductTypeId(selectedCategory.getProductTypeId());
-			categoryDao.updateCategory((BasicListCategory)category);
+			basicListCategoryDao.updateCategory((BasicListCategory)category);
 		}
 
 		RequestContext.getCurrentInstance().execute("PF('editCategory').hide();");
@@ -317,6 +325,36 @@ public class FranchiserCategory implements Serializable{
 
 		selectedProductType.setAdditionalInformationLable(attributes);
 		productTypeDao.updateProductType(selectedProductType);
+
+		List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByProductTypeId(selectedProductType.getProductTypeId(),"head");
+		List<BasicListItem> basicListItems = basicListItemDao.queryProductsByVersionId("head");
+		List<RegionListItem> regionListItems = regionListItemDao.queryProducts();
+		for(BasicListCategory category : basicListCategories){
+			for(BasicListItem item : basicListItems){
+				if(item.getCategoryId().equals(category.getCategoryId())){
+					String addtionalsItem = item.getProduct().getAdditionalInformationString();
+					ArrayList<String> infos = StringUtil.getStringsBySplit(addtionalsItem);
+					infos.add(" ");
+					Product product = item.getProduct();
+					product.setAdditionalInformation(infos);
+					item.setProduct(product);
+					basicListItemDao.updateProduct(item);
+				}
+			}
+
+			for(RegionListItem item : regionListItems){
+				if(item.getCategoryId().equals(category.getCategoryId())){
+					String addtionalsItem = item.getProduct().getAdditionalInformationString();
+					ArrayList<String> infos = StringUtil.getStringsBySplit(addtionalsItem);
+					infos.add(" ");
+					Product product = item.getProduct();
+					product.setAdditionalInformation(infos);
+					item.setProduct(product);
+					regionListItemDao.updateProduct(item);
+				}
+
+			}
+		}
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
 	}
 
@@ -326,9 +364,45 @@ public class FranchiserCategory implements Serializable{
 
 	public void deleteAttribute(){
 		ArrayList<String> attributes = selectedProductType.getAdditionalInformationLable();
+		int index = 0;
+		for(int i = 0; i < attributes.size(); i++){
+			if(attributes.get(i).trim().equals(selectedAttributeName.trim())){
+				index = i;
+			}
+		}
 		attributes.remove(selectedAttributeName);
 		selectedProductType.setAdditionalInformationLable(attributes);
 		productTypeDao.updateProductType(selectedProductType);
+
+		List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByProductTypeId(selectedProductType.getProductTypeId(),"head");
+		List<BasicListItem> basicListItems = basicListItemDao.queryProductsByVersionId("head");
+		List<RegionListItem> regionListItems = regionListItemDao.queryProducts();
+		for(BasicListCategory category : basicListCategories){
+			for(BasicListItem item : basicListItems){
+				if(item.getCategoryId().equals(category.getCategoryId())){
+					String addtionalsItem = item.getProduct().getAdditionalInformationString();
+					ArrayList<String> infos = StringUtil.getStringsBySplit(addtionalsItem);
+					infos.remove(index);
+					Product product = item.getProduct();
+					product.setAdditionalInformation(infos);
+					item.setProduct(product);
+					basicListItemDao.updateProduct(item);
+				}
+			}
+
+			for(RegionListItem item : regionListItems){
+				if(item.getCategoryId().equals(category.getCategoryId())){
+					String addtionalsItem = item.getProduct().getAdditionalInformationString();
+					ArrayList<String> infos = StringUtil.getStringsBySplit(addtionalsItem);
+					infos.remove(index);
+					Product product = item.getProduct();
+					product.setAdditionalInformation(infos);
+					item.setProduct(product);
+					regionListItemDao.updateProduct(item);
+				}
+
+			}
+		}
 		RequestContext.getCurrentInstance().execute("PF('deleteAttribute').hide();");
 	}
 
@@ -383,7 +457,7 @@ public class FranchiserCategory implements Serializable{
 	}
 
 	private TreeNode getCurrentTree(String currentOrder, String versionId){
-		List<BasicListCategory> categories = categoryDao.queryCategoriesByVersionId(versionId);
+		List<BasicListCategory> categories = basicListCategoryDao.queryCategoriesByVersionId(versionId);
 		return CategoryUtil.generateTree(categories, currentOrder, CategoryUtil.ROOT_FATHER_ID);
 	}
 	public TreeNode getRootNode() {
@@ -400,11 +474,11 @@ public class FranchiserCategory implements Serializable{
 	}
 
 	public BasicListCategoryDao getCategoryDao() {
-		return categoryDao;
+		return basicListCategoryDao;
 	}
 
-	public void setCategoryDao(BasicListCategoryDao categoryDao) {
-		this.categoryDao = categoryDao;
+	public void setCategoryDao(BasicListCategoryDao basicListCategoryDao) {
+		this.basicListCategoryDao = basicListCategoryDao;
 	}
 
 	public String getCategoryName() {

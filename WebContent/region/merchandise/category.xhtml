@@ -10,7 +10,7 @@ xmlns:p="http://primefaces.org/ui">
         <h:outputStylesheet name="standardLayout.css" library="css" />
     </h:head>
     <h:body>
-		<ui:composition template="/common/standardLayout.xhtml">	
+		<ui:composition template="/common/standardLayout.xhtml">
     		<ui:define name="leftMenu">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
@@ -45,9 +45,17 @@ xmlns:p="http://primefaces.org/ui">
 				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" disabled="true"/>
 
-				<h:outputText value="Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 1}"/>
-				<h:outputText value="Not Updated to the Newest!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq 0}"/>
-				<h:outputText value="No Data!" styleClass="treeHeaderTextNormal" rendered="#{regionCategory.compareWithNewest eq -1}"/>
+				<p:commandButton action="#{regionCategory.openUpdateRules}" value="Update Rules" styleClass="right-content-header-button" icon="ui-icon-help"
+				style="margin-left:10px;" />
+
+				<h:outputText value="Updated to the Newest!" styleClass="treeHeaderTextNormal" style="color:green;"
+				rendered="#{regionCategory.compareWithNewest eq 1}"/>
+				<h:outputText value="Not Updated to the Newest!" styleClass="treeHeaderTextNormal"  style="color:red;"
+				rendered="#{regionCategory.compareWithNewest eq 0}"/>
+				<h:outputText value="No Data!" styleClass="treeHeaderTextNormal"  style="color:red;"
+				rendered="#{regionCategory.compareWithNewest eq -1}"/>
+
+
 				</div>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left" >
 				<h:outputText value="No Local Region Data, please update the newest version from franchiser! "

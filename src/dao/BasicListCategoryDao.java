@@ -38,6 +38,13 @@ public class BasicListCategoryDao implements Serializable{
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new BasicListCategoryMapper());
 	}
 
+	public List<BasicListCategory> queryCategoriesByProductTypeId(String typeId, String versionId){
+		String sql = "select * from BASIC_LIST_CATEGORIES where PRODUCT_TYPE_ID = :typeId and VERSION_ID = :versionId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("typeId", typeId)
+		.addValue("versionId", versionId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new BasicListCategoryMapper());
+	}
+
 	public void insertCategory(BasicListCategory basicListCategory){
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("CATEGORY_ID", basicListCategory.getCategoryId());

@@ -155,47 +155,46 @@ public static boolean isLeafNode(TreeNode treeNode){
 public static boolean compareLocalTreeAndBasicList(String regionId, String basicListVersionId){
 	RegionListCategoryDao regionListCategoryDao = new RegionListCategoryDao();
 	List<RegionListCategory> regionCategories = regionListCategoryDao.queryCategoriesByVersionId("head", regionId);
-	TreeNode rootOfRegion = generateTree(regionCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
-	List<Category> regionCategoriesByOrder = new ArrayList<Category>();
-
-	if(rootOfRegion == null) return false;
-	getCategoriesByTreeOrder(regionCategoriesByOrder, rootOfRegion);
 
 	BasicListCategoryDao basicListCategoryDao = new BasicListCategoryDao();
 	List<BasicListCategory> basicListCategories = basicListCategoryDao.queryCategoriesByVersionId(basicListVersionId);
-	TreeNode rootOfFranchiser = generateTree(basicListCategories, ORDER_BY_NAME, ROOT_FATHER_ID);
-	List<Category> franchiserCategoriesByOrder = new ArrayList<Category>();
 
-	getCategoriesByTreeOrder(franchiserCategoriesByOrder, rootOfFranchiser);
-
-	if(regionCategoriesByOrder.size() != franchiserCategoriesByOrder.size()){
+	if(regionCategories.size() != basicListCategories.size()){
 		return false;
 	}else {
-		for(int i = 0; i < regionCategoriesByOrder.size(); i++){
-			if(!regionCategoriesByOrder.get(i).getCategoryId().equals(franchiserCategoriesByOrder.get(i).getCategoryId())){
+		for(int i = 0; i < regionCategories.size(); i++){
+			BasicListCategory basicListCategory = getIncludedInBasicCategoryList(regionCategories.get(i), basicListCategories);
+			if(basicListCategory == null){
 				return false;
 			}
 
-			if(!(regionCategoriesByOrder.get(i).getProductTypeId() == null && franchiserCategoriesByOrder.get(i).getProductTypeId() == null)){
-				if((regionCategoriesByOrder.get(i).getProductTypeId() == null && franchiserCategoriesByOrder.get(i).getProductTypeId() != null)
-						||(regionCategoriesByOrder.get(i).getProductTypeId() != null && franchiserCategoriesByOrder.get(i).getProductTypeId() == null)
-						|| !regionCategoriesByOrder.get(i).getProductTypeId().equals(franchiserCategoriesByOrder.get(i).getProductTypeId())){
+			if(!(regionCategories.get(i).getProductTypeId() == null && basicListCategory.getProductTypeId() == null)){
+				if((regionCategories.get(i).getProductTypeId() == null && basicListCategory.getProductTypeId() != null)
+						||(regionCategories.get(i).getProductTypeId() != null && basicListCategory.getProductTypeId() == null)
+						|| !regionCategories.get(i).getProductTypeId().equals(basicListCategory.getProductTypeId())){
 					return false;
 				}
 
 			}
-			if(!(regionCategoriesByOrder.get(i).getDescription() == null && franchiserCategoriesByOrder.get(i).getDescription() == null)){
-				if(!regionCategoriesByOrder.get(i).getDescription().equals(franchiserCategoriesByOrder.get(i).getDescription())
-						||(regionCategoriesByOrder.get(i).getDescription() != null && franchiserCategoriesByOrder.get(i).getDescription() == null)
-						|| !regionCategoriesByOrder.get(i).getDescription().equals(franchiserCategoriesByOrder.get(i).getDescription())){
+			if(!(regionCategories.get(i).getDescription() == null && basicListCategory.getDescription() == null)){
+				if(!regionCategories.get(i).getDescription().equals(basicListCategory.getDescription())
+						||(regionCategories.get(i).getDescription() != null && basicListCategory.getDescription() == null)
+						|| !regionCategories.get(i).getDescription().equals(basicListCategory.getDescription())){
 					return false;
 				}
-
 			}
-
 		}
 	}
 	return true;
+}
+
+public static BasicListCategory getIncludedInBasicCategoryList(Category category, List<BasicListCategory> list){
+	for(BasicListCategory basicListCategory : list){
+		if(category.getCategoryId().equals(basicListCategory.getCategoryId())){
+			return basicListCategory;
+		}
+	}
+	return null;
 }
 
 //Get All Categories in Tree without Order

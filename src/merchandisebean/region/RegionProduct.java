@@ -42,6 +42,7 @@ public class RegionProduct implements Serializable{
 	private RegionListItemDao regionListItemDao;
 	private RegionListUpdateInfoDao regionListUpdateInfoDao;
 	private ProductTypeDao productTypeDao;
+	private RegionListCategoryDao regionListCategoryDao;
 
 	private RegionListUpdateInfo regionListUpdateInfo;
 
@@ -76,6 +77,7 @@ public class RegionProduct implements Serializable{
 		regionListItemDao = new RegionListItemDao();
 		regionListUpdateInfoDao = new RegionListUpdateInfoDao();
 		productTypeDao = new ProductTypeDao();
+		regionListCategoryDao = new RegionListCategoryDao();
 
 		List<RegionListUpdateInfo> regionListUpdateInfos= regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(currentRegionId);
 		if(regionListUpdateInfos!=null && regionListUpdateInfos.size()!=0)regionListUpdateInfo = regionListUpdateInfos.get(0);
@@ -177,6 +179,46 @@ public class RegionProduct implements Serializable{
 	public void openEditConfirm(){
 		String editProductId = selectedForEdit.getProductId();
 		selectedForEditHead = regionListItemDao.queryProductByVersionIdAndRegionId(currentRegionId, "head", editProductId);
+
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		ProductType categoryProductType = new ProductType();
+
+		String categoryId = selectedForEditHead.getCategoryId();
+		RegionListCategory regionListCategory = regionListCategoryDao.queryCategory("head", currentRegionId, categoryId);
+		categoryProductType = productTypeDao.queryProductType(regionListCategory.getProductTypeId());
+
+		//For selectedForEditHead
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedForEditHead.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedForEditHead.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedForEditHead.setProduct(product);
+
+		ArrayList<AdditionalInfoItem> productAdditionalInfos2 = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels2 = new ArrayList<String>();
+		//For selectedForEdit
+		if(categoryProductType != null){
+			productAdditionalInfoLabels2 = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels2.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels2.get(i));
+				additionalInfoItem.setValue(selectedForEdit.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos2.add(additionalInfoItem);
+			}
+		}
+		Product product2 = selectedForEdit.getProduct();
+		product2.setAdditionalInfoItems(productAdditionalInfos2);
+		selectedForEdit.setProduct(product2);
+
+
 		RequestContext.getCurrentInstance().execute("PF('editConfirm').show();");
 	}
 
