@@ -225,6 +225,18 @@ public class RegionProduct implements Serializable{
 	public void editConfirm(){
 		selectedForEditHead.setVersionId("head");
 		selectedForEditHead.setIsConfirmed(1);
+
+		Product product = selectedForEditHead.getProduct();
+		ArrayList<String> additionInfos = new ArrayList<String>();
+		if(product.getAdditionalInfoItems() != null){
+			for(AdditionalInfoItem item : product.getAdditionalInfoItems()){
+				additionInfos.add(item.getValue());
+			}
+		}
+
+		product.setAdditionalInformation(additionInfos);
+		selectedForEditHead.setProduct(product);
+
 		regionListItemDao.updateProduct(selectedForEditHead);
 		initRegionListItemsByVersionId("head");
 		initRegionListItemDiff();
@@ -272,6 +284,33 @@ public class RegionProduct implements Serializable{
 		product.setAdditionalInfoItems(productAdditionalInfos);
 		selectedViewItem.setProduct(product);
 		RequestContext.getCurrentInstance().execute("PF('viewItemDetail').show();");
+	}
+
+	//View Product
+	public void openEditProduct(){
+		ArrayList<AdditionalInfoItem> productAdditionalInfos = new ArrayList<AdditionalInfoItem>();
+		List<String> productAdditionalInfoLabels = new ArrayList<String>();
+		List<Category> categories = CategoryUtil.getCategoriesFormTree(selectedNode);
+		ProductType categoryProductType = new ProductType();
+		for(Category category : categories){
+			if(category.getCategoryId().equals(selectedViewItem.getCategoryId())){
+				categoryProductType = productTypeDao.queryProductType(category.getProductTypeId());
+				break;
+			}
+		}
+		if(categoryProductType != null){
+			productAdditionalInfoLabels = categoryProductType.getAdditionalInformationLable();
+			for(int i = 0; i < productAdditionalInfoLabels.size(); i++){
+				AdditionalInfoItem additionalInfoItem = new AdditionalInfoItem();
+				additionalInfoItem.setLabel(productAdditionalInfoLabels.get(i));
+				additionalInfoItem.setValue(selectedViewItem.getProduct().getAdditionalInformation().get(i));
+				productAdditionalInfos.add(additionalInfoItem);
+			}
+		}
+		Product product = selectedViewItem.getProduct();
+		product.setAdditionalInfoItems(productAdditionalInfos);
+		selectedViewItem.setProduct(product);
+		RequestContext.getCurrentInstance().execute("PF('editItemDetail').show();");
 	}
 	public TreeNode getRootNode() {
 		return rootNode;

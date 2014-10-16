@@ -26,9 +26,6 @@ xmlns:p="http://primefaces.org/ui">
     			</h:form>
 
     			<p:panel styleClass="autoHeightPanel">
-    			<h:form id="messagesForAddForm">
-				<p:messages id="messagesForAdd" showDetail="true" autoUpdate="true" closable="true" />
-				</h:form>
     			<!-- Category Tree -->
     			<p:panel styleClass="floatLeft width20 divStyle">
     			<h:form id="treeForm">
@@ -54,8 +51,9 @@ xmlns:p="http://primefaces.org/ui">
 		    			<div class="right-content-header-buttons-panel">
 
 		    			<!-- Add/Delete/Move -->
-		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForAddForm:messagesForAdd :addProductForm"
-		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-plus" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
+		    			<p:commandButton actionListener="#{franchiserProduct.openAddProduct}" update=":messagesForm:messages :addProductForm"
+		    			value="Add" styleClass="right-content-header-button" icon="ui-icon-plus" rendered="#{franchiserProduct.currentVersion eq 'head'}"
+		    			oncomplete="if(args.leafCate) {PF('addProduct').show();}"/>
 						<p:commandButton actionListener="#{franchiserProduct.openDeleteProducts}" update=":messagesForm:messages"
 						value="Delete" styleClass="right-content-header-button" icon="ui-icon-trash" rendered="#{franchiserProduct.currentVersion eq 'head'}"/>
 						<p:commandButton actionListener="#{franchiserProduct.openMoveProducts}" update=":messagesForm:messages"

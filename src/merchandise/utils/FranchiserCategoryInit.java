@@ -190,9 +190,9 @@ public class FranchiserCategoryInit {
 		icedCoffeeProduct.setBrand("Own Brand");
 		icedCoffeeProduct.setDeliveryFrequency(ProductUtil.EVERYDAY);
 		icedCoffeeProduct.setImage("icedCoffee.jpg");
-		icedCoffeeProduct.setItemWeight(250);
+		icedCoffeeProduct.setItemWeight(new Double(250));
 		icedCoffeeProduct.setManufacturer("Own Factory");
-		icedCoffeeProduct.setMinInventory("5");
+		icedCoffeeProduct.setMinInventory(5);
 		icedCoffeeProduct.setName("Iced Coffee");
 		icedCoffeeProduct.setPrice(new BigDecimal("3.5"));
 
@@ -218,9 +218,9 @@ public class FranchiserCategoryInit {
 		cocaColaProduct.setBrand("Coca-Cola");
 		cocaColaProduct.setDeliveryFrequency(ProductUtil.EVERYWEEK);
 		cocaColaProduct.setImage("cocacola.jpg");
-		cocaColaProduct.setItemWeight(250);
+		cocaColaProduct.setItemWeight(new Double(250));
 		cocaColaProduct.setManufacturer("Coca-Cola Company");
-		cocaColaProduct.setMinInventory("10");
+		cocaColaProduct.setMinInventory(10);
 		cocaColaProduct.setName("Coca-Cola Can");
 		cocaColaProduct.setPrice(new BigDecimal("1.5"));
 
@@ -245,9 +245,9 @@ public class FranchiserCategoryInit {
 		hotCoffeeProduct.setBrand("Hot Coffee");
 		hotCoffeeProduct.setDeliveryFrequency(ProductUtil.EVERYDAY);
 		hotCoffeeProduct.setImage("hotCoffee.jpg");
-		hotCoffeeProduct.setItemWeight(300);
+		hotCoffeeProduct.setItemWeight(new Double(300));
 		hotCoffeeProduct.setManufacturer("Nestle");
-		hotCoffeeProduct.setMinInventory("10");
+		hotCoffeeProduct.setMinInventory(10);
 		hotCoffeeProduct.setName("Hot Coffee");
 		hotCoffeeProduct.setPrice(new BigDecimal("3.5"));
 
@@ -272,9 +272,9 @@ public class FranchiserCategoryInit {
 		freshOrgangeJuiceProduct.setBrand("Fresh Organge Juice");
 		freshOrgangeJuiceProduct.setDeliveryFrequency(ProductUtil.EVERYDAY);
 		freshOrgangeJuiceProduct.setImage("freshOrangeJuice.jpg");
-		freshOrgangeJuiceProduct.setItemWeight(300);
+		freshOrgangeJuiceProduct.setItemWeight(new Double(300));
 		freshOrgangeJuiceProduct.setManufacturer("Our Factory");
-		freshOrgangeJuiceProduct.setMinInventory("10");
+		freshOrgangeJuiceProduct.setMinInventory(10);
 		freshOrgangeJuiceProduct.setName("Fresh Organge Juice");
 		freshOrgangeJuiceProduct.setPrice(new BigDecimal("5.5"));
 

@@ -12,13 +12,13 @@ public class Product implements Serializable{
 	private static final long serialVersionUID = -4546717255351419498L;
 	private String name;
 	private String brand;
-	private Integer itemWeight;
+	private Double itemWeight;
 	private String manufacturer;
 	private String image;
 	private BigDecimal price;
 	private String unit;
 	private String deliveryFrequency;
-	private String minInventory;
+	private Integer minInventory;
 	private Date productCreateTime;
 	private ArrayList<String>  additionalInformation;
 	@SuppressWarnings("unused")
@@ -36,10 +36,10 @@ public class Product implements Serializable{
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
-	public Integer getItemWeight() {
+	public Double getItemWeight() {
 		return itemWeight;
 	}
-	public void setItemWeight(Integer itemWeight) {
+	public void setItemWeight(Double itemWeight) {
 		this.itemWeight = itemWeight;
 	}
 	public String getManufacturer() {
@@ -72,10 +72,10 @@ public class Product implements Serializable{
 	public void setDeliveryFrequency(String deliveryFrequency) {
 		this.deliveryFrequency = deliveryFrequency;
 	}
-	public String getMinInventory() {
+	public Integer getMinInventory() {
 		return minInventory;
 	}
-	public void setMinInventory(String minInventory) {
+	public void setMinInventory(Integer minInventory) {
 		this.minInventory = minInventory;
 	}
 	public Date getProductCreateTime() {

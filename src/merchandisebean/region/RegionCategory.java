@@ -128,6 +128,10 @@ public class RegionCategory implements Serializable{
 		if(newestRootNode!=null)newestRootNode.setExpanded(true);
 	}
 
+	public void openUpdateToNewest(){
+		RequestContext.getCurrentInstance().execute("PF('updateCategories').show();");
+	}
+
 	//Update to Retrieved Newest Version
 	public void updateToNewest(){
 		if(!isUpdateInfoNull()){

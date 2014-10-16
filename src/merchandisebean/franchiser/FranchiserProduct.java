@@ -105,14 +105,17 @@ public class FranchiserProduct implements Serializable{
     }
 	//Add Product
 	public void openAddProduct(ActionEvent actionEvent){
+		RequestContext context = RequestContext.getCurrentInstance();
 		if(selectedNode == null){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notice", "No Category Selected!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        context.addCallbackParam("leafCate", false);
 	        return;
 		}
 		if(!CategoryUtil.isLeafNode(selectedNode)){
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Notice", "The Category includes categories. You should change to a category that doesn't have other categories.");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        context.addCallbackParam("leafCate", false);
 	        return;
 		}
 		newProduct = new Product();
@@ -130,7 +133,7 @@ public class FranchiserProduct implements Serializable{
 			}
 		}
 		newProduct.setAdditionalInfoItems(newProductAdditionalInfos);
-		RequestContext.getCurrentInstance().execute("PF('addProduct').show();");
+		context.addCallbackParam("leafCate", true);
 	}
 	public void addProduct(ActionEvent actionEvent){
 		BasicListItem basicListItem = new BasicListItem();

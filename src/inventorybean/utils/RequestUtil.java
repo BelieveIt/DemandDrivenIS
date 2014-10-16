@@ -171,7 +171,7 @@ public class RequestUtil implements Serializable{
 		for(StoreSellingItem item : products){
 			String productId = item.getProductId();
 			Integer currentInventory = item.getCurrentInventory();
-			Integer inventoryOnNext = Integer.parseInt(item.getRegionListItem().getProduct().getMinInventory());
+			Integer inventoryOnNext = item.getRegionListItem().getProduct().getMinInventory();
 
 			Integer salesForecast = salesRecordsMapForForecastOfStoreByProduct.get(item.getProductId()).get(periodDayOfWeek);
 			Integer wasteForecast = 0;

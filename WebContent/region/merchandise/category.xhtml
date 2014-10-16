@@ -38,8 +38,8 @@ xmlns:p="http://primefaces.org/ui">
 		    			value="Rename" styleClass="right-content-header-button" icon="ui-icon-pencil" disabled="true"/>
 
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 0}"
-						actionListener="#{regionCategory.updateToNewest}" update=":currentPanel :leftMenuForm"
-		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" id="updateToNewest"/>
+						actionListener="#{regionCategory.openUpdateToNewest}" update=":currentPanel :leftMenuForm"
+		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus ne null and regionCategory.compareWithNewest eq 1}"
 		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" disabled="true"/>
 				<p:commandButton rendered="#{regionCategory.newestStatus eq null}"
@@ -104,7 +104,7 @@ xmlns:p="http://primefaces.org/ui">
 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
-				trigger=":renameCategoryForm:renameCategoryButton :treeFormHeader:updateToNewest">
+				trigger=":renameCategoryForm:renameCategoryButton :updateForm:updateToNewest">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>

@@ -14,6 +14,8 @@ xmlns:p="http://primefaces.org/ui">
     		<ui:define name="leftMenu">
 				<ui:include src="leftMenu.xhtml" />
     		</ui:define>
+    		<ui:define name="headerContentForGuide">
+    		</ui:define>
 			<ui:define name="rightContent">
 				<h:form id="messagesForm">
 				<p:growl id="messages" showDetail="true" life="4000"/>
@@ -22,6 +24,12 @@ xmlns:p="http://primefaces.org/ui">
     			<h:form id="buttonForm">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Inventory Analysis</span>
+    			<div class="right-content-header-buttons-panel">
+
+    			<!-- Create -->
+				<p:commandButton type="button" value="How To Use"  icon="ui-icon-info" style="margin-left:20px; float:left;"
+				onclick="introJs().start();" />
+    			</div>
     			</div>
     			</h:form>
 
@@ -29,6 +37,10 @@ xmlns:p="http://primefaces.org/ui">
 				<p:panel styleClass="autoHeightPanel divStyle">
     			<!-- Category Tree -->
     			<p:panel styleClass="floatLeft width20 divStyle">
+				<div class="floatLeft divStyle width100" data-step="1"
+				data-intro="You can click every category, then the analysis panel in the bottom will show the statistics of this category.
+				And in the  &quot;Low-moving List in the Category &quot;, you can find the products you should attention quickly, and could click the
+				Analysis Button to grasp the situation of these products.">
     			<h:form id="treeForm">
 			    <p:tree id="categoryTree" value="#{storeAnalysis.rootNode}" var="category" selectionMode="single"
 			    selection="#{storeAnalysis.selectedNode}" styleClass="leftTree">
@@ -38,12 +50,15 @@ xmlns:p="http://primefaces.org/ui">
 			        </p:treeNode>
 			    </p:tree>
 				</h:form>
+				</div>
 				</p:panel>
 
     			<!-- Products List -->
 				<p:panel styleClass="floatLeft width80 divStyle">
 				<h:form id="tableForm">
-
+	    			<div class="divStyle width100" data-step="2"
+					data-intro="You can click Analysis Button of every product, then the analysis chart will be shown in the analysis panel in the bottom.
+					You can see the sales trend by the year or the month, and you can also see the forecast based on the history data.">
 					<p:dataTable id="dataTable" var="item" value="#{storeAnalysis.storeSellingItems}" scrollable="true" scrollHeight="180"
 				                         filteredValue="#{storeAnalysis.filteredItems}"  selection="#{storeAnalysis.selectedItems}"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -89,7 +104,9 @@ xmlns:p="http://primefaces.org/ui">
 				            <p:watermark for="@(.Inventory)" value="Inventory" />
 				        </p:column>
 				    </p:dataTable>
+				    </div>
 				</h:form>
+
 				</p:panel>
 				</p:panel>
 

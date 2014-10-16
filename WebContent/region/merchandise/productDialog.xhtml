@@ -318,6 +318,59 @@ xmlns:p="http://primefaces.org/ui">
 	        </p:panelGrid>
 		</p:dialog>
 		</h:form>
+
+ 		<!-- Edit Item -->
+		<h:form id="editItemDetailForm">
+		<p:dialog header="Edit Item" widgetVar="editItemDetail" width="350">
+		    <p:panelGrid columns="2" cellpadding="5" columnClasses="label,value" styleClass="text-align-left">
+		        <h:outputLabel for="name" value="Name:" />
+	            <p:inputText id="name" value="#{regionProduct.selectedViewItem.product.name}"/>
+
+	            <h:outputLabel for="createTime" value="Create Time:" />
+	            <h:outputLabel id="createTime" value="#{regionProduct.selectedViewItem.product.productCreateTime}">
+	            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+	            </h:outputLabel>
+
+	            <h:outputLabel for="brand" value="Brand:" />
+	            <p:inputText id="brand" value="#{regionProduct.selectedViewItem.product.brand}" />
+
+	            <h:outputLabel for="itemWeight" value="Weight:" />
+	            <h:outputLabel id="itemWeight" value="#{regionProduct.selectedViewItem.product.itemWeight}" />
+
+	            <h:outputLabel for="manufacturer" value="Manufacturer:" />
+	            <p:inputText id="manufacturer" value="#{regionProduct.selectedViewItem.product.manufacturer}" />
+
+	            <h:outputLabel for="price" value="Price:" />
+	            <p:inputText id="price" value="#{regionProduct.selectedViewItem.product.price}" />
+
+	            <h:outputLabel for="unit" value="Unit:" />
+	            <p:inputText id="unit" value="#{regionProduct.selectedViewItem.product.unit}" />
+
+	            <h:outputLabel for="minInventory" value="MinInventory:" />
+	            <h:outputLabel id="minInventory" value="#{regionProduct.selectedViewItem.product.minInventory}" />
+
+				<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
+		        <h:outputLabel id="deliveryFrequency" value="#{regionProduct.selectedViewItem.product.deliveryFrequency}" />
+		        <h:outputLabel for="image" value="Product Image:" />
+  				<p:panel id="uploadedImg" styleClass="divStyle">
+  					<p:lightBox styleClass="imagebox">
+  					<h:outputLink value="#{request.contextPath}/resources/uploadImg/#{regionProduct.selectedViewItem.product.image}" title="Nature 1">
+  					<p:graphicImage library="uploadImg" name="#{regionProduct.selectedViewItem.product.image}"
+  					width="100" height="60" rendered="#{not empty regionProduct.selectedViewItem.product.image}"/>
+  					</h:outputLink>
+  					</p:lightBox>
+	            </p:panel>
+
+	            <ui:repeat var="viewItem" value="#{regionProduct.selectedViewItem.product.additionalInfoItems}">
+	            <tr class="ui-widget-content">
+	            <td class="ui-panelgrid-cell label"><h:outputLabel value="#{viewItem.label}:" /></td>
+	            <td class="ui-panelgrid-cell value"><p:inputText value="#{viewItem.value}" /></td>
+	            </tr>
+	            </ui:repeat>
+
+	        </p:panelGrid>
+		</p:dialog>
+		</h:form>
 	    </ui:composition>
     </h:body>
 </html>

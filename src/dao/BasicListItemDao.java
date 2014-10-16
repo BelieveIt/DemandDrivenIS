@@ -90,13 +90,13 @@ public class BasicListItemDao implements Serializable{
 	    	Product product = new Product();
 	    	product.setName(rs.getString("NAME"));
 	    	product.setBrand(rs.getString("BRAND"));
-	    	product.setItemWeight(rs.getInt("ITEM_WEIGHT"));
+	    	product.setItemWeight(rs.getDouble("ITEM_WEIGHT"));
 	    	product.setManufacturer(rs.getString("MANUFACTURER"));
 	    	product.setImage(rs.getString("IMAGE"));
 	    	product.setPrice(rs.getBigDecimal("PRICE"));
 	    	product.setUnit(rs.getString("UNIT"));
 	    	product.setDeliveryFrequency(rs.getString("DELIVERY_FREQUENCY"));
-	    	product.setMinInventory(rs.getString("MIN_INVENTORY"));
+	    	product.setMinInventory(rs.getInt("MIN_INVENTORY"));
 	    	product.setProductCreateTime(rs.getTimestamp("PRODUCT_CREATE_TIME"));
 	    	product.setAdditionalInformation(StringUtil.getStringsBySplit(rs.getString("ADDITIONAL_INFORMATION")));
 	    	basicListItem.setProduct(product);

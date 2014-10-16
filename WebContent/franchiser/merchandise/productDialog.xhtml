@@ -3,7 +3,8 @@
 xmlns:h="http://java.sun.com/jsf/html"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:ui="http://java.sun.com/jsf/facelets"
-xmlns:p="http://primefaces.org/ui">
+xmlns:p="http://primefaces.org/ui"
+xmlns:pe="http://primefaces.org/ui/extensions">
     <h:head>
     	<meta charset="utf-8"/>
         <title>Demand-Driven IS</title>
@@ -13,22 +14,49 @@ xmlns:p="http://primefaces.org/ui">
     			<!-- Add -->
 				<h:form id="addProductForm" enctype="multipart/form-data">
 				<p:dialog header="Add Product" widgetVar="addProduct" width="650">
+					<pe:keyFilter for="itemWeight,price,minInventory" mask="num"/>
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
  			            <h:outputLabel for="name" value="Name:" />
-			            <p:inputText id="name" value="#{franchiserProduct.newProduct.name}" required="true" label="name" />
+			            <p:inputText id="name" value="#{franchiserProduct.newProduct.name}" required="true" label="name"
+			            requiredMessage="Name - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="brand" value="Brand:" />
-			            <p:inputText id="brand" value="#{franchiserProduct.newProduct.brand}" required="true" label="brand" />
+			            <p:inputText id="brand" value="#{franchiserProduct.newProduct.brand}" required="true" label="brand"
+			            requiredMessage="Brand - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="itemWeight" value="Weight:" />
-			            <p:inputText id="itemWeight" value="#{franchiserProduct.newProduct.itemWeight}" required="true" label="itemWeight" />
+			            <p:inputText id="itemWeight" value="#{franchiserProduct.newProduct.itemWeight}" required="true" label="itemWeight"
+			            requiredMessage="Weight - Can not be empty." converterMessage="Weight - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <p:inputText id="manufacturer" value="#{franchiserProduct.newProduct.manufacturer}" required="true" label="manufacturer" />
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.newProduct.manufacturer}" required="true" label="manufacturer"
+			            requiredMessage="Manufacturer - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="price" value="Price:" />
-			            <p:inputText id="price" value="#{franchiserProduct.newProduct.price}" required="true" label="price" />
+			            <p:inputText id="price" value="#{franchiserProduct.newProduct.price}" required="true" label="price"
+			            requiredMessage="Price - Can not be empty." converterMessage="Price - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
 
 			            <h:outputLabel for="unit" value="Unit:" />
-			            <p:inputText id="unit" value="#{franchiserProduct.newProduct.unit}" required="true" label="unit" />
+			            <p:inputText id="unit" value="#{franchiserProduct.newProduct.unit}" required="true" label="unit"
+			            requiredMessage="Unit - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
-			            <p:inputText id="minInventory" value="#{franchiserProduct.newProduct.minInventory}" required="true" label="minInventory" />
+			            <p:inputText id="minInventory" value="#{franchiserProduct.newProduct.minInventory}" required="true" label="minInventory"
+			            requiredMessage="MinInventory - Can not be empty." converterMessage="MinInventory - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
 
 						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
 				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.newProduct.deliveryFrequency}">
@@ -118,22 +146,50 @@ xmlns:p="http://primefaces.org/ui">
     			<!-- Edit -->
 				<h:form id="editProductForm" enctype="multipart/form-data">
 				<p:dialog header="Edit Product" widgetVar="editProduct" width="650">
+					<pe:keyFilter for="itemWeight,price,minInventory" mask="num"/>
 				    <h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
  			            <h:outputLabel for="name" value="Name:" />
-			            <p:inputText id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}" required="true" label="name" />
+			            <p:inputText id="name" value="#{franchiserProduct.selectedBasicListItem.product.name}" required="true" label="name"
+			            requiredMessage="Name - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="brand" value="Brand:" />
-			            <p:inputText id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" required="true" label="brand" />
+			            <p:inputText id="brand" value="#{franchiserProduct.selectedBasicListItem.product.brand}" required="true" label="brand"
+			            requiredMessage="Brand - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
+
 			            <h:outputLabel for="itemWeight" value="Weight:" />
-			            <p:inputText id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" required="true" label="itemWeight" />
+			            <p:inputText id="itemWeight" value="#{franchiserProduct.selectedBasicListItem.product.itemWeight}" required="true" label="itemWeight"
+			            requiredMessage="Weight - Can not be empty." converterMessage="Weight - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="manufacturer" value="Manufacturer:" />
-			            <p:inputText id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" required="true" label="manufacturer" />
+			            <p:inputText id="manufacturer" value="#{franchiserProduct.selectedBasicListItem.product.manufacturer}" required="true" label="manufacturer"
+			            requiredMessage="Manufacturer - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="price" value="Price:" />
-			            <p:inputText id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" required="true" label="price" />
+			            <p:inputText id="price" value="#{franchiserProduct.selectedBasicListItem.product.price}" required="true" label="price"
+			            requiredMessage="Price - Can not be empty." converterMessage="Price - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
 
 			            <h:outputLabel for="unit" value="Unit:" />
-			            <p:inputText id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" required="true" label="unit" />
+			            <p:inputText id="unit" value="#{franchiserProduct.selectedBasicListItem.product.unit}" required="true" label="unit"
+			            requiredMessage="Unit - Can not be empty." >
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
+
 			            <h:outputLabel for="minInventory" value="MinInventory:" />
-			            <p:inputText id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" required="true" label="minInventory" />
+			            <p:inputText id="minInventory" value="#{franchiserProduct.selectedBasicListItem.product.minInventory}" required="true" label="minInventory"
+			            requiredMessage="MinInventory - Can not be empty." converterMessage="MinInventory - Must be a number">
+			            <p:ajax event="blur" update="@this,:messagesForm:messages"/>
+			            </p:inputText>
 
 						<h:outputLabel for="deliveryFrequency" value="Delivery Frequency:" />
 				        <p:selectOneMenu id="deliveryFrequency" value="#{franchiserProduct.selectedBasicListItem.product.deliveryFrequency}">
