@@ -10,6 +10,9 @@ import utils.StringUtil;
 
 public class Product implements Serializable{
 	private static final long serialVersionUID = -4546717255351419498L;
+	public static final String EVERYDAY = "everyday";
+	public static final String EVERYWEEK = "everyweek";
+	public static final String EVERYMONTH = "everymonth";
 	private String name;
 	private String brand;
 	private Double itemWeight;

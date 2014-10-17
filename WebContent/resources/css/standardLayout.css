@@ -148,6 +148,15 @@ padding:0px;
 .width20{
 width:20%;
 }
+.width63{
+width:63%;
+}
+.width60{
+width:60%;
+}
+.width70{
+width:70%;
+}
 .width78{
 width:78%;
 }
@@ -288,4 +297,7 @@ background-color:#F2B3A0;
 background:#F2B3A0;
 }
 .available{
+}
+.marginAuto{
+margin:0px auto 0px;
 }

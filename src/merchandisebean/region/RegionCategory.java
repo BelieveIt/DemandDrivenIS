@@ -140,6 +140,7 @@ public class RegionCategory implements Serializable{
 			initRootNodeByVersionId("head");
 			doVersionCampare();
 		}
+		RequestContext.getCurrentInstance().execute("PF('updateCategories').hide();");
 	}
 
 	//Rename Category

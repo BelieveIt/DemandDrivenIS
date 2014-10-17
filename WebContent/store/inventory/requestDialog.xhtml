@@ -19,15 +19,39 @@ xmlns:p="http://primefaces.org/ui">
 			        <p:selectOneMenu id="deliveryFrenquencySelect" value="#{storeRequest.newReplenishmentReport.deliveryType}"
 			        styleClass="right-content-header-select">
 			              <f:selectItem itemLabel="For Every Day Delivery" itemValue="everyday" />
+			              <f:selectItem itemLabel="For Every Week Delivery" itemValue="everyweek" />
+			              <f:selectItem itemLabel="For Every Month Delivery" itemValue="everymonth" />
 			        </p:selectOneMenu>
 
 		            <f:facet name="footer">
+						<p:commandButton type="button" value="What is Delivery Frequency?"  icon="ui-icon-help" style="margin-left:20px; float:left;"
+						onclick="PF('typeDescription').show();" />
 		                <p:commandButton action="#{storeRequest.openCreateRequest2}" update=":createRequestForm :createRequestForm2"
 		                id="createRequestNextButton" value="Next" />
 		            </f:facet>
 		        </h:panelGrid>
 			</p:dialog>
 			</h:form>
+
+			<p:dialog header="Delivery Frequency Desicription" widgetVar="typeDescription" width="550">
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText
+					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product." styleClass="right-content-header-label floatLeft"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText
+					value="2.The product which could be kept for long time will have low delivery frequency, such as umbrella, battery and so on. The product which could be kept for short time will have high frequency, such as bread
+					, box lunch and so on. The delivery frequency will be set by the Franchiser Merchandise Info Adminstrator. System provide three types: every day, every week, and every month." styleClass="right-content-header-label floatLeft"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText
+					value="3.Different delivery types means the different delivery interval, so the system will calculate the replenishment request for different types considering the
+					different interval. For example, to make the replenishment for the everyday frequency type product, system will forecast the one-day sales volume to make the replenishment request.
+					But for a everymonth frequency, system will forecast the one-month sales volume for the replenishment" styleClass="right-content-header-label floatLeft"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				</p:panel>
+			</p:dialog>
 
 			<h:form id="createRequestForm2">
 			<p:dialog header="Create Replenishment Request" widgetVar="createRequest2" width="1000">

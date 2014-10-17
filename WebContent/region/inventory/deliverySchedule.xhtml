@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+        <h:outputStylesheet name="standardLayout.css" library="css" />
+    </h:head>
+    <h:body>
+		<ui:composition template="/common/standardLayout.xhtml">
+    		<ui:define name="leftMenu">
+				<ui:include src="leftMenu.xhtml" />
+    		</ui:define>
+			<ui:define name="rightContent">
+				<h:form id="messagesForm">
+				<p:growl id="messages" showDetail="true" life="4000"/>
+				</h:form>
+
+    			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
+    			<span class="right-content-header-text">Delivery Schedule</span>
+    			<div class="right-content-header-buttons-panel">
+    			<!-- Create -->
+    			<p:commandButton action="#{regionDeliverySchedule.openChangeSchedule}" update=":changeScheduleForm"
+    			value="Change Delivery Schedule" styleClass="right-content-header-button" icon="ui-icon-pencil" style="margin-left:15px;" />
+    			</div>
+    			</div>
+
+				<p:panel id="schedulePanel" styleClass="autoHeightPanel">
+    			<!-- Products List -->
+				<p:panel styleClass="divStyle autoHeightPanel width63 marginAuto">
+        		<p:schedule id="schedule" value="#{regionDeliverySchedule.eventModel}" widgetVar="myschedule" timeZone="GMT+8"
+        		draggable="false" resizable="false"/>
+				</p:panel>
+				</p:panel>
+
+				<!-- Dialogs -->
+				<ui:include src="deliveryScheduleDialog.xhtml" />
+				<!-- BlockUI -->
+				<h:form>
+				<p:blockUI
+				block=":rightContentLayout"
+				trigger=":changeScheduleForm:changeScheduleButton">
+			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+			    </p:blockUI>
+				</h:form>
+
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

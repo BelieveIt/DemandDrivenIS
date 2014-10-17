@@ -17,9 +17,6 @@ import model.RegionListCategory;
 import model.RegionListItem;
 
 public class ProductUtil {
-	public static final String EVERYDAY = "everyday";
-	public static final String EVERYWEEK = "everyweek";
-	public static final String EVERYMONTH = "everymonth";
 	public static List<BasicListItem> generateBasicListItemsBySelectedNode(List<BasicListItem> items, TreeNode selectedNode){
 		List<BasicListItem> list = new ArrayList<BasicListItem>();
 		List<String> categoryIdList = new ArrayList<String>();

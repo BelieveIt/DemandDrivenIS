@@ -3,6 +3,8 @@ package test.preparedata;
 
 import java.text.ParseException;
 
+import model.DeliverySchedule;
+import model.Product;
 import model.WasteRecord;
 
 import dao.BasicListCategoryDao;
@@ -10,6 +12,7 @@ import dao.BasicListDao;
 import dao.BasicListItemDao;
 import dao.DeliveryReportDao;
 import dao.DeliveryReportItemDao;
+import dao.DeliveryScheduleDao;
 import dao.ProductTypeDao;
 import dao.RegionListCategoryDao;
 import dao.RegionListItemDao;
@@ -68,9 +71,21 @@ public class DeleteData {
 		deliveryReportDao.deleteAll();
 		deliveryReportItemDao.deleteAll();
 
+		//Schedule
+		DeliveryScheduleDao deliveryScheduleDao = new DeliveryScheduleDao();
+		DeliverySchedule deliverySchedule1 = new DeliverySchedule();
+		deliverySchedule1.setDeliveryMark(1);
+		deliverySchedule1.setDeliveryHour(5);
+		deliverySchedule1.setDeliveryType(Product.EVERYWEEK);
 
+		DeliverySchedule deliverySchedule2 = new DeliverySchedule();
+		deliverySchedule2.setDeliveryMark(1);
+		deliverySchedule2.setDeliveryHour(5);
+		deliverySchedule2.setDeliveryType(Product.EVERYMONTH);
+
+		deliveryScheduleDao.deleteAll();
+		deliveryScheduleDao.insertDeliverySchedule(deliverySchedule1);
+		deliveryScheduleDao.insertDeliverySchedule(deliverySchedule2);
 		System.out.println("Deletion Process Finished!");
-
-
 	}
 }

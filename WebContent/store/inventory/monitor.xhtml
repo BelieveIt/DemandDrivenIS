@@ -24,6 +24,12 @@ xmlns:p="http://primefaces.org/ui">
     			<h:form id="buttonForm">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Inventory Info</span>
+    			<div class="right-content-header-buttons-panel">
+
+    			<!-- Create -->
+				<p:commandButton type="button" value="How To Use"  icon="ui-icon-info" style="margin-left:20px; float:left;"
+				onclick="introJs().start();" />
+    			</div>
     			</div>
     			</h:form>
 
@@ -67,7 +73,9 @@ xmlns:p="http://primefaces.org/ui">
 
  					    <!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
-			            <div style="width:70px;height:40px">
+			            <div style="width:70px;height:40px" data-step="1"
+								data-intro="You can click Detail Button of every product, then you can see the information of this product, and it will provide
+								the product's records of the sales, the virtual sales and the waste.">
  			             <p:commandButton action="#{storeMonitor.openViewProduct}" update=":viewProductForm :messagesForm:messages"
 			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewProductButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
@@ -109,28 +117,48 @@ xmlns:p="http://primefaces.org/ui">
 				        </p:column>
 
 						<!-- Stock-out -->
-			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
+			            <p:column rendered="#{item.currentInventory eq 0}" toggleable="false"  exportable="false"  >
+			           	<div data-step="2"
+								data-intro="You can click Virtual Sales For Stock-out Button of every product, then you can add the virtual sales records, these virtual sales records will
+								reflect the sales situation when stock-out occurred. System will provide the sales trend chart to help user to make the virtual sales.">
+			             <p:commandButton action="#{storeMonitor.openAddVirtualSales}" update=":virtualSalesHeadForm :SalesStatisticsForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Virtual Sales For Stock-out">
 			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
 			             </p:commandButton>
-
-			             <p:commandButton rendered="#{item.currentInventory ne 0}"
-			              icon="ui-icon-plus" value="Virtual Sales For Stock-out" disabled="true" />
+						</div>
 			            </p:column>
 
-						<!-- Waste -->
-			            <p:column toggleable="false"  exportable="false"  >
-			             <p:commandButton rendered="#{item.currentInventory eq 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
-			              icon="ui-icon-plus" value="Waste Record" disabled="true">
-			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}"/>
-			             </p:commandButton>
+						<p:column rendered="#{item.currentInventory ne 0}" toggleable="false"  exportable="false"  >
+						<div data-step="2"
+								data-intro="You can click Virtual Sales For Stock-out Button of every product, then you can add the virtual sales records, these virtual sales records will
+								reflect the sales situation when stock-out occurred. System will provide the sales trend chart to help user to make the virtual sales.">
+			             <p:commandButton icon="ui-icon-plus" value="Virtual Sales For Stock-out" disabled="true" />
+			             </div>
+						</p:column>
 
-			             <p:commandButton rendered="#{item.currentInventory ne 0}" action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+						<!-- Waste -->
+			            <p:column rendered="#{item.currentInventory ne 0}" toggleable="false"  exportable="false"  >
+			             <div data-step="3"
+								data-intro="You can click Waste Record Button of every product, then you can add the waste records for the product. All the waste records will be used to
+								forecast the replenishment request.">
+			             <p:commandButton action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
 			              icon="ui-icon-plus" value="Waste Record">
 			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}" />
 			             </p:commandButton>
+			             </div>
 			            </p:column>
+
+			            <p:column rendered="#{item.currentInventory eq 0}" toggleable="false"  exportable="false"  >
+			            <div data-step="3"
+								data-intro="You can click Waste Record Button of every product, then you can add the waste records for the product. All the waste records will be used to
+								forecast the replenishment request.">
+			             <p:commandButton action="#{storeMonitor.openAddWasteRecord}" update=":addWasteRecordForm :messagesForm:messages"
+			              icon="ui-icon-plus" value="Waste Record" disabled="true">
+			              <f:setPropertyActionListener value="#{item}" target="#{storeMonitor.selectedItem}"/>
+			             </p:commandButton>
+			             </div>
+			            </p:column>
+
 				    </p:dataTable>
 				</h:form>
 				</p:panel>

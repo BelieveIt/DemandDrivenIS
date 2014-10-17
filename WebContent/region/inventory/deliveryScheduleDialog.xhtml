@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+			<!-- Change Schedule -->
+			<h:form id="changeScheduleForm">
+			<p:dialog header="Change Delivery Schedule" widgetVar="changeSchedule" width="750">
+				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:700px">
+			    <h:panelGrid columns="5" cellpadding="5">
+					<p:outputLabel for="deliveryScheduleEveryWeekSelect"
+					value="Set schedule for Every Week Delivery:" styleClass="right-content-header-label"/>
+					<p:outputLabel value="Day of Week:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="deliveryScheduleEveryWeekSelect" value="#{regionDeliverySchedule.everyWeekSchedule}"
+			        styleClass="right-content-header-select">
+			              <f:selectItem itemLabel="Sun." itemValue="1" />
+			              <f:selectItem itemLabel="Mon." itemValue="2" />
+			              <f:selectItem itemLabel="Thur." itemValue="3" />
+			              <f:selectItem itemLabel="Wed." itemValue="4" />
+			              <f:selectItem itemLabel="Thue." itemValue="5" />
+			              <f:selectItem itemLabel="Fri." itemValue="6" />
+			              <f:selectItem itemLabel="Sat." itemValue="7" />
+			        </p:selectOneMenu>
+			        <p:outputLabel value="Start Hour:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="deliveryScheduleEveryWeekHourSelect" value="#{regionDeliverySchedule.everyWeekHourSchedule}"
+			        styleClass="right-content-header-select">
+			              <f:selectItems value="#{regionDeliverySchedule.hoursOfDay}" var="item" itemLabel="#{item}" itemValue="#{item}"/>
+			        </p:selectOneMenu>
+
+					<p:outputLabel for="deliveryScheduleEveryMonthSelect"
+					value="Set schedule for Every Month Delivery:" styleClass="right-content-header-label"/>
+					<p:outputLabel value="Day of Month:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="deliveryScheduleEveryMonthSelect" value="#{regionDeliverySchedule.everyMonthSchedule}"
+			        styleClass="right-content-header-select">
+			              <f:selectItems value="#{regionDeliverySchedule.daysOfMonth}" var="item" itemLabel="#{item}" itemValue="#{item}"/>
+			        </p:selectOneMenu>
+			        <p:outputLabel value="Start Hour:" styleClass="right-content-header-label"/>
+			        <p:selectOneMenu id="deliveryScheduleEveryMonthHourSelect" value="#{regionDeliverySchedule.everyMonthHourSchedule}"
+			        styleClass="right-content-header-select">
+			              <f:selectItems value="#{regionDeliverySchedule.hoursOfDay}" var="item" itemLabel="#{item}" itemValue="#{item}"/>
+			        </p:selectOneMenu>
+
+		            <f:facet name="footer">
+		                <p:commandButton action="#{regionDeliverySchedule.changeSchedule}" update=":schedulePanel"
+		                id="changeScheduleButton" value="Change" />
+		            </f:facet>
+		        </h:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+						<p:chart rendered="#{regionViewRequest.selectedItemSalesLine!=null}" type="line" model="#{regionViewRequest.selectedItemSalesLine}"
+						style="width:550px;height:350px" />
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+	    </ui:composition>
+    </h:body>
+</html>

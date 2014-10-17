@@ -1,5 +1,7 @@
 package utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +21,7 @@ public class DateUtil {
 	public static String getMonth(int i){
 		return month[i];
 	}
-	public static void main(String[] strings){
+	public static void main(String[] strings) throws ParseException{
 //		System.out.println(Calendar.SEPTEMBER);
 //		SalesRecordDao salesRecordDao = new SalesRecordDao();
 //		HashMap<String, ArrayList<SalesRecord>> map = salesRecordDao.querySalesRecords();
@@ -27,7 +29,10 @@ public class DateUtil {
 //		Date date2 = map.get("1").get(2).getCreateTime();
 //		System.out.println(date1 + " " + date2);
 //		System.out.println(daysBetween(date2, date1));
-		System.out.println(getMonthOfDate(new Date()));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String endInString = "2014-01-01 00:00:00";
+		Date start = sdf.parse(endInString);
+		System.out.println(start);
 	}
 	public static String formatDuring(Date date1, Date date2) {
 		long mss = date1.getTime() - date2.getTime();
@@ -94,55 +99,55 @@ public class DateUtil {
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 		return day;
 	 }
-	 
+
 	 public static ArrayList<String> getLastYearAndMonthList(Date date, int num){
 		 	ArrayList<String> dateList = new ArrayList<String>();
-			Calendar calendar = Calendar.getInstance(); 
+			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
-			calendar.add(Calendar.MONTH, -num-1); 
+			calendar.add(Calendar.MONTH, -num-1);
 			for(int i = 1; i <= num+1; i++){
 				calendar.add(Calendar.MONTH, 1);
-				int year = calendar.get(Calendar.YEAR); 
+				int year = calendar.get(Calendar.YEAR);
 				int month = calendar.get(Calendar.MONTH)+1;
-				
+
 				String monthString = "";
 				if(month < 10) {
 					monthString = "0" + month;
 				}else {
 					monthString = Integer.toString(month);
 				}
-				
+
 				dateList.add(Integer.toString(year) + monthString);
 			}
-			
+
 			return dateList;
 	 }
 
 	 public static ArrayList<String> getFutureYearAndMonthList(Date date, int num){
 		 	ArrayList<String> dateList = new ArrayList<String>();
-			Calendar calendar = Calendar.getInstance(); 
-			calendar.setTime(date); 
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
 			for(int i = 1; i <= num; i++){
 				calendar.add(Calendar.MONTH, 1);
-				int year = calendar.get(Calendar.YEAR); 
+				int year = calendar.get(Calendar.YEAR);
 				int month = calendar.get(Calendar.MONTH)+1;
-				
+
 				String monthString = "";
 				if(month < 10) {
 					monthString = "0" + month;
 				}else {
 					monthString = Integer.toString(month);
 				}
-				
+
 				dateList.add(Integer.toString(year) + monthString);
 			}
 			return dateList;
 	 }
-	 
+
 	 public static String getYearAndMonth(Date date){
-		Calendar calendar = Calendar.getInstance(); 
+		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		int year = calendar.get(Calendar.YEAR); 
+		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH)+1;
 		String monthString = "";
 		if(month < 10) {
