@@ -4,6 +4,8 @@ import inventorybean.utils.ChartUtil;
 import inventorybean.utils.RequestUtil;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,14 +21,20 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleModel;
 import org.primefaces.model.chart.LineChartModel;
 
 import utils.DateUtil;
 import utils.IdentityUtil;
 
+import dao.DeliveryScheduleDao;
 import dao.ReplenishmentReportDao;
 import dao.StoreDao;
 
+import model.DeliverySchedule;
+import model.Product;
 import model.ReplenishmentReport;
 import model.ReplenishmentReportItem;
 import model.Store;
@@ -37,9 +45,11 @@ public class StoreRequest implements Serializable{
 	private static final long serialVersionUID = -5273193227547183374L;
 	private ReplenishmentReportDao replenishmentReportDao;
 	private StoreDao storeDao;
+	private DeliveryScheduleDao deliveryScheduleDao;
 
 	private Store store;
-
+	private ScheduleModel eventModel;
+	
 	@ManagedProperty(value="#{requestUtil}")
 	private RequestUtil requestUtil;
 
@@ -49,41 +59,152 @@ public class StoreRequest implements Serializable{
 
 	private ReplenishmentReportItem selectedItem;
 	private LineChartModel selectedItemSalesLine;
+	
+	private Date weekDeliveryDate;
+	private Date monthDeliveryDate;
+	
+	private Integer daysBeforeWeekDelivery;
+	private Integer daysBeforeMonthDelivery;
 	@PostConstruct
 	public void init(){
 		setReplenishmentReportDao(new ReplenishmentReportDao());
 		storeDao = new StoreDao();
+		deliveryScheduleDao = new DeliveryScheduleDao();
 		//TODO
 		store = storeDao.queryStoreById("1");
 		initProgress();
+		initDeliveryDate();
 	}
 	public void initProgress(){
 		setNewReplenishmentReport(new ReplenishmentReport());
 		reports = replenishmentReportDao.queryReplenishmentReportsByStoreId(store.getStoreId());
 	}
-
-	public void openCreateRequest(){
-		RequestContext.getCurrentInstance().execute("PF('createRequest').show();");
+	public void initDeliveryDate(){
+		DeliverySchedule weekSchedule = new DeliverySchedule();
+		weekSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYWEEK);
+		DeliverySchedule monthSchedule = new DeliverySchedule();
+		monthSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYMONTH);
+        
+		Integer weekMark = weekSchedule.getDeliveryMark();
+		Integer monthMark = monthSchedule.getDeliveryMark();
+		
+		Calendar startC = Calendar.getInstance();
+		
+		daysBeforeWeekDelivery = 0;
+		startC.setTime(new Date());
+		while(true){
+			if(startC.get(Calendar.DAY_OF_WEEK) == weekMark.intValue()){
+				weekDeliveryDate = startC.getTime();
+				break;
+			}
+			daysBeforeWeekDelivery++;
+			startC.add(Calendar.DATE, 1);
+		}
+		
+		daysBeforeMonthDelivery = 0;
+		startC.setTime(new Date());
+		while(true){
+			if(startC.get(Calendar.DAY_OF_MONTH) == monthMark.intValue()){
+				monthDeliveryDate = startC.getTime();
+				break;
+			}
+			daysBeforeMonthDelivery++;
+			startC.add(Calendar.DATE, 1);
+		}
 	}
-	public void openCreateRequest2(){
+	
+	public void openViewSchedule(){
+		eventModel = new DefaultScheduleModel();
+		DeliverySchedule weekSchedule = new DeliverySchedule();
+		weekSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYWEEK);
+		DeliverySchedule monthSchedule = new DeliverySchedule();
+		monthSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYMONTH);
+        initialEvent(weekSchedule, monthSchedule);
+        RequestContext.getCurrentInstance().execute("PF('viewSchedule').show();");
+	}
+	
+	private void initialEvent(DeliverySchedule weekSchedule, DeliverySchedule monthSchedule){
+		try {
+		Date today = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(today);
+		String todayYear = Integer.toString(calendar.get(Calendar.YEAR));
+		String todayMonth = Integer.toString(calendar.get(Calendar.MONTH)+1);
+		String todayDay = Integer.toString(calendar.get(Calendar.DAY_OF_MONTH));
+		String todayYearNext = Integer.toString(calendar.get(Calendar.YEAR)+1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String startInString = todayYear + "-"+todayMonth+"-"+todayDay + " 5:0:0";
+		String endInString = todayYearNext + "-01-01 00:00:00";
+
+		Date start = sdf.parse(startInString);
+		Date end = sdf.parse(endInString);
+
+		Calendar startC = Calendar.getInstance();
+		startC.setTime(start);
+
+		Calendar endC = Calendar.getInstance();
+		endC.setTime(end);
+
+		for (; startC.before(endC); startC.add(Calendar.DATE, 1)) {
+			if(startC.get(Calendar.DAY_OF_MONTH) == monthSchedule.getDeliveryMark().intValue()){
+				startC.set(Calendar.HOUR_OF_DAY, monthSchedule.getDeliveryHour());
+				eventModel.addEvent(new DefaultScheduleEvent("Delivery for EveryMonth Frequency", startC.getTime(),  startC.getTime()));
+			}
+
+			if(startC.get(Calendar.DAY_OF_WEEK) == weekSchedule.getDeliveryMark().intValue()){
+				startC.set(Calendar.HOUR_OF_DAY, weekSchedule.getDeliveryHour());
+				eventModel.addEvent(new DefaultScheduleEvent("Delivery for EveryWeek Frequency",  startC.getTime(),  startC.getTime()));
+			}
+
+		}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}	
+	public void openCreateDayRequest(){
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, 1);
 		Date tomorrow = calendar.getTime();
 		newReplenishmentReport.setDeliveryTime(tomorrow);
-
+		
+		newReplenishmentReport.setDeliveryType("everyday");
 		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
-		if(newReplenishmentReport.getDeliveryType().equals("everyday"))replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
-		if(newReplenishmentReport.getDeliveryType().equals("everyweek"))replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
-		if(newReplenishmentReport.getDeliveryType().equals("everymonth"))replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
 		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
 
 		newReplenishmentReport.setStoreId(store.getStoreId());
-		RequestContext.getCurrentInstance().execute("PF('createRequest').hide();");
-		RequestContext.getCurrentInstance().execute("PF('createRequest2').show();");
+		RequestContext.getCurrentInstance().execute("PF('createRequest').show();");
 	}
 
+	public void openCreateWeekRequest(){
+		newReplenishmentReport.setDeliveryTime(weekDeliveryDate);
+		
+		//TODO
+		newReplenishmentReport.setDeliveryType("everyweek");
+		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
+		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
+
+		newReplenishmentReport.setStoreId(store.getStoreId());
+		RequestContext.getCurrentInstance().execute("PF('createRequest').show();");
+	}
+
+	public void openCreateMonthRequest(){
+		newReplenishmentReport.setDeliveryTime(monthDeliveryDate);
+		
+		//TODO
+		newReplenishmentReport.setDeliveryType("everymonth");
+		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
+		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
+
+		newReplenishmentReport.setStoreId(store.getStoreId());
+		RequestContext.getCurrentInstance().execute("PF('createRequest').show();");
+	}
+	
+	
 	public void openViewItemForAdd(){
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
@@ -103,6 +224,18 @@ public class StoreRequest implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').hide();");
 	}
 
+	public void createRequest(){
+		newReplenishmentReport.setCreateTime(new Date());
+		newReplenishmentReport.setReportId(IdentityUtil.randomUUID());
+		newReplenishmentReport.setStatus(ReplenishmentReport.WAITING_FOR_APPROVAL);
+		for(ReplenishmentReportItem item : newReplenishmentReport.getReplenishmentReportItems()){
+			item.setReportId(newReplenishmentReport.getReportId());
+		}
+		replenishmentReportDao.insertReplenishmentReport(newReplenishmentReport);
+		initProgress();
+		RequestContext.getCurrentInstance().execute("PF('createRequest2').hide();");
+	}
+	
 	public void openViewItem(){
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
@@ -116,18 +249,6 @@ public class StoreRequest implements Serializable{
 		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
 		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
 		RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
-	}
-
-	public void createRequest(){
-		newReplenishmentReport.setCreateTime(new Date());
-		newReplenishmentReport.setReportId(IdentityUtil.randomUUID());
-		newReplenishmentReport.setStatus(ReplenishmentReport.WAITING_FOR_APPROVAL);
-		for(ReplenishmentReportItem item : newReplenishmentReport.getReplenishmentReportItems()){
-			item.setReportId(newReplenishmentReport.getReportId());
-		}
-		replenishmentReportDao.insertReplenishmentReport(newReplenishmentReport);
-		initProgress();
-		RequestContext.getCurrentInstance().execute("PF('createRequest2').hide();");
 	}
 
 	public void openViewReport(){
@@ -184,6 +305,36 @@ public class StoreRequest implements Serializable{
 	}
 	public void setSelectedItemSalesLine(LineChartModel selectedItemSalesLine) {
 		this.selectedItemSalesLine = selectedItemSalesLine;
+	}
+	public DeliveryScheduleDao getDeliveryScheduleDao() {
+		return deliveryScheduleDao;
+	}
+	public void setDeliveryScheduleDao(DeliveryScheduleDao deliveryScheduleDao) {
+		this.deliveryScheduleDao = deliveryScheduleDao;
+	}
+	public Date getWeekDeliveryDate() {
+		return weekDeliveryDate;
+	}
+	public void setWeekDeliveryDate(Date weekDeliveryDate) {
+		this.weekDeliveryDate = weekDeliveryDate;
+	}
+	public Date getMonthDeliveryDate() {
+		return monthDeliveryDate;
+	}
+	public void setMonthDeliveryDate(Date monthDeliveryDate) {
+		this.monthDeliveryDate = monthDeliveryDate;
+	}
+	public Integer getDaysBeforeWeekDelivery() {
+		return daysBeforeWeekDelivery;
+	}
+	public void setDaysBeforeWeekDelivery(Integer daysBeforeWeekDelivery) {
+		this.daysBeforeWeekDelivery = daysBeforeWeekDelivery;
+	}
+	public Integer getDaysBeforeMonthDelivery() {
+		return daysBeforeMonthDelivery;
+	}
+	public void setDaysBeforeMonthDelivery(Integer daysBeforeMonthDelivery) {
+		this.daysBeforeMonthDelivery = daysBeforeMonthDelivery;
 	}
 
 }

@@ -9,7 +9,7 @@ import oracle.jdbc.pool.OracleDataSource;
 
 public class DaoUtil {
 public static OracleDataSource getDataSource(){
-	InputStream inputStream = DaoUtil.class.getResourceAsStream("/jdbcEval.properties");
+	InputStream inputStream = DaoUtil.class.getResourceAsStream("/jdbc3.properties");
 	Properties properties = new Properties();
 	try {
 		properties.load(inputStream);

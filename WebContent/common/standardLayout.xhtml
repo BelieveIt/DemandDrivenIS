@@ -15,8 +15,10 @@ xmlns:p="http://primefaces.org/ui">
 	<p:layout id="pageLayout" fullPage="true">
 	    <p:layoutUnit position="north" size="70">
 	    <p:graphicImage library="img" name="logo.png" />
+	    <h:form style="float:right;margin-top:6px;margin-right:20px;">
 	    <p:commandButton value="Logout" id="logout"  actionListener="#{loginBean.doLogout}" icon="ui-icon-extlink"
-                                  oncomplete="window.location.reload()" style="float:right;margin-top:6px;margin-right:20px;"/>
+                                  oncomplete="window.location.reload()" />
+        </h:form>
 	    <ui:include src="lanSelect.xhtml" />
 		<ui:insert name="headerContentForGuide" >
 				<h:form id="headerForm" style="float:right;">

@@ -102,14 +102,18 @@ public class RegionDeliverySchedule implements Serializable{
 		monthSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYMONTH);
 		everyMonthSchedule = monthSchedule.getDeliveryMark();
 		everyWeekSchedule = weekSchedule.getDeliveryMark();
+		everyMonthHourSchedule = monthSchedule.getDeliveryHour();
+		everyWeekHourSchedule = weekSchedule.getDeliveryHour();
 		RequestContext.getCurrentInstance().execute("PF('changeSchedule').show();");
 	}
 
 	public void changeSchedule(){
 		DeliverySchedule weekSchedule = new DeliverySchedule();
+		weekSchedule.setDeliveryHour(everyWeekHourSchedule);
 		weekSchedule.setDeliveryMark(everyWeekSchedule);
 		weekSchedule.setDeliveryType(Product.EVERYWEEK);
 		DeliverySchedule monthSchedule = new DeliverySchedule();
+		monthSchedule.setDeliveryHour(everyMonthHourSchedule);
 		monthSchedule.setDeliveryMark(everyMonthSchedule);
 		monthSchedule.setDeliveryType(Product.EVERYMONTH);
 

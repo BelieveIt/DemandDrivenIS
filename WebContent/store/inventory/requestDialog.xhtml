@@ -10,33 +10,20 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
 	    <ui:composition>
-			<!-- Create Request -->
-			<h:form id="createRequestForm">
-			<p:dialog header="Create Replenishment Request" widgetVar="createRequest" width="450">
-			    <h:panelGrid columns="2" cellpadding="5">
-					<p:outputLabel for="deliveryFrenquencySelect"
-					value="Select Delivery Frequency Type:" styleClass="right-content-header-label"/>
-			        <p:selectOneMenu id="deliveryFrenquencySelect" value="#{storeRequest.newReplenishmentReport.deliveryType}"
-			        styleClass="right-content-header-select">
-			              <f:selectItem itemLabel="For Every Day Delivery" itemValue="everyday" />
-			              <f:selectItem itemLabel="For Every Week Delivery" itemValue="everyweek" />
-			              <f:selectItem itemLabel="For Every Month Delivery" itemValue="everymonth" />
-			        </p:selectOneMenu>
-
-		            <f:facet name="footer">
-						<p:commandButton type="button" value="What is Delivery Frequency?"  icon="ui-icon-help" style="margin-left:20px; float:left;"
-						onclick="PF('typeDescription').show();" />
-		                <p:commandButton action="#{storeRequest.openCreateRequest2}" update=":createRequestForm :createRequestForm2"
-		                id="createRequestNextButton" value="Next" />
-		            </f:facet>
-		        </h:panelGrid>
+	    	<!-- View Delivery Schedule -->
+			<h:form id="viewScheduleForm">
+			<p:dialog header="View Delivery Schedule" widgetVar="viewSchedule" width="600">
+        		<p:schedule id="schedule" value="#{regionDeliverySchedule.eventModel}" widgetVar="myschedule" timeZone="GMT+8"
+        		draggable="false" resizable="false"/>
 			</p:dialog>
 			</h:form>
-
+	    
 			<p:dialog header="Delivery Frequency Desicription" widgetVar="typeDescription" width="550">
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 				<h:outputText
-					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product." styleClass="right-content-header-label floatLeft"/>
+					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product. 
+					Franchiser's Merchandise Info Administrator will choose the delivery frequency for every product. And Region's Supply Chain Administrator will 
+					settle the delivery schedule for every delivery frequency." styleClass="right-content-header-label floatLeft"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 				<h:outputText
@@ -52,9 +39,10 @@ xmlns:p="http://primefaces.org/ui">
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 				</p:panel>
 			</p:dialog>
-
-			<h:form id="createRequestForm2">
-			<p:dialog header="Create Replenishment Request" widgetVar="createRequest2" width="1000">
+			
+			<!-- Create Request -->
+			<h:form id="createRequestForm">
+			<p:dialog header="Create Replenishment Request" widgetVar="createRequest" width="1000">
 				<p:panel styleClass="autoHeightPanel divStyle">
 				<h:outputText
 					value="Deliver Frequency Type:" styleClass="right-content-header-label floatLeft text-bold"/>
@@ -62,7 +50,7 @@ xmlns:p="http://primefaces.org/ui">
 					value="#{storeRequest.newReplenishmentReport.deliveryType}" styleClass="right-content-header-label floatLeft"/>
 
 				<h:outputText
-					value="Delivery Date(After Request Date):" styleClass="right-content-header-label floatLeft text-bold"/>
+					value="Delivery Date:" styleClass="right-content-header-label floatLeft text-bold"/>
 				<h:outputText
 					value="#{storeRequest.newReplenishmentReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
 	            <f:convertDateTime pattern="yyyy-MM-dd" />
@@ -79,7 +67,6 @@ xmlns:p="http://primefaces.org/ui">
 					<p:dataTable id="dataTable" var="item" value="#{storeRequest.newReplenishmentReport.replenishmentReportItems}"  style="width:900px"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
-
 						<!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
 			            <div style="width:70px;height:40px">
@@ -99,15 +86,14 @@ xmlns:p="http://primefaces.org/ui">
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
 				        </p:column>
-
-
 				    </p:dataTable>
 
 				</p:panel>
-				<p:commandButton action="#{storeRequest.createRequest}" update=":createRequestForm2 :tableForm"
+				<p:commandButton action="#{storeRequest.createRequest}" update=":tableForm"
 				id="createAndSendButton" value="Create and Send Request" />
 			</p:dialog>
 			</h:form>
+
 
 			<!-- View Item For Add-->
 			<h:form id="viewItemForAddForm">
@@ -138,8 +124,7 @@ xmlns:p="http://primefaces.org/ui">
 			            <h:outputLabel value="Confirm Replenishment Number:" />
 			            <p:inputText value="#{storeRequest.selectedItem.replenishmentNumber}" style="width:40px;" id="confirmReplenishNumber"/>
 
-			            <p:commandButton action="#{storeRequest.confirmReplenishmentNumber}" update=":createRequestForm2:dataTable"
-						id="createAndSendButton" value="Confirm" />
+			            <p:commandButton action="#{storeRequest.confirmReplenishmentNumber}" update=":createRequestForm:dataTable" value="Confirm" />
 			        </h:panelGrid>
 				</p:panel>
 

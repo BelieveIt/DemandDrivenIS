@@ -25,10 +25,25 @@ xmlns:p="http://primefaces.org/ui">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Replenishment Request List</span>
     			<div class="right-content-header-buttons-panel">
-
-    			<!-- Create -->
-    			<p:commandButton action="#{storeRequest.openCreateRequest}" update=":messagesForm:messages :createRequestForm"
-    			value="Create New Request" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			
+    			<!-- View Schedule -->
+    			<p:commandButton action="#{storeRequest.openViewSchedule}" update=":viewScheduleForm"
+    			value="View Delivery Schedule" styleClass="right-content-header-button" icon="ui-icon-search" style="margin-left:15px;" />
+    			
+    			<!-- Create For Every Day -->
+    			<p:commandButton action="#{storeRequest.openCreateDayRequest}" update=":createRequestForm"
+    			value="For EveryDay Delivery" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			
+    			<!-- Create  For Every Week -->
+    			<p:commandButton action="#{storeRequest.openCreateWeekRequest}" update=":createRequestForm"
+    			value="For EveryWeek Delivery(#{storeRequest.daysBeforeWeekDelivery})" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			
+    			<!-- Create For Every Month -->
+    			<p:commandButton action="#{storeRequest.openCreateMonthRequest}" update=":createRequestForm"
+    			value="For EveryMonth Delivery(#{storeRequest.daysBeforeMonthDelivery})" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			
+				<p:commandButton type="button" value="What is Delivery Frequency" styleClass="right-content-header-button" icon="ui-icon-help" style="margin-left:15px;"
+				onclick="PF('typeDescription').show();" />    			
     			</div>
     			</div>
     			</h:form>
@@ -91,13 +106,13 @@ xmlns:p="http://primefaces.org/ui">
 				<!-- Dialogs -->
 				<ui:include src="requestDialog.xhtml" />
 				<!-- BlockUI -->
-				<h:form>
+<!-- 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
 				trigger=":createRequestForm2:createAndSendButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
-				</h:form>
+				</h:form> -->
 
     		</ui:define>
     	</ui:composition>
