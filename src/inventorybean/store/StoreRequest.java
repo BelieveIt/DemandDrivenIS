@@ -49,7 +49,7 @@ public class StoreRequest implements Serializable{
 
 	private Store store;
 	private ScheduleModel eventModel;
-	
+
 	@ManagedProperty(value="#{requestUtil}")
 	private RequestUtil requestUtil;
 
@@ -59,10 +59,10 @@ public class StoreRequest implements Serializable{
 
 	private ReplenishmentReportItem selectedItem;
 	private LineChartModel selectedItemSalesLine;
-	
+
 	private Date weekDeliveryDate;
 	private Date monthDeliveryDate;
-	
+
 	private Integer daysBeforeWeekDelivery;
 	private Integer daysBeforeMonthDelivery;
 	@PostConstruct
@@ -84,12 +84,12 @@ public class StoreRequest implements Serializable{
 		weekSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYWEEK);
 		DeliverySchedule monthSchedule = new DeliverySchedule();
 		monthSchedule = deliveryScheduleDao.queryDeliverySchedule(Product.EVERYMONTH);
-        
+
 		Integer weekMark = weekSchedule.getDeliveryMark();
 		Integer monthMark = monthSchedule.getDeliveryMark();
-		
+
 		Calendar startC = Calendar.getInstance();
-		
+
 		daysBeforeWeekDelivery = 0;
 		startC.setTime(new Date());
 		while(true){
@@ -100,7 +100,7 @@ public class StoreRequest implements Serializable{
 			daysBeforeWeekDelivery++;
 			startC.add(Calendar.DATE, 1);
 		}
-		
+
 		daysBeforeMonthDelivery = 0;
 		startC.setTime(new Date());
 		while(true){
@@ -112,7 +112,7 @@ public class StoreRequest implements Serializable{
 			startC.add(Calendar.DATE, 1);
 		}
 	}
-	
+
 	public void openViewSchedule(){
 		eventModel = new DefaultScheduleModel();
 		DeliverySchedule weekSchedule = new DeliverySchedule();
@@ -122,7 +122,7 @@ public class StoreRequest implements Serializable{
         initialEvent(weekSchedule, monthSchedule);
         RequestContext.getCurrentInstance().execute("PF('viewSchedule').show();");
 	}
-	
+
 	private void initialEvent(DeliverySchedule weekSchedule, DeliverySchedule monthSchedule){
 		try {
 		Date today = new Date();
@@ -160,16 +160,17 @@ public class StoreRequest implements Serializable{
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 	public void openCreateDayRequest(){
+		requestUtil.initSalesRecordsMapForForecastOfStoreByProduct();
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, 1);
 		Date tomorrow = calendar.getTime();
 		newReplenishmentReport.setDeliveryTime(tomorrow);
-		
 		newReplenishmentReport.setDeliveryType("everyday");
+
 		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
 		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
 		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
@@ -179,12 +180,12 @@ public class StoreRequest implements Serializable{
 	}
 
 	public void openCreateWeekRequest(){
+		requestUtil.initSalesRecordsMapForForecastOfStoreByProductForWeek();
 		newReplenishmentReport.setDeliveryTime(weekDeliveryDate);
-		
-		//TODO
 		newReplenishmentReport.setDeliveryType("everyweek");
+
 		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
-		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryWeek();
 		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
 
 		newReplenishmentReport.setStoreId(store.getStoreId());
@@ -193,31 +194,53 @@ public class StoreRequest implements Serializable{
 
 	public void openCreateMonthRequest(){
 		newReplenishmentReport.setDeliveryTime(monthDeliveryDate);
-		
+
 		//TODO
 		newReplenishmentReport.setDeliveryType("everymonth");
 		List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
-		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+		replenishmentReportItems = requestUtil.calculateReplenishmentForEveryMonth();
 		newReplenishmentReport.setReplenishmentReportItems(replenishmentReportItems);
 
 		newReplenishmentReport.setStoreId(store.getStoreId());
 		RequestContext.getCurrentInstance().execute("PF('createRequest').show();");
 	}
-	
-	
+
+
 	public void openViewItemForAdd(){
-		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
-		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
-		TreeMap<Integer, Integer> dayOfWeekAvgMap = salesRecordsMapForForecastOfStoreByProduct.get(selectedItem.getProductId());
-		LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
-		Iterator<Integer> iterator = dayOfWeekAvgMap.keySet().iterator();
-		while(iterator.hasNext()){
-			Integer key = iterator.next();
-			dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
+		if(newReplenishmentReport.getDeliveryType().equals(Product.EVERYDAY)){
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
+			TreeMap<Integer, Integer> dayOfWeekAvgMap = salesRecordsMapForForecastOfStoreByProduct.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<Integer> iterator = dayOfWeekAvgMap.keySet().iterator();
+			while(iterator.hasNext()){
+				Integer key = iterator.next();
+				dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').show();");
 		}
-		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
-		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
-		RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').show();");
+
+		if(newReplenishmentReport.getDeliveryType().equals(Product.EVERYWEEK)){
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForWeek = requestUtil.getSalesRecordsMapForForecastOfStoreByProductForWeek();
+			LinkedHashMap<String, Integer> weekListMap = salesRecordsMapForForecastOfStoreByProductForWeek.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<String> iterator = weekListMap.keySet().iterator();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				dataMapValueMap.put(key, new Double(Integer.toString(weekListMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Sales Valume In Last 5 Weeks(Real Sales Data + Virtual Sales Data)", "Week", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').show();");
+		}
+
+		if(newReplenishmentReport.getDeliveryType().equals(Product.EVERYMONTH)){
+
+		}
+
 	}
 
 	public void confirmReplenishmentNumber(){
@@ -233,9 +256,9 @@ public class StoreRequest implements Serializable{
 		}
 		replenishmentReportDao.insertReplenishmentReport(newReplenishmentReport);
 		initProgress();
-		RequestContext.getCurrentInstance().execute("PF('createRequest2').hide();");
+		RequestContext.getCurrentInstance().execute("PF('createRequest').hide();");
 	}
-	
+
 	public void openViewItem(){
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();

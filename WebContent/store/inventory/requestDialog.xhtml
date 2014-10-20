@@ -17,12 +17,12 @@ xmlns:p="http://primefaces.org/ui">
         		draggable="false" resizable="false"/>
 			</p:dialog>
 			</h:form>
-	    
+
 			<p:dialog header="Delivery Frequency Desicription" widgetVar="typeDescription" width="550">
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 				<h:outputText
-					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product. 
-					Franchiser's Merchandise Info Administrator will choose the delivery frequency for every product. And Region's Supply Chain Administrator will 
+					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product.
+					Franchiser's Merchandise Info Administrator will choose the delivery frequency for every product. And Region's Supply Chain Administrator will
 					settle the delivery schedule for every delivery frequency." styleClass="right-content-header-label floatLeft"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
@@ -39,7 +39,7 @@ xmlns:p="http://primefaces.org/ui">
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
 				</p:panel>
 			</p:dialog>
-			
+
 			<!-- Create Request -->
 			<h:form id="createRequestForm">
 			<p:dialog header="Create Replenishment Request" widgetVar="createRequest" width="1000">
@@ -60,6 +60,22 @@ xmlns:p="http://primefaces.org/ui">
 					value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
 				<h:outputText
 					value="#{storeRequest.newReplenishmentReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyday'}"
+					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyday'}"
+					value="Will delivery in 1 day later." styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyweek'}"
+					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyweek'}"
+					value="Will delivery in #{storeRequest.daysBeforeWeekDelivery} #{storeRequest.daysBeforeWeekDelivery eq 1 ? 'day' : 'days'} later."
+					styleClass="right-content-header-label floatLeft"/>
+
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everymonth'}"
+					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everymonth'}"
+					value="Will delivery in #{storeRequest.daysBeforeMonthDelivery} #{storeRequest.daysBeforeMonthDelivery eq 1 ? 'day' : 'days'} later" styleClass="right-content-header-label floatLeft"/>
 
 				<p:separator styleClass="forizontalSeparator"/>
 				</p:panel>
@@ -86,6 +102,11 @@ xmlns:p="http://primefaces.org/ui">
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
 				        </p:column>
+
+				        <p:column headerText="DeliveryType" styleClass="noPadding"
+				        sortBy="#{item.regionListItem.product.deliveryFrequency}" >
+				            <h:outputText value="#{item.regionListItem.product.deliveryFrequency}" />
+				        </p:column>
 				    </p:dataTable>
 
 				</p:panel>
@@ -97,7 +118,7 @@ xmlns:p="http://primefaces.org/ui">
 
 			<!-- View Item For Add-->
 			<h:form id="viewItemForAddForm">
-			<p:dialog header="View Replenishment Item" widgetVar="viewItemForAdd" width="900">
+			<p:dialog header="View Replenishment Item" widgetVar="viewItemForAdd" width="1200">
 				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
 					<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 						<h:outputLabel value="Product Id:" />
@@ -128,9 +149,9 @@ xmlns:p="http://primefaces.org/ui">
 			        </h:panelGrid>
 				</p:panel>
 
-				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:860px">
 						<p:chart rendered="#{storeRequest.selectedItemSalesLine!=null}" type="line" model="#{storeRequest.selectedItemSalesLine}"
-						style="width:550px;height:350px" />
+						style="width:650px;height:350px" />
 				</p:panel>
 			</p:dialog>
 			</h:form>

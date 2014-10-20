@@ -188,7 +188,7 @@ public class FranchiserCategoryInit {
 		icedCoffeeProduct.setAdditionalInformation(attributesForCoffee);
 
 		icedCoffeeProduct.setBrand("Own Brand");
-		icedCoffeeProduct.setDeliveryFrequency(Product.EVERYDAY);
+		icedCoffeeProduct.setDeliveryFrequency(Product.EVERYWEEK);
 		icedCoffeeProduct.setImage("icedCoffee.jpg");
 		icedCoffeeProduct.setItemWeight(new Double(250));
 		icedCoffeeProduct.setManufacturer("Own Factory");
@@ -216,7 +216,7 @@ public class FranchiserCategoryInit {
 		cocaColaProduct.setAdditionalInformation(attributesForCoca);
 
 		cocaColaProduct.setBrand("Coca-Cola");
-		cocaColaProduct.setDeliveryFrequency(Product.EVERYWEEK);
+		cocaColaProduct.setDeliveryFrequency(Product.EVERYMONTH);
 		cocaColaProduct.setImage("cocacola.jpg");
 		cocaColaProduct.setItemWeight(new Double(250));
 		cocaColaProduct.setManufacturer("Coca-Cola Company");
