@@ -283,21 +283,80 @@ public class FranchiserCategoryInit {
 		freshOrgangeJuiceProduct.setUnit("g");
 		freshOrgangeJuice.setProduct(freshOrgangeJuiceProduct);
 
+		////From the Fridge
+		BasicListItem pepsi = new BasicListItem();
+		pepsi.setCategoryId(cate2_3.getCategoryId());
+		pepsi.setVersionId("head");
+		pepsi.setProductId("OdkRj84jt5");
+		Product pepsiProduct = new Product();
+
+		ArrayList<String> attributesForPepsi = new ArrayList<String>();
+		attributesForPepsi.add("Can");
+		attributesForPepsi.add("Cold Storage");
+		attributesForPepsi.add("Drink immediately");
+		pepsiProduct.setAdditionalInformation(attributesForPepsi);
+
+		pepsiProduct.setBrand("Pepsi");
+		pepsiProduct.setDeliveryFrequency(Product.EVERYMONTH);
+		pepsiProduct.setImage("Pepsi.jpg");
+		pepsiProduct.setItemWeight(new Double(250));
+		pepsiProduct.setManufacturer("Pepsi Company");
+		pepsiProduct.setMinInventory(10);
+		pepsiProduct.setName("Pepsi");
+		pepsiProduct.setPrice(new BigDecimal("1.5"));
+
+		pepsiProduct.setProductCreateTime(createTime);
+
+		pepsiProduct.setUnit("g");
+		pepsi.setProduct(pepsiProduct);
+
+		////From the Fridge
+		BasicListItem oldenburger = new BasicListItem();
+		oldenburger.setCategoryId(cate2_3.getCategoryId());
+		oldenburger.setVersionId("head");
+		oldenburger.setProductId("OdkRj84jt6");
+		Product oldenburgerProduct = new Product();
+
+		ArrayList<String> attributesForOldenburger = new ArrayList<String>();
+		attributesForOldenburger.add("Can");
+		attributesForOldenburger.add("Cold Storage");
+		attributesForOldenburger.add("Drink immediately");
+		oldenburgerProduct.setAdditionalInformation(attributesForOldenburger);
+
+		oldenburgerProduct.setBrand("Oldenburger");
+		oldenburgerProduct.setDeliveryFrequency(Product.EVERYWEEK);
+		oldenburgerProduct.setImage("oldenburger.jpg");
+		oldenburgerProduct.setItemWeight(new Double(1000));
+		oldenburgerProduct.setManufacturer("Nordmilch Company");
+		oldenburgerProduct.setMinInventory(10);
+		oldenburgerProduct.setName("Oldenburger Milk");
+		oldenburgerProduct.setPrice(new BigDecimal("3.5"));
+
+		oldenburgerProduct.setProductCreateTime(createTime);
+
+		oldenburgerProduct.setUnit("g");
+		oldenburger.setProduct(oldenburgerProduct);
+
+
 		BasicListItemDao basicListItemDao = new BasicListItemDao();
 
 		basicListItemDao.insertProduct(cocaCola);
 		basicListItemDao.insertProduct(icedCoffee);
 		basicListItemDao.insertProduct(hotCoffee);
 		basicListItemDao.insertProduct(freshOrgangeJuice);
+		basicListItemDao.insertProduct(pepsi);
+		basicListItemDao.insertProduct(oldenburger);
 
 		StoreDao storeDao = new StoreDao();
 		Calendar stockOutCalendar = Calendar.getInstance();
 		stockOutCalendar.setTime(new Date());
 		stockOutCalendar.add(Calendar.DATE, -3);
-		storeDao.insertStoreSellingItemForStore("1", cocaCola.getProductId(), 20, null);
-		storeDao.insertStoreSellingItemForStore("1", icedCoffee.getProductId(), 0, stockOutCalendar.getTime());
-		storeDao.insertStoreSellingItemForStore("1", hotCoffee.getProductId(), 15, null);
+		storeDao.insertStoreSellingItemForStore("1", cocaCola.getProductId(), 10, null);
+		storeDao.insertStoreSellingItemForStore("1", icedCoffee.getProductId(), 12, stockOutCalendar.getTime());
+		storeDao.insertStoreSellingItemForStore("1", hotCoffee.getProductId(), 16, null);
 		storeDao.insertStoreSellingItemForStore("1", freshOrgangeJuice.getProductId(), 0, stockOutCalendar.getTime());
+		storeDao.insertStoreSellingItemForStore("1", pepsi.getProductId(), 25, null);
+		storeDao.insertStoreSellingItemForStore("1", oldenburger.getProductId(), 19, null);
 
 	}
 }

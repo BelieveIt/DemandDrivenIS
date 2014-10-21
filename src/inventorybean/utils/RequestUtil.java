@@ -48,6 +48,7 @@ public class RequestUtil implements Serializable{
 	private HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForMonth;
 
 	private HashMap<String, ArrayList<WasteRecord>> wasteRecordsMap;
+	private HashMap<String, Integer> wasteRecordAvgNumMap;
 
 	@PostConstruct
 	public void init(){
@@ -92,6 +93,42 @@ public class RequestUtil implements Serializable{
 
 	public void initWasteRecordMap(){
 		wasteRecordsMap = wasteRecordDao.queryWasteRecords();
+		ArrayList<WasteRecord> records = wasteRecordsMap.get(store.getStoreId());
+
+		Date date = clearTimePart(new Date());
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, -30);
+		Date date2 = clearTimePart(calendar.getTime());
+
+		HashMap<String, ArrayList<WasteRecord>> recordMap = new HashMap<String, ArrayList<WasteRecord>>();
+		if(records != null){
+			for(WasteRecord record : records){
+				if(clearTimePart(record.getCreateTime()).equals(date) || clearTimePart(record.getCreateTime()).equals(date2)
+						|| (clearTimePart(record.getCreateTime()).after(date2) && clearTimePart(record.getCreateTime()).before(date))){
+					if(recordMap.containsKey(record.getProductId())){
+						ArrayList<WasteRecord> tempArrayList = recordMap.get(record.getProductId());
+						tempArrayList.add(record);
+						recordMap.put(record.getProductId(), tempArrayList);
+					}else {
+						ArrayList<WasteRecord> tempArrayList = new ArrayList<WasteRecord>();
+						tempArrayList.add(record);
+						recordMap.put(record.getProductId(), tempArrayList);
+					}
+				}
+			}
+		}
+
+		wasteRecordAvgNumMap = new HashMap<String, Integer>();
+		Iterator<String> iterator = recordMap.keySet().iterator();
+		while(iterator.hasNext()){
+			String productId = iterator.next();
+			Integer sum = new Integer(0);
+			for(WasteRecord wasteRecord : recordMap.get(productId)){
+				sum = sum + wasteRecord.getWasteNumber();
+			}
+			wasteRecordAvgNumMap.put(productId, sum / 31);
+		}
 	}
 
 	//<productId, <dayOfWeekIndex, avgNum>>
@@ -181,6 +218,11 @@ public class RequestUtil implements Serializable{
 
 			Integer salesForecast = salesRecordsMapForForecastOfStoreByProduct.get(item.getProductId()).get(periodDayOfWeek);
 			Integer wasteForecast = 0;
+			System.out.println(wasteRecordAvgNumMap.get(item.getProductId()));
+			if(wasteRecordAvgNumMap.get(item.getProductId()) != null){
+				wasteForecast = wasteRecordAvgNumMap.get(item.getProductId());
+			}
+
 
 			Integer replenishmentVolume = salesForecast + wasteForecast + inventoryOnNext - currentInventory;
 			if(replenishmentVolume > 0){
@@ -249,7 +291,7 @@ public class RequestUtil implements Serializable{
 			if(productIdList.contains(record.getProductId())){
 				if(salesRecordsMapForForecastOfStoreByProductForWeek.containsKey(record.getProductId())){
 					LinkedHashMap<String, Integer> tempWeekList = salesRecordsMapForForecastOfStoreByProductForWeek.get(record.getProductId());
-					int weekListIndex = getIndexOfWeekList(firstDayOfWeek, endDayOfWeek, record.getCreateTime());
+					int weekListIndex = getIndexOfWeekList(firstDayOfWeek, endDayOfWeek, clearTimePart(record.getCreateTime()));
 					if(weekListIndex != -1){
 						int sum = record.getSalesNumber() + tempWeekList.get(weekList.get(weekListIndex));
 						tempWeekList.put(weekList.get(weekListIndex), sum);
@@ -260,7 +302,7 @@ public class RequestUtil implements Serializable{
 					for(int i = 0; i < 5; i++){
 						tempWeekList.put(weekList.get(i), new Integer(0));
 					}
-					int weekListIndex = getIndexOfWeekList(firstDayOfWeek, endDayOfWeek, record.getCreateTime());
+					int weekListIndex = getIndexOfWeekList(firstDayOfWeek, endDayOfWeek, clearTimePart(record.getCreateTime()));
 					if(weekListIndex != -1){
 						int sum = record.getSalesNumber();
 						tempWeekList.put(weekList.get(weekListIndex), sum);
@@ -325,6 +367,9 @@ public class RequestUtil implements Serializable{
 
 			Integer salesForecast = averageNumOfWeek(salesRecordsMapForForecastOfStoreByProductForWeek.get(item.getProductId()));
 			Integer wasteForecast = 0;
+			if(wasteRecordAvgNumMap.get(item.getProductId()) != null){
+				wasteForecast = wasteRecordAvgNumMap.get(item.getProductId()) * 7;
+			}
 
 			Integer replenishmentVolume = salesForecast + wasteForecast + inventoryOnNext - currentInventory;
 			if(replenishmentVolume > 0){
@@ -354,38 +399,37 @@ public class RequestUtil implements Serializable{
 	}
 
 	public void initSalesRecordsMapForForecastOfStoreByProductForMonth(){
-		ArrayList<String> weekList = new ArrayList<String>();
-		ArrayList<Date> firstDayOfWeek = new ArrayList<Date>();
-		ArrayList<Date> endDayOfWeek = new ArrayList<Date>();
+		ArrayList<String> monthList = new ArrayList<String>();
+		ArrayList<Date> firstDayOfMonth = new ArrayList<Date>();
+		ArrayList<Date> lastDayOfMonth = new ArrayList<Date>();
 
 		Date today = new Date();
-		for(int i = 34; i >=0 ; i --){
+
+		for(int i = 5; i >=1 ; i --){
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(today);
-			calendar.add(Calendar.DATE, -1 * i);
+			calendar.add(Calendar.MONTH, -1 * i);
+			calendar.add(Calendar.DATE, 1);
 
-			int modNum = i % 7;
-			if(modNum == 6){
-				Calendar calendar2 = Calendar.getInstance();
-				calendar2.setTime(calendar.getTime());
-				int firstDay = calendar2.get(Calendar.DAY_OF_MONTH);
-				int firstMonth = calendar2.get(Calendar.MONTH);
-				firstDayOfWeek.add(calendar2.getTime());
+			firstDayOfMonth.add(calendar.getTime());
+			int firstMonth = calendar.get(Calendar.MONTH);
+			int firstDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-				calendar2.add(Calendar.DATE, 6);
-				int lastDay = calendar2.get(Calendar.DAY_OF_MONTH);
-				int lastMonth = calendar2.get(Calendar.MONTH);
-				endDayOfWeek.add(calendar2.getTime());
+			calendar.add(Calendar.MONTH, 1);
+			calendar.add(Calendar.DATE, -1);
 
-				weekList.add(Integer.toString(firstMonth+1) + "." + Integer.toString(firstDay) + "-" + Integer.toString(lastMonth+1) + "." + Integer.toString(lastDay));
-			}
+			lastDayOfMonth.add(calendar.getTime());
+			int lastMonth = calendar.get(Calendar.MONTH);
+			int lastDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+			monthList.add(Integer.toString(firstMonth+1) + "." + Integer.toString(firstDay) + "-" + Integer.toString(lastMonth+1) + "." + Integer.toString(lastDay));
 		}
 
 		StoreDao storeDao = new StoreDao();
 		List<StoreSellingItem> tempProducts = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
 		List<StoreSellingItem> products = new ArrayList<StoreSellingItem>();
 		for(StoreSellingItem item : tempProducts){
-			if(item.getRegionListItem()!=null && item.getRegionListItem().getProduct().getDeliveryFrequency().equals(Product.EVERYWEEK)){
+			if(item.getRegionListItem()!=null && item.getRegionListItem().getProduct().getDeliveryFrequency().equals(Product.EVERYMONTH)){
 				products.add(item);
 			}
 		}
@@ -396,13 +440,59 @@ public class RequestUtil implements Serializable{
 		}
 
 		List<SalesRecord> records = salesRecordsMapForForecast.get(store.getStoreId());
+		salesRecordsMapForForecastOfStoreByProductForMonth = new HashMap<String, LinkedHashMap<String,Integer>>();
+
 		for(SalesRecord record : records){
 			if(productIdList.contains(record.getProductId())){
-
+				if(salesRecordsMapForForecastOfStoreByProductForMonth.containsKey(record.getProductId())){
+					LinkedHashMap<String, Integer> tempMonthList = salesRecordsMapForForecastOfStoreByProductForMonth.get(record.getProductId());
+					int monthListIndex = getIndexOfMonthList(firstDayOfMonth, lastDayOfMonth, clearTimePart(record.getCreateTime()));
+					if(monthListIndex != -1){
+						int sum = record.getSalesNumber() + tempMonthList.get(monthList.get(monthListIndex));
+						tempMonthList.put(monthList.get(monthListIndex), sum);
+					}
+					salesRecordsMapForForecastOfStoreByProductForMonth.put(record.getProductId(), tempMonthList);
+				}else {
+					LinkedHashMap<String, Integer> tempMonthList = new LinkedHashMap<String, Integer>();
+					for(int i = 0; i < 5; i++){
+						tempMonthList.put(monthList.get(i), new Integer(0));
+					}
+					int monthListIndex = getIndexOfMonthList(firstDayOfMonth, lastDayOfMonth, clearTimePart(record.getCreateTime()));
+					if(monthListIndex != -1){
+						int sum = record.getSalesNumber();
+						tempMonthList.put(monthList.get(monthListIndex), sum);
+					}
+					salesRecordsMapForForecastOfStoreByProductForMonth.put(record.getProductId(), tempMonthList);
+				}
 			}
 		}
-
 	}
+
+
+    private int getIndexOfMonthList(ArrayList<Date> firstDayOfMonthList, ArrayList<Date> lastDayOfMonthList, Date date){
+    	date = clearTimePart(date);
+    	if((date.after(firstDayOfMonthList.get(0)) && date.before(lastDayOfMonthList.get(0)))
+    			|| date.equals(firstDayOfMonthList.get(0)) || date.equals(lastDayOfMonthList.get(0))){
+    		return 0;
+    	}
+    	if((date.after(firstDayOfMonthList.get(1)) && date.before(lastDayOfMonthList.get(1)))
+    			|| date.equals(firstDayOfMonthList.get(1)) || date.equals(lastDayOfMonthList.get(1))){
+    		return 1;
+    	}
+    	if((date.after(firstDayOfMonthList.get(2)) && date.before(lastDayOfMonthList.get(2)))
+    			|| date.equals(firstDayOfMonthList.get(2)) || date.equals(lastDayOfMonthList.get(2))){
+    		return 2;
+    	}
+    	if((date.after(firstDayOfMonthList.get(3)) && date.before(lastDayOfMonthList.get(3)))
+    			|| date.equals(firstDayOfMonthList.get(3)) || date.equals(lastDayOfMonthList.get(3))){
+    		return 3;
+    	}
+    	if((date.after(firstDayOfMonthList.get(4)) && date.before(lastDayOfMonthList.get(4)))
+    			|| date.equals(firstDayOfMonthList.get(4)) || date.equals(lastDayOfMonthList.get(4))){
+    		return 4;
+    	}
+    	return -1;
+    }
 
 	public List<ReplenishmentReportItem> calculateReplenishmentForEveryMonth(){
 		List<ReplenishmentReportItem> items = new ArrayList<ReplenishmentReportItem>();
@@ -410,12 +500,36 @@ public class RequestUtil implements Serializable{
 		List<StoreSellingItem> tempProducts = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
 		List<StoreSellingItem> products = new ArrayList<StoreSellingItem>();
 		for(StoreSellingItem item : tempProducts){
-			if(item.getRegionListItem()!=null && item.getRegionListItem().getProduct().getDeliveryFrequency().equals(Product.EVERYWEEK)){
+			if(item.getRegionListItem()!=null && item.getRegionListItem().getProduct().getDeliveryFrequency().equals(Product.EVERYMONTH)){
 				products.add(item);
 			}
 		}
 
+		for(StoreSellingItem item : products){
+			String productId = item.getProductId();
+			Integer currentInventory = item.getCurrentInventory();
+			Integer inventoryOnNext = item.getRegionListItem().getProduct().getMinInventory();
 
+			Integer salesForecast = averageNumOfWeek(salesRecordsMapForForecastOfStoreByProductForMonth.get(item.getProductId()));
+			Integer wasteForecast = 0;
+			if(wasteRecordAvgNumMap.get(item.getProductId()) != null){
+				wasteForecast = wasteRecordAvgNumMap.get(item.getProductId()) * 30;
+			}
+
+			Integer replenishmentVolume = salesForecast + wasteForecast + inventoryOnNext - currentInventory;
+			if(replenishmentVolume > 0){
+				ReplenishmentReportItem replenishmentReportItem = new ReplenishmentReportItem();
+				replenishmentReportItem.setCurrentInventory(currentInventory);
+				replenishmentReportItem.setMinInventoryOnNextDelivery(inventoryOnNext);
+				replenishmentReportItem.setProductId(productId);
+				replenishmentReportItem.setRegionListItem(item.getRegionListItem());
+				replenishmentReportItem.setReplenishmentNumber(replenishmentVolume);
+				replenishmentReportItem.setAutoCalculatedReplenishmentNumber(replenishmentVolume);
+				replenishmentReportItem.setSalesForecast(salesForecast);
+				replenishmentReportItem.setWasteForecast(wasteForecast);
+				items.add(replenishmentReportItem);
+			}
+		}
 		return items;
 	}
 
@@ -454,5 +568,11 @@ public class RequestUtil implements Serializable{
 	public void setSalesRecordsMapForForecastOfStoreByProductForMonth(
 			HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForMonth) {
 		this.salesRecordsMapForForecastOfStoreByProductForMonth = salesRecordsMapForForecastOfStoreByProductForMonth;
+	}
+	public HashMap<String, Integer> getWasteRecordAvgNumMap() {
+		return wasteRecordAvgNumMap;
+	}
+	public void setWasteRecordAvgNumMap(HashMap<String, Integer> wasteRecordAvgNumMap) {
+		this.wasteRecordAvgNumMap = wasteRecordAvgNumMap;
 	}
 }

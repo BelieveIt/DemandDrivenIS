@@ -10,6 +10,21 @@ private String productId;
 private Integer wasteNumber;
 private WasteReason wasteReason;
 private Date createTime;
+
+public WasteRecord(){}
+
+public WasteRecord(String storeId, String productId, Integer wasteNumber,
+		String wasteReasonId, Date createTime) {
+	super();
+	this.storeId = storeId;
+	this.productId = productId;
+	this.wasteNumber = wasteNumber;
+	WasteReason wasteReason = new WasteReason();
+	wasteReason.setReasonId(wasteReasonId);
+	this.wasteReason = wasteReason;
+	this.createTime = createTime;
+}
+
 public String getStoreId() {
 	return storeId;
 }

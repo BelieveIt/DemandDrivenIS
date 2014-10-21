@@ -20,19 +20,25 @@ xmlns:p="http://primefaces.org/ui">
 
 			<p:dialog header="Delivery Frequency Desicription" widgetVar="typeDescription" width="550">
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText style="font-weight:bold;"
+					value="1.What will determine the Delivery Frequency? Who will select the Delivery Frequency of the product?" styleClass="right-content-header-label floatLeft"/>
 				<h:outputText
-					value="1.Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product.
+					value="Answer: Deliver Frequency Type means the the delivery frequency of the product, it is determined by the preservation time of the product.
 					Franchiser's Merchandise Info Administrator will choose the delivery frequency for every product. And Region's Supply Chain Administrator will
 					settle the delivery schedule for every delivery frequency." styleClass="right-content-header-label floatLeft"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText style="font-weight:bold;"
+					value="2.The detail of the Delivery Frequency of the product." styleClass="right-content-header-label floatLeft"/>
 				<h:outputText
-					value="2.The product which could be kept for long time will have low delivery frequency, such as umbrella, battery and so on. The product which could be kept for short time will have high frequency, such as bread
+					value="Answer: The product which could be kept for long time will have low delivery frequency, such as umbrella, battery and so on. The product which could be kept for short time will have high frequency, such as bread
 					, box lunch and so on. The delivery frequency will be set by the Franchiser Merchandise Info Adminstrator. System provide three types: every day, every week, and every month." styleClass="right-content-header-label floatLeft"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText style="font-weight:bold;"
+					value="3.Delivery Frequency and Replenishment Request." styleClass="right-content-header-label floatLeft"/>
 				<h:outputText
-					value="3.Different delivery types means the different delivery interval, so the system will calculate the replenishment request for different types considering the
+					value="Answer: Different delivery types means the different delivery interval, so the system will calculate the replenishment request for different types considering the
 					different interval. For example, to make the replenishment for the everyday frequency type product, system will forecast the one-day sales volume to make the replenishment request.
 					But for a everymonth frequency, system will forecast the one-month sales volume for the replenishment" styleClass="right-content-header-label floatLeft"/>
 				</p:panel>
@@ -56,26 +62,17 @@ xmlns:p="http://primefaces.org/ui">
 	            <f:convertDateTime pattern="yyyy-MM-dd" />
 	            </h:outputText>
 
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyday'}"
+					value=" (1 day later)" styleClass="right-content-header-label floatLeft"/>
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyweek'}"
+					value=" (#{storeRequest.daysBeforeWeekDelivery} #{storeRequest.daysBeforeWeekDelivery eq 1 ? 'day' : 'days'} later)" styleClass="right-content-header-label floatLeft"/>
+				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everymonth'}"
+					value=" (#{storeRequest.daysBeforeMonthDelivery} #{storeRequest.daysBeforeMonthDelivery eq 1 ? 'day' : 'days'} later)" styleClass="right-content-header-label floatLeft"/>
+
 				<h:outputText
 					value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
 				<h:outputText
 					value="#{storeRequest.newReplenishmentReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
-
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyday'}"
-					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyday'}"
-					value="Will delivery in 1 day later." styleClass="right-content-header-label floatLeft"/>
-
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyweek'}"
-					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everyweek'}"
-					value="Will delivery in #{storeRequest.daysBeforeWeekDelivery} #{storeRequest.daysBeforeWeekDelivery eq 1 ? 'day' : 'days'} later."
-					styleClass="right-content-header-label floatLeft"/>
-
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everymonth'}"
-					value="Notice:" styleClass="right-content-header-label floatLeft text-bold	"/>
-				<h:outputText rendered="#{storeRequest.newReplenishmentReport.deliveryType eq 'everymonth'}"
-					value="Will delivery in #{storeRequest.daysBeforeMonthDelivery} #{storeRequest.daysBeforeMonthDelivery eq 1 ? 'day' : 'days'} later" styleClass="right-content-header-label floatLeft"/>
 
 				<p:separator styleClass="forizontalSeparator"/>
 				</p:panel>
@@ -127,7 +124,7 @@ xmlns:p="http://primefaces.org/ui">
 				    	<h:outputLabel value="Product Name:" />
 			            <h:outputLabel value="#{storeRequest.selectedItem.regionListItem.product.name}"/>
 
-				    	<h:outputLabel value="Waste Forecast:" />
+				    	<h:outputLabel value="Waste Forecast(Using Last Month's Data):" />
 			            <h:outputLabel value="#{storeRequest.selectedItem.wasteForecast}"/>
 
 				    	<h:outputLabel value="Sales Forecast Between Deliveries:" />
@@ -151,14 +148,14 @@ xmlns:p="http://primefaces.org/ui">
 
 				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:860px">
 						<p:chart rendered="#{storeRequest.selectedItemSalesLine!=null}" type="line" model="#{storeRequest.selectedItemSalesLine}"
-						style="width:650px;height:350px" />
+						style="width:850px;height:350px" />
 				</p:panel>
 			</p:dialog>
 			</h:form>
 
 			<!-- View Item -->
 			<h:form id="viewItemForm">
-			<p:dialog header="View Replenishment Item" widgetVar="viewItem" width="900">
+			<p:dialog header="View Replenishment Item" widgetVar="viewItem" width="1200">
 				<p:panel styleClass="autoHeightPanel divStyle" style="float:left;width:300px">
 					<h:panelGrid columns="2" cellpadding="5" styleClass="text-align-left">
 						<h:outputLabel value="Product Id:" />
@@ -184,9 +181,9 @@ xmlns:p="http://primefaces.org/ui">
 			        </h:panelGrid>
 				</p:panel>
 
-				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:560px">
+				<p:panel styleClass="autoHeightPanel divStyle"  style="float:left;width:860px">
 						<p:chart rendered="#{storeRequest.selectedItemSalesLine!=null}" type="line" model="#{storeRequest.selectedItemSalesLine}"
-						style="width:550px;height:350px" />
+						style="width:850px;height:350px" />
 				</p:panel>
 			</p:dialog>
 			</h:form>

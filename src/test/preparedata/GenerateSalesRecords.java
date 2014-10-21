@@ -7,8 +7,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import dao.SalesRecordDao;
+import dao.WasteRecordDao;
 
 import model.SalesRecord;
+import model.WasteRecord;
 import utils.RandomUtil;
 
 
@@ -16,11 +18,16 @@ public class GenerateSalesRecords {
 	public static void main(String[] strs) throws ParseException{
 		SalesRecordDao salesRecordDao = new SalesRecordDao();
 		salesRecordDao.deleteAll();
+		WasteRecordDao wasteRecordDao = new WasteRecordDao();
+		wasteRecordDao.deleteAll();
+
 		String productId1 = "OdkRj84jt1";
 		String productId2 = "OdkRj84jt2";
 		String productId3 = "OdkRj84jt3";
 		String productId4 = "OdkRj84jt4";
-		
+		String productId5 = "OdkRj84jt5";
+		String productId6 = "OdkRj84jt6";
+
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date startDate;
 		Date endDate;
@@ -38,12 +45,31 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(10, 15), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(45, 50), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(35, 40), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(5, 10), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(15, 20), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(35, 40), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(20, 25), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(55, 60), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(45, 50), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(15, 20), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(20, 25), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}
 	        try {
 				Thread.sleep(50);
@@ -52,7 +78,7 @@ public class GenerateSalesRecords {
 				e.printStackTrace();
 			}
 		}
-		
+
 		//2012
 		startDate = dateFormat.parse("2012-01-01");
 		endDate = dateFormat.parse("2012-12-30");
@@ -65,12 +91,30 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(15, 20), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(50, 55), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(40, 45), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(15, 20), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(25, 30), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(40, 45), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(25, 30), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(60, 65), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(50, 55), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(20, 25), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(30, 35), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}
 	        try {
 				Thread.sleep(50);
@@ -79,7 +123,7 @@ public class GenerateSalesRecords {
 				e.printStackTrace();
 			}
 		}
-		
+
 		//2013
 		startDate = dateFormat.parse("2013-01-01");
 		endDate = dateFormat.parse("2013-12-30");
@@ -92,12 +136,30 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(35, 40), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(70, 75), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(60, 65), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(35, 40), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(50, 55), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(60, 65), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(45, 50), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(80, 85), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(70, 75), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(40, 45), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(55, 60), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}
 	        try {
 				Thread.sleep(50);
@@ -106,10 +168,10 @@ public class GenerateSalesRecords {
 				e.printStackTrace();
 			}
 		}
-		
+
 		//2014
 		startDate = dateFormat.parse("2014-01-01");
-		endDate = dateFormat.parse("2014-10-09");
+		endDate = dateFormat.parse("2014-10-26");
 		start.setTime(startDate);
 		end.setTime(endDate);
 		for (Date date = start.getTime(); !start.after(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
@@ -119,12 +181,30 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(40, 45), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(75, 80), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(65, 70), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(35, 40), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(60, 65), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(65, 70), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId2, RandomUtil.getRandom(50, 55), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId3, RandomUtil.getRandom(85, 90), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(75, 80), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(45, 50), start.getTime()));
+				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(70, 80), start.getTime()));
+
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 			}
 	        try {
 				Thread.sleep(50);

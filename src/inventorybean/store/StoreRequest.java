@@ -193,6 +193,7 @@ public class StoreRequest implements Serializable{
 	}
 
 	public void openCreateMonthRequest(){
+		requestUtil.initSalesRecordsMapForForecastOfStoreByProductForMonth();
 		newReplenishmentReport.setDeliveryTime(monthDeliveryDate);
 
 		//TODO
@@ -238,7 +239,18 @@ public class StoreRequest implements Serializable{
 		}
 
 		if(newReplenishmentReport.getDeliveryType().equals(Product.EVERYMONTH)){
-
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForMonth = requestUtil.getSalesRecordsMapForForecastOfStoreByProductForMonth();
+			LinkedHashMap<String, Integer> weekListMap = salesRecordsMapForForecastOfStoreByProductForMonth.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<String> iterator = weekListMap.keySet().iterator();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				dataMapValueMap.put(key, new Double(Integer.toString(weekListMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Sales Valume In Last 5 Months(Real Sales Data + Virtual Sales Data)", "Month", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItemForAdd').show();");
 		}
 
 	}
@@ -260,18 +272,52 @@ public class StoreRequest implements Serializable{
 	}
 
 	public void openViewItem(){
-		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
-		HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
-		TreeMap<Integer, Integer> dayOfWeekAvgMap = salesRecordsMapForForecastOfStoreByProduct.get(selectedItem.getProductId());
-		LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
-		Iterator<Integer> iterator = dayOfWeekAvgMap.keySet().iterator();
-		while(iterator.hasNext()){
-			Integer key = iterator.next();
-			dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
+		if(selectedReport.getDeliveryType().equals(Product.EVERYDAY)){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProduct();
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, TreeMap<Integer, Integer>> salesRecordsMapForForecastOfStoreByProduct = requestUtil.getSalesRecordsMapForForecastOfStoreByProduct();
+			TreeMap<Integer, Integer> dayOfWeekAvgMap = salesRecordsMapForForecastOfStoreByProduct.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<Integer> iterator = dayOfWeekAvgMap.keySet().iterator();
+			while(iterator.hasNext()){
+				Integer key = iterator.next();
+				dataMapValueMap.put(DateUtil.getWeekDay(key), new Double(Integer.toString(dayOfWeekAvgMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
 		}
-		dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
-		selectedItemSalesLine = ChartUtil.generateLineChartModel("Average Sales In Last 90 Days(Real Sales Data + Virtual Sales Data)", "Day of Week", "Sales Volume", dataMap);
-		RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
+		if(selectedReport.getDeliveryType().equals(Product.EVERYWEEK)){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProductForWeek();
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForWeek = requestUtil.getSalesRecordsMapForForecastOfStoreByProductForWeek();
+			LinkedHashMap<String, Integer> weekListMap = salesRecordsMapForForecastOfStoreByProductForWeek.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<String> iterator = weekListMap.keySet().iterator();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				dataMapValueMap.put(key, new Double(Integer.toString(weekListMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Sales Valume In Last 5 Weeks(Real Sales Data + Virtual Sales Data)", "Week", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
+		}
+
+		if(selectedReport.getDeliveryType().equals(Product.EVERYMONTH)){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProductForMonth();
+			LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
+			HashMap<String, LinkedHashMap<String, Integer>> salesRecordsMapForForecastOfStoreByProductForMonth = requestUtil.getSalesRecordsMapForForecastOfStoreByProductForMonth();
+			LinkedHashMap<String, Integer> weekListMap = salesRecordsMapForForecastOfStoreByProductForMonth.get(selectedItem.getProductId());
+			LinkedHashMap<String, Double> dataMapValueMap = new LinkedHashMap<String, Double>();
+			Iterator<String> iterator = weekListMap.keySet().iterator();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				dataMapValueMap.put(key, new Double(Integer.toString(weekListMap.get(key))));
+			}
+			dataMap.put(selectedItem.getRegionListItem().getProduct().getName(), dataMapValueMap);
+			selectedItemSalesLine = ChartUtil.generateLineChartModel("Sales Valume In Last 5 Months(Real Sales Data + Virtual Sales Data)", "Month", "Sales Volume", dataMap);
+			RequestContext.getCurrentInstance().execute("PF('viewItem').show();");
+		}
 	}
 
 	public void openViewReport(){

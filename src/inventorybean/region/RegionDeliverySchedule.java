@@ -38,7 +38,7 @@ public class RegionDeliverySchedule implements Serializable{
 		deliveryScheduleDao = new DeliveryScheduleDao();
         daysOfMonth = new ArrayList<Integer>();
         hoursOfDay = new ArrayList<Integer>();
-        for(int i = 1; i < 29; i++){
+        for(int i = 1; i < 28; i++){
         	daysOfMonth.add(i);
         }
         for(int i = 0; i < 23; i++){

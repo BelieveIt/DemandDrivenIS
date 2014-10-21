@@ -117,6 +117,11 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.product.brand}" />
 				            <p:watermark for="@(.Brand)" value="Brand" />
 				        </p:column>
+				        <p:column headerText="DeliveryFrequency" styleClass="DeliveryFrequency noPadding" id="DeliveryFrequency"
+				        sortBy="#{item.product.deliveryFrequency}" filterBy="#{item.product.deliveryFrequency}" filterMatchMode="startsWith">
+				            <h:outputText value="#{item.product.deliveryFrequency}" />
+				            <p:watermark for="@(.DeliveryFrequency)" value="DeliveryFrequency" />
+				        </p:column>
 				        <p:column headerText="CreateTime" styleClass="CreateTime noPadding" id="CreateTime"
 				        sortBy="#{item.product.productCreateTime}" filterBy="#{item.product.productCreateTime}" filterMatchMode="startsWith">
 				            <h:outputText value="#{item.product.productCreateTime}">
