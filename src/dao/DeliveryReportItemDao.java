@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import model.DeliveryReportItem;
-import model.ReplenishmentReportItem;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -41,6 +41,16 @@ public class DeliveryReportItemDao implements Serializable{
 		}
 	}
 
+	public void updateItems(List<DeliveryReportItem> list){
+		if(list == null)return;
+		String sql = "update DELIVERY_REPORT_ITEM set " +
+				"DELIVERY_NUMBER = :deliveryNumber " +
+				"where REPORT_ID = :reportId and PRODUCT_ID = :productId";
+		for(DeliveryReportItem item : list){
+			SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(item);
+			namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+		}
+	}
 	public List<DeliveryReportItem> queryDeliveryReportItemsByReportId(String reportId){
 		String sql = "select * from DELIVERY_REPORT_ITEM where REPORT_ID = :reportId";
 		SqlParameterSource namedParameters = new MapSqlParameterSource("reportId", reportId);

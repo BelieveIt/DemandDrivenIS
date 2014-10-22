@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui"
+xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+
+	    	<!-- Confirm -->
+			<h:form id="confirmUpdateInventoryForm">
+			<p:dialog header="Are you sure that you will update the inventory with this delivery report?" widgetVar="updateInventory" width="1200">
+					<p:panel styleClass="autoHeightPanel divStyle">
+					<h:outputText
+						value="Delivery Date:" styleClass="right-content-header-label floatLeft text-bold"/>
+					<h:outputText
+						value="#{storeReceive.selectedReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
+		            <f:convertDateTime pattern="yyyy-MM-dd" />
+		            </h:outputText>
+
+					<h:outputText
+						value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
+					<h:outputText
+						value="#{storeReceive.selectedReport.deliveryReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+					<p:separator styleClass="forizontalSeparator"/>
+					</p:panel>
+					<p:panel styleClass="autoHeightPanel divStyle">
+						<p:dataTable id="dataTable" var="item" value="#{storeReceive.selectedReport.deliveryReportItems}"  style="width:1150px"
+					                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true">
+
+					        <p:column headerText="ProductId" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.productId}" >
+					            <h:outputText value="#{item.regionListItem.productId}" />
+					        </p:column>
+
+					        <p:column headerText="ProductName" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.product.name}" >
+					            <h:outputText value="#{item.regionListItem.product.name}" />
+					        </p:column>
+
+					        <p:column headerText="DeliveryType" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.product.deliveryFrequency}" >
+					            <h:outputText value="#{item.regionListItem.product.deliveryFrequency}" />
+					        </p:column>
+
+					        <p:column headerText="CurrentInventory" styleClass="noPadding"
+					        sortBy="#{item.storeSellingItem.currentInventory}" >
+					            <h:outputText value="#{item.storeSellingItem.currentInventory}" />
+					        </p:column>
+
+					        <p:column headerText="DeliveryNumber(Click to Edit)" styleClass="noPadding"
+					        sortBy="#{item.deliveryNumber}" >
+							   <p:inplace editor="true">
+							   			<p:ajax event="save" listener="#{storeReceive.saveEdit}" update=":confirmUpdateInventoryForm:dataTable" />
+							            <p:spinner id="deliveryNumber" value="#{item.deliveryNumber}" required="true" label="text" />
+							   </p:inplace>
+					        </p:column>
+
+					        <p:column headerText="InventoryAfterDelivery" styleClass="noPadding"
+					        sortBy="#{item.storeSellingItem.currentInventory + item.deliveryNumber}" >
+					            <h:outputText value="#{item.storeSellingItem.currentInventory + item.deliveryNumber}" />
+					        </p:column>
+
+					    </p:dataTable>
+					</p:panel>
+
+		            <f:facet name="footer">
+		                <p:commandButton actionListener="#{storeReceive.updateInventory}" update=":confirmUpdateInventoryForm :tableForm :leftMenuForm"
+		                value="Confirm Update Inventory" id="updateButton" icon="ui-icon-arrowthickstop-1-n"/>
+		            </f:facet>
+
+			</p:dialog>
+			</h:form>
+
+	    	<!-- View Detail -->
+			<h:form id="viewDetailForm">
+			<p:dialog header="View Delivery Report" widgetVar="viewDetail" width="1200">
+					<p:panel styleClass="autoHeightPanel divStyle">
+					<h:outputText
+						value="Delivery Date:" styleClass="right-content-header-label floatLeft text-bold"/>
+					<h:outputText
+						value="#{storeReceive.selectedReport.deliveryTime}" styleClass="right-content-header-label floatLeft">
+		            <f:convertDateTime pattern="yyyy-MM-dd" />
+		            </h:outputText>
+
+					<h:outputText
+						value="Total Items:" styleClass="right-content-header-label floatLeft text-bold	"/>
+					<h:outputText
+						value="#{storeReceive.selectedReport.deliveryReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
+
+					<p:separator styleClass="forizontalSeparator"/>
+					</p:panel>
+					<p:panel styleClass="autoHeightPanel divStyle">
+						<p:dataTable id="dataTable" var="item" value="#{storeReceive.selectedReport.deliveryReportItems}"  style="width:1150px"
+					                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true">
+					        <p:column headerText="ProductId" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.productId}" >
+					            <h:outputText value="#{item.regionListItem.productId}" />
+					        </p:column>
+
+					        <p:column headerText="ProductName" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.product.name}" >
+					            <h:outputText value="#{item.regionListItem.product.name}" />
+					        </p:column>
+
+					        <p:column headerText="DeliveryType" styleClass="noPadding"
+					        sortBy="#{item.regionListItem.product.deliveryFrequency}" >
+					            <h:outputText value="#{item.regionListItem.product.deliveryFrequency}" />
+					        </p:column>
+
+					        <p:column headerText="DeliveryNumber" styleClass="noPadding"
+					        sortBy="#{item.deliveryNumber}" >
+							   <h:outputText value="#{item.deliveryNumber}" />
+					        </p:column>
+
+					        <p:column headerText="CurrentInventory" styleClass="noPadding"
+					        sortBy="#{item.storeSellingItem.currentInventory}" >
+					            <h:outputText value="#{item.storeSellingItem.currentInventory}" />
+					        </p:column>
+					    </p:dataTable>
+					</p:panel>
+			</p:dialog>
+			</h:form>
+	    </ui:composition>
+    </h:body>
+</html>

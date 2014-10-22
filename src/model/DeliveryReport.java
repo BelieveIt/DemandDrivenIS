@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DeliveryReport {
-public static final String NOT_UPDATED = "Not";
+public static final String NOT_UPDATED = "NotUpdated";
 public static final String UPDATED = "InventoryUpdated";
 private String reportId;
 private String storeId;

@@ -81,10 +81,10 @@ xmlns:p="http://primefaces.org/ui">
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
 						<!-- View -->
-			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
-			            <div style="width:70px;height:40px">
+			            <p:column style="width:120px;text-align: center" toggleable="false"  exportable="false">
+			            <div style="width:120px;height:40px">
  			             <p:commandButton action="#{storeRequest.openViewItemForAdd}" update=":viewItemForAddForm"
-			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
+			             value="Anaysis&amp;Edit" style="float:left;width:120px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
 			                <f:setPropertyActionListener value="#{item}" target="#{storeRequest.selectedItem}" />
 			             </p:commandButton>
 			            </div>
@@ -107,11 +107,38 @@ xmlns:p="http://primefaces.org/ui">
 				    </p:dataTable>
 
 				</p:panel>
-				<p:commandButton action="#{storeRequest.createRequest}" update=":tableForm"
+				<p:commandButton type="button" value="Why these products are chosen" styleClass="right-content-header-button" icon="ui-icon-help" style="margin-left:15px;"
+				onclick="PF('replenishDescription').show();" />
+				<p:commandButton action="#{storeRequest.createRequest}" update=":tableForm" styleClass="right-content-header-button" style="margin-left:15px;"
 				id="createAndSendButton" value="Create and Send Request" />
 			</p:dialog>
 			</h:form>
 
+			<p:dialog header="Why these products are chosen" widgetVar="replenishDescription" width="550">
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText
+					value="1.This process will make the replenishment for a certain delivery. All the products showed here have the same delivery type as the delivery(everyday, everyweek or everymonth)." styleClass="right-content-header-label floatLeft"/>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText
+					value="2.The products showed here are all the product should be replenished in the delivery. The number of the replenishment calculated in this way:" styleClass="right-content-header-label floatLeft"/>
+				<h:outputText
+					value="Number of replenishment= minimum inventory(inventory in the next delivery point) + sales forcasting in the delivery interval(day, week or month) + waste forcasting in the delivery interval - current inventory." styleClass="right-content-header-label floatLeft"/>
+
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				<h:outputText style="font-weight:bold;"
+					value="Click right to see how does system help you replenish." styleClass="right-content-header-label floatLeft"/>
+		        <p:lightBox styleClass="imagebox">
+	  				<h:outputLink value="#{request.contextPath}/resources/img/replenishExp.png">
+			        <p:graphicImage library="img" name="replenishExp.png"
+	  					width="100" height="60"/>
+	  				</h:outputLink>
+  				</p:lightBox>
+  				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+				</p:panel>
+			</p:dialog>
 
 			<!-- View Item For Add-->
 			<h:form id="viewItemForAddForm">
@@ -244,10 +271,7 @@ xmlns:p="http://primefaces.org/ui">
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
 				        </p:column>
-
-
 				    </p:dataTable>
-
 				</p:panel>
 			</p:dialog>
 			</h:form>

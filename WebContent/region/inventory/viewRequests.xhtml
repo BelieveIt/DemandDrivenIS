@@ -22,12 +22,6 @@ xmlns:p="http://primefaces.org/ui">
     			<h:form id="buttonForm">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Replenishment Request List</span>
-    			<div class="right-content-header-buttons-panel">
-
-    			<!-- Create -->
-<!--     			<p:commandButton action="#{storeRequest.openCreateRequest}" update=":messagesForm:messages :createRequestForm"
-    			value="Create New Request" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" /> -->
-    			</div>
     			</div>
     			</h:form>
 
@@ -82,7 +76,7 @@ xmlns:p="http://primefaces.org/ui">
 
 				        <p:column headerText="Status" styleClass="noPadding"
 				        sortBy="#{item.status}" >
-				            <h:outputText value="#{item.status}" />
+				            <h:outputText styleClass="#{item.status}" value="#{item.status}" />
 				        </p:column>
 
 				    </p:dataTable>

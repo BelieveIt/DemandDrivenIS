@@ -7,6 +7,8 @@ private Integer deliveryNumber;
 
 private RegionListItem regionListItem;
 
+private StoreSellingItem storeSellingItem;
+
 public String getReportId() {
 	return reportId;
 }
@@ -30,5 +32,11 @@ public RegionListItem getRegionListItem() {
 }
 public void setRegionListItem(RegionListItem regionListItem) {
 	this.regionListItem = regionListItem;
+}
+public StoreSellingItem getStoreSellingItem() {
+	return storeSellingItem;
+}
+public void setStoreSellingItem(StoreSellingItem storeSellingItem) {
+	this.storeSellingItem = storeSellingItem;
 }
 }

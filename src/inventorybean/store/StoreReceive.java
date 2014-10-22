@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 
 import model.DeliveryReport;
 import model.DeliveryReportItem;
@@ -16,6 +20,7 @@ import model.Store;
 import model.StoreSellingItem;
 
 import dao.DeliveryReportDao;
+import dao.DeliveryReportItemDao;
 import dao.ReplenishmentReportDao;
 import dao.StoreDao;
 
@@ -54,10 +59,6 @@ public class StoreReceive  implements Serializable{
 	}
 
 	public void openUpdateInventory(){
-		RequestContext.getCurrentInstance().execute("PF('updateInventory').show();");
-	}
-
-	public void updateInventory(){
 		List<DeliveryReportItem> items = selectedReport.getDeliveryReportItems();
 		List<StoreSellingItem> storeSellingItems = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
 		HashMap<String, StoreSellingItem> storeSellingItemsMap = new HashMap<String, StoreSellingItem>();
@@ -66,6 +67,19 @@ public class StoreReceive  implements Serializable{
 		}
 		for(DeliveryReportItem item : items){
 			StoreSellingItem sellingItem = storeSellingItemsMap.get(item.getProductId());
+			item.setStoreSellingItem(sellingItem);
+		}
+		RequestContext.getCurrentInstance().execute("PF('updateInventory').show();");
+	}
+
+	 public void saveEdit() {
+	}
+
+	public void updateInventory(){
+
+		List<DeliveryReportItem> items = selectedReport.getDeliveryReportItems();
+		for(DeliveryReportItem item : items){
+			StoreSellingItem sellingItem = item.getStoreSellingItem();
 			Integer currentInventory = sellingItem.getCurrentInventory();
 			Integer newInventory = currentInventory + item.getDeliveryNumber();
 			sellingItem.setCurrentInventory(newInventory);
@@ -77,6 +91,20 @@ public class StoreReceive  implements Serializable{
 		RequestContext.getCurrentInstance().execute("PF('updateInventory').hide();");
 	}
 
+
+	public void openViewDetail(){
+		List<DeliveryReportItem> items = selectedReport.getDeliveryReportItems();
+		List<StoreSellingItem> storeSellingItems = storeDao.queryStoreSellingItemsByStoreId(store.getStoreId());
+		HashMap<String, StoreSellingItem> storeSellingItemsMap = new HashMap<String, StoreSellingItem>();
+		for(StoreSellingItem storeSellingItem : storeSellingItems){
+			storeSellingItemsMap.put(storeSellingItem.getProductId(), storeSellingItem);
+		}
+		for(DeliveryReportItem item : items){
+			StoreSellingItem sellingItem = storeSellingItemsMap.get(item.getProductId());
+			item.setStoreSellingItem(sellingItem);
+		}
+		RequestContext.getCurrentInstance().execute("PF('viewDetail').show();");
+	}
 	public Integer getNeedToUpdateNum() {
 		return needToUpdateNum;
 	}

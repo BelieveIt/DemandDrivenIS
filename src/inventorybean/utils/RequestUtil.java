@@ -218,7 +218,6 @@ public class RequestUtil implements Serializable{
 
 			Integer salesForecast = salesRecordsMapForForecastOfStoreByProduct.get(item.getProductId()).get(periodDayOfWeek);
 			Integer wasteForecast = 0;
-			System.out.println(wasteRecordAvgNumMap.get(item.getProductId()));
 			if(wasteRecordAvgNumMap.get(item.getProductId()) != null){
 				wasteForecast = wasteRecordAvgNumMap.get(item.getProductId());
 			}

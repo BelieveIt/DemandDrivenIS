@@ -67,36 +67,29 @@ xmlns:p="http://primefaces.org/ui">
 
 				        <p:column headerText="Status" styleClass="noPadding"
 				        sortBy="#{item.updated}" >
-				            <h:outputText rendered="#{item.updated eq 'InventoryUpdated'}" value="#{item.updated}" />
-				            <p:commandButton rendered="#{item.updated ne 'InventoryUpdated'}" action="#{storeReceive.openUpdateInventory}" update=":confirmUpdateInventoryForm"
-			             value="Update Inventory" style="float:left;width:150px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openUpdateInventoryButton">
-			                <f:setPropertyActionListener value="#{item}" target="#{storeReceive.selectedReport}" />
-			             </p:commandButton>
+				            <h:outputText rendered="#{item.updated eq 'InventoryUpdated'}" style="color:green;" value="#{item.updated}" />
+				            <h:outputText rendered="#{item.updated eq 'NotUpdated'}" style="color:red;" value="#{item.updated}" />
 				        </p:column>
 
+				        <p:column headerText=" " styleClass="noPadding" >
+				            <p:commandButton rendered="#{item.updated eq 'InventoryUpdated'}" action="#{storeReceive.openViewDetail}" update=":viewDetailForm"
+			             value="View Detail" style="float:left;width:150px;margin-right:3px;text-align:center;" icon="ui-icon-search" >
+			                <f:setPropertyActionListener value="#{item}" target="#{storeReceive.selectedReport}" />
+			             	</p:commandButton>
+				            <p:commandButton rendered="#{item.updated eq 'NotUpdated'}" action="#{storeReceive.openUpdateInventory}" update=":confirmUpdateInventoryForm"
+			             value="Update Inventory" style="float:left;width:150px;margin-right:3px;text-align:center;" icon="ui-icon-arrowthickstop-1-n" id="openUpdateInventoryButton">
+			                <f:setPropertyActionListener value="#{item}" target="#{storeReceive.selectedReport}" />
+			             	</p:commandButton>
+				        </p:column>
 				    </p:dataTable>
 				</h:form>
 				</p:panel>
 
     			</p:panel>
 
-	    	<!-- Confirm -->
-			<h:form id="confirmUpdateInventoryForm">
-			<p:dialog header="Confirm Update" widgetVar="updateInventory" width="650">
-					<p:panel styleClass="autoHeightPanel divStyle">
-		            <h:outputLabel styleClass="floatLeft text-align-left"
-		            value="Are you sure that update the inventory with this delivery report?" />
-		            </p:panel>
-		            <f:facet name="footer">
-		                <p:commandButton actionListener="#{storeReceive.updateInventory}" update=":confirmUpdateInventoryForm :tableForm :leftMenuForm"
-		                value="update" id="updateButton" />
-		            </f:facet>
-
-			</p:dialog>
-			</h:form>
 
 				<!-- Dialogs -->
-<!-- 				<ui:include src="monitorDialog.xhtml" /> -->
+ 				<ui:include src="receiveDialog.xhtml" />
 <!-- 				BlockUI
 				<h:form>
 				<p:blockUI

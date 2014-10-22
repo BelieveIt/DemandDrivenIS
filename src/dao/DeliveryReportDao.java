@@ -52,7 +52,10 @@ public class DeliveryReportDao implements Serializable{
 				"UPDATED = :updated " +
 				"where REPORT_ID = :reportId";
 		SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(deliveryReport);
-		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+		namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+		DeliveryReportItemDao itemDao = new DeliveryReportItemDao();
+		itemDao.updateItems(deliveryReport.getDeliveryReportItems());
+		return 1;
 	}
 
 	public List<DeliveryReport> queryDeliveryReportsByStoreId(String storeId){
