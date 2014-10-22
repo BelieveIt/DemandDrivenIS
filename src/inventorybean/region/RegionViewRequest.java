@@ -5,6 +5,7 @@ import inventorybean.utils.RequestUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -131,7 +132,47 @@ public class RegionViewRequest implements Serializable{
 		}
 	}
 	public void openViewReport(){
-		RequestContext.getCurrentInstance().execute("PF('viewReport').show();");
+		if(selectedReport.getDeliveryType().equals("everyday")){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProduct();
+			List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
+			replenishmentReportItems = requestUtil.calculateReplenishmentForEveryDay();
+			for(ReplenishmentReportItem item : selectedReport.getReplenishmentReportItems()){
+				for(ReplenishmentReportItem item2 : replenishmentReportItems){
+					if(item2.getProductId().equals(item.getProductId())){
+						item.setAutoCalculatedReplenishmentNumber(item2.getAutoCalculatedReplenishmentNumber());
+					}
+				}
+			}
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+		}
+
+		if(selectedReport.getDeliveryType().equals("everyweek")){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProductForWeek();
+			List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
+			replenishmentReportItems = requestUtil.calculateReplenishmentForEveryWeek();
+			for(ReplenishmentReportItem item : selectedReport.getReplenishmentReportItems()){
+				for(ReplenishmentReportItem item2 : replenishmentReportItems){
+					if(item2.getProductId().equals(item.getProductId())){
+						item.setAutoCalculatedReplenishmentNumber(item2.getAutoCalculatedReplenishmentNumber());
+					}
+				}
+			}
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+		}
+
+		if(selectedReport.getDeliveryType().equals("everymonth")){
+			requestUtil.initSalesRecordsMapForForecastOfStoreByProductForMonth();
+			List<ReplenishmentReportItem> replenishmentReportItems = new ArrayList<ReplenishmentReportItem>();
+			replenishmentReportItems = requestUtil.calculateReplenishmentForEveryMonth();
+			for(ReplenishmentReportItem item : selectedReport.getReplenishmentReportItems()){
+				for(ReplenishmentReportItem item2 : replenishmentReportItems){
+					if(item2.getProductId().equals(item.getProductId())){
+						item.setAutoCalculatedReplenishmentNumber(item2.getAutoCalculatedReplenishmentNumber());
+					}
+				}
+			}
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+		}
 	}
 
 	public void openApprove(){

@@ -28,31 +28,31 @@ xmlns:p="http://primefaces.org/ui">
 
     			<!-- View Schedule -->
     			<p:commandButton action="#{storeRequest.openViewSchedule}" update=":viewScheduleForm"
-    			value="Delivery Schedule" styleClass="right-content-header-button" icon="ui-icon-search" style="margin-left:15px;" />
+    			value="Delivery Schedule" styleClass="right-content-header-button" icon="ui-icon-search" style="margin-left:5px;" />
 
     			<!-- Create For Every Day -->
     			<p:commandButton action="#{storeRequest.openCreateDayRequest}" update=":createRequestForm"
-    			value="For EveryDay Delivery" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			value="For EveryDay Delivery" styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:5px;" />
 
     			<!-- Create  For Every Week -->
     			<p:commandButton rendered = "#{storeRequest.daysBeforeWeekDelivery ne 1}" action="#{storeRequest.openCreateWeekRequest}" update=":createRequestForm" disabled="true"
     			value="For EveryWeek Delivery(Delivery #{storeRequest.daysBeforeWeekDelivery} #{storeRequest.daysBeforeWeekDelivery eq 1 ? 'day' : 'days'} later)"
-    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:5px;" />
 
     			<p:commandButton rendered = "#{storeRequest.daysBeforeWeekDelivery eq 1}" action="#{storeRequest.openCreateWeekRequest}" update=":createRequestForm"
     			value="For EveryWeek Delivery(Delivery #{storeRequest.daysBeforeWeekDelivery} #{storeRequest.daysBeforeWeekDelivery eq 1 ? 'day' : 'days'} later)"
-    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:5px;" />
 
     			<!-- Create For Every Month -->
     			<p:commandButton rendered = "#{storeRequest.daysBeforeMonthDelivery ne 1}" action="#{storeRequest.openCreateMonthRequest}" update=":createRequestForm" disabled="true"
     			value="For EveryMonth Delivery(Delivery #{storeRequest.daysBeforeMonthDelivery} #{storeRequest.daysBeforeMonthDelivery eq 1 ? 'day' : 'days'} later)"
-    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:5px;" />
 
     			<p:commandButton rendered = "#{storeRequest.daysBeforeMonthDelivery eq 1}" action="#{storeRequest.openCreateMonthRequest}" update=":createRequestForm"
     			value="For EveryMonth Delivery(Delivery #{storeRequest.daysBeforeMonthDelivery} #{storeRequest.daysBeforeMonthDelivery eq 1 ? 'day' : 'days'} later)"
-    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:15px;" />
+    			styleClass="right-content-header-button" icon="ui-icon-plus" style="margin-left:5px;" />
 
-				<p:commandButton type="button" value="What is Delivery Frequency" styleClass="right-content-header-button" icon="ui-icon-help" style="margin-left:15px;"
+				<p:commandButton type="button" value="What is Delivery Frequency" styleClass="right-content-header-button" icon="ui-icon-help" style="margin-left:5px;"
 				onclick="PF('typeDescription').show();" />
     			</div>
     			</div>

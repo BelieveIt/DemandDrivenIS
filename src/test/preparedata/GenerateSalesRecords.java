@@ -47,14 +47,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(35, 40), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(5, 10), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(15, 20), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(35, 40), start.getTime()));
@@ -63,19 +74,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(45, 50), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(15, 20), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(20, 25), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
-			}
-	        try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -93,13 +110,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(40, 45), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(15, 20), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(25, 30), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(40, 45), start.getTime()));
@@ -108,19 +137,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(50, 55), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(20, 25), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(30, 35), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
-			}
-	        try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -138,13 +173,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(60, 65), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(35, 40), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(50, 55), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(60, 65), start.getTime()));
@@ -153,7 +200,13 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(70, 75), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(40, 45), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(55, 60), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
@@ -183,13 +236,25 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(65, 70), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(35, 40), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(60, 65), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}else {
 				//work day
 				salesRecordDao.insertProduct(new SalesRecord("1", productId1, RandomUtil.getRandom(65, 70), start.getTime()));
@@ -198,20 +263,27 @@ public class GenerateSalesRecords {
 				salesRecordDao.insertProduct(new SalesRecord("1", productId4, RandomUtil.getRandom(75, 80), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId5, RandomUtil.getRandom(45, 50), start.getTime()));
 				salesRecordDao.insertProduct(new SalesRecord("1", productId6, RandomUtil.getRandom(70, 80), start.getTime()));
-
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId1, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId2, RandomUtil.getRandom(3, 5), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId3, RandomUtil.getRandom(1, 3), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId4, RandomUtil.getRandom(5, 7), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId5, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
 				wasteRecordDao.insertWasteRecord(new WasteRecord("1", productId6, RandomUtil.getRandom(1, 4), Integer.toString(RandomUtil.getRandom(1, 3)), start.getTime()));
+		        try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-	        try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 		}
 		System.out.println("Process Finished!");
 	}

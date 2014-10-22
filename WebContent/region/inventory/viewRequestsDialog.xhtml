@@ -33,7 +33,10 @@ xmlns:p="http://primefaces.org/ui">
 				    	<h:outputLabel value="Current Inventory:" />
 			            <h:outputLabel value="#{regionViewRequest.selectedItem.currentInventory}"/>
 
-				    	<h:outputLabel value="Number of Replenishment:" />
+				    	<h:outputLabel value="Number of Replenishment(Auto Calculated):" />
+			            <h:outputLabel value="#{regionViewRequest.selectedItem.autoCalculatedReplenishmentNumber}"/>
+			            
+				    	<h:outputLabel value="Number of Replenishment(Request):" />
 			            <h:outputLabel value="#{regionViewRequest.selectedItem.replenishmentNumber}"/>
 			        </h:panelGrid>
 				</p:panel>
@@ -98,9 +101,14 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.regionListItem.product.name}" />
 				        </p:column>
 
-				        <p:column headerText="ReplenishmentNumber" styleClass="noPadding"
+				        <p:column headerText="ReplenishmentNumber(Request)" styleClass="noPadding"
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
+				        </p:column>
+				        
+				        <p:column headerText="ReplenishmentNumber(AutoCalculated)" styleClass="noPadding"
+				        sortBy="#{item.autoCalculatedReplenishmentNumber}" >
+				            <h:outputText value="#{item.autoCalculatedReplenishmentNumber}" />
 				        </p:column>
 				    </p:dataTable>
 				</p:panel>
