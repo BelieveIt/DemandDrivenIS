@@ -12,7 +12,7 @@ private Date createTime;
 private Date deliveryTime;
 private String updated;
 private List<DeliveryReportItem> deliveryReportItems;
-
+private String requestReportId;
 public String getReportId() {
 	return reportId;
 }
@@ -48,6 +48,12 @@ public String getUpdated() {
 }
 public void setUpdated(String updated) {
 	this.updated = updated;
+}
+public String getRequestReportId() {
+	return requestReportId;
+}
+public void setRequestReportId(String requestReportId) {
+	this.requestReportId = requestReportId;
 }
 
 }

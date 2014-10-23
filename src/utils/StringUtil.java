@@ -8,7 +8,7 @@ public class StringUtil {
 		String dataString = "####name##y";
 		System.out.println(getStringsBySplit(dataString));
 	}
-	
+
 	public static ArrayList<String> getStringsBySplit(String splitStr){
 		ArrayList<String> values =  new ArrayList<String>();
 		if(splitStr != null){
@@ -16,18 +16,18 @@ public class StringUtil {
 			Collections.addAll(values, strs);
 		}
 		if(values.size() != 0) values.remove(0);
-		return values; 
+		return values;
 	}
-	
+
 	public static String getStringByList(ArrayList<String> listData){
 		String stringData = "";
 		if(listData != null){
 			for(String item : listData){
 				stringData = stringData + "##" + item;
-			}			
+			}
 		}
 
-		return stringData; 
+		return stringData;
 	}
-	
+
 }

@@ -35,7 +35,7 @@ xmlns:p="http://primefaces.org/ui">
 
 				    	<h:outputLabel value="Number of Replenishment(Auto Calculated):" />
 			            <h:outputLabel value="#{regionViewRequest.selectedItem.autoCalculatedReplenishmentNumber}"/>
-			            
+
 				    	<h:outputLabel value="Number of Replenishment(Request):" />
 			            <h:outputLabel value="#{regionViewRequest.selectedItem.replenishmentNumber}"/>
 			        </h:panelGrid>
@@ -50,7 +50,7 @@ xmlns:p="http://primefaces.org/ui">
 
 			<!-- View Report -->
 			<h:form id="viewReportForm">
-			<p:dialog header="View Replenishment Report" widgetVar="viewReport" width="1000">
+			<p:dialog header="View Replenishment Report" widgetVar="viewReport" width="1530">
 				<p:panel styleClass="autoHeightPanel divStyle" id="viewHeaderPanel">
 				<h:outputText
 					value="Deliver Frequency Type:" styleClass="right-content-header-label floatLeft text-bold"/>
@@ -69,25 +69,35 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputText
 					value="#{regionViewRequest.selectedReport.replenishmentReportItems.size()}" styleClass="right-content-header-label floatLeft"/>
 
-				<h:outputText rendered="#{regionViewRequest.selectedReport.status ne 'WaitingForApproval'}"
+				<h:outputText
 					value="Status:" styleClass="right-content-header-label floatLeft text-bold	"/>
-				<h:outputText rendered="#{regionViewRequest.selectedReport.status ne 'WaitingForApproval'}"
+				<h:outputText
 					value="#{regionViewRequest.selectedReport.status}" styleClass="right-content-header-label floatLeft"/>
 
 				<p:commandButton rendered="#{regionViewRequest.selectedReport.status eq 'WaitingForApproval'}" action="#{regionViewRequest.openApprove}" update=":approvalForm"
-    			value="Approve" styleClass="right-content-header-button" icon="ui-icon-check" style="margin-left:15px;" />
+    			value="Approve All" styleClass="right-content-header-button" icon="ui-icon-check" style="margin-left:15px;" />
     			<p:commandButton rendered="#{regionViewRequest.selectedReport.status eq 'WaitingForApproval'}" action="#{regionViewRequest.openReject}" update=":rejectForm"
-    			value="Reject" styleClass="right-content-header-button" icon="ui-icon-close" style="margin-left:15px;" />
+    			value="Reject All" styleClass="right-content-header-button" icon="ui-icon-close" style="margin-left:15px;" />
 
 				<p:separator styleClass="forizontalSeparator"/>
 				</p:panel>
 				<p:panel styleClass="autoHeightPanel divStyle">
-					<p:dataTable id="dataTable" var="item" value="#{regionViewRequest.selectedReport.replenishmentReportItems}"  style="width:900px"
+					<p:dataTable id="dataTable" var="item" value="#{regionViewRequest.selectedReport.replenishmentReportItems}"  style="width:1500px;"
 				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true" >
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true"
+				                         rowStyleClass="#{item.replenishmentNumber ne item.autoCalculatedReplenishmentNumber and item.needToDeilverNumber ne 0? 'alertRow' : null}"
+				                         selection="#{regionViewRequest.selectedItems}">
+		    			<f:facet name="header" >
 
+		    			<div class="right-content-header-buttons-panel">
+							<p:commandButton action="#{regionViewRequest.openApproveSelected}" update=":approvalForm :messagesForm :viewSelectedForm"
+			    			value="Approve Selected" styleClass="right-content-header-button" icon="ui-icon-check" style="margin-left:15px;" />
+		    			</div>
+		    			</f:facet>
+
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
 						<!-- View -->
-			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false">
+			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false" >
 			            <div style="width:70px;height:40px">
  			             <p:commandButton action="#{regionViewRequest.openViewItem}" update=":viewItemForm"
 			             value="Detail" style="float:left;width:70px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="openViewItemButton">
@@ -101,16 +111,63 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.regionListItem.product.name}" />
 				        </p:column>
 
-				        <p:column headerText="ReplenishmentNumber(Request)" styleClass="noPadding"
+				        <p:column headerText="RequestNum" styleClass="noPadding"
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
 				        </p:column>
-				        
-				        <p:column headerText="ReplenishmentNumber(AutoCalculated)" styleClass="noPadding"
+
+				        <p:column headerText="AutoCalculatedNum" styleClass="noPadding"
 				        sortBy="#{item.autoCalculatedReplenishmentNumber}" >
 				            <h:outputText value="#{item.autoCalculatedReplenishmentNumber}" />
 				        </p:column>
+
+				        <p:column headerText="isRequestEqualToCalculated" styleClass="noPadding"
+				        sortBy="#{item.autoCalculatedReplenishmentNumber}" >
+				            <h:outputText value="#{item.replenishmentNumber ne item.autoCalculatedReplenishmentNumber ? 'NotEqualToCalculated' : 'EqualToCalculated'}" />
+				        </p:column>
+
+				        <p:column headerText="DeliveredNum" styleClass="noPadding"
+				        sortBy="#{item.deliveredNumber}" >
+				            <h:outputText value="#{item.deliveredNumber}" />
+				        </p:column>
+
+				        <p:column headerText="NeedToDeliver" styleClass="noPadding"
+				        sortBy="#{item.needToDeilverNumber}" >
+				            <h:outputText value="#{item.needToDeilverNumber}" styleClass="#{item.needToDeilverNumber eq 0? 'greenText' : 'redText'}"/>
+				        </p:column>
 				    </p:dataTable>
+				</p:panel>
+			</p:dialog>
+			</h:form>
+
+			<!-- View Selected Item to delivery -->
+			<h:form id="viewSelectedForm">
+			<p:dialog header="Selected Products to be Deilvered" widgetVar="approveSelected" width="650">
+				<p:panel styleClass="autoHeightPanel divStyle">
+					<p:dataTable id="dataTable" var="item" value="#{regionViewRequest.selectedItems}"  style="width:600px;"
+				                         paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true">
+				        <p:column headerText="ProductName" styleClass="noPadding"
+				        sortBy="#{item.regionListItem.product.name}" >
+				            <h:outputText value="#{item.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="NeedToDeliver" styleClass="noPadding"
+				        sortBy="#{item.needToDeilverNumber}" >
+				            <h:outputText value="#{item.needToDeilverNumber}" />
+				        </p:column>
+
+				        <p:column headerText="RealNumToDeliver" styleClass="noPadding"
+				        sortBy="#{item.numberToDelivery}" >
+				            <p:spinner id="basic" value="#{item.numberToDelivery}" />
+				        </p:column>
+				    </p:dataTable>
+				</p:panel>
+				<p:panel styleClass="autoHeightPanel divStyle">
+				<h:outputText value="Delivery Time:" style="float:left; margin-left:15px;"/>
+				<p:calendar value="#{regionViewRequest.newDeiveryTime}" mindate="#{regionViewRequest.newDeiveryTime}" style="float:left; margin-left:15px;"/>
+				<p:commandButton action="#{regionViewRequest.approveSelected}" update=":viewReportForm:dataTable :viewReportForm:viewHeaderPanel :tableForm"
+					value="Approve Selected &amp; Create Delivery" styleClass="right-content-header-button" icon="ui-icon-check" style="float:left; margin-left:15px;" />
 				</p:panel>
 			</p:dialog>
 			</h:form>
@@ -123,7 +180,8 @@ xmlns:p="http://primefaces.org/ui">
 		            value="Are you sure this replenishment request will be approved?" />
 		            </p:panel>
 		            <f:facet name="footer">
-		                <p:commandButton action="#{regionViewRequest.approve}" update=":viewReportForm:viewHeaderPanel :tableForm :leftMenuForm :approvalForm"
+		                <p:commandButton action="#{regionViewRequest.approve}" update=":viewReportForm:viewHeaderPanel :viewReportForm:dataTable
+		                 :tableForm :leftMenuForm :approvalForm"
 		                value="Yes" />
 		                <p:commandButton action="#{regionViewRequest.approveCancel}" update=":approvalForm"
 		                value="No" />

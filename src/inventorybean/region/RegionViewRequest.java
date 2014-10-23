@@ -14,9 +14,11 @@ import java.util.List;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.chart.LineChartModel;
@@ -48,11 +50,14 @@ public class RegionViewRequest implements Serializable{
 
 	private List<ReplenishmentReport> reports;
 	private ReplenishmentReport selectedReport;
+	private List<ReplenishmentReportItem> selectedItems;
 
 	private ReplenishmentReportItem selectedItem;
 	private LineChartModel selectedItemSalesLine;
 
 	private Integer waitingNum;
+
+	private Date newDeiveryTime;
 	@PostConstruct
 	public void init(){
 		replenishmentReportDao = new ReplenishmentReportDao();
@@ -143,7 +148,7 @@ public class RegionViewRequest implements Serializable{
 					}
 				}
 			}
-			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");
 		}
 
 		if(selectedReport.getDeliveryType().equals("everyweek")){
@@ -157,7 +162,7 @@ public class RegionViewRequest implements Serializable{
 					}
 				}
 			}
-			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");
 		}
 
 		if(selectedReport.getDeliveryType().equals("everymonth")){
@@ -171,7 +176,7 @@ public class RegionViewRequest implements Serializable{
 					}
 				}
 			}
-			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");	
+			RequestContext.getCurrentInstance().execute("PF('viewReport').show();");
 		}
 	}
 
@@ -187,7 +192,7 @@ public class RegionViewRequest implements Serializable{
 		deliveryReport.setDeliveryTime(selectedReport.getDeliveryTime());
 		deliveryReport.setReportId(IdentityUtil.randomUUID());
 		deliveryReport.setStoreId(selectedReport.getStoreId());
-
+		deliveryReport.setRequestReportId(selectedReport.getReportId());
 		ArrayList<DeliveryReportItem> deliveryReportItems = new ArrayList<DeliveryReportItem>();
 		List<ReplenishmentReportItem> list = selectedReport.getReplenishmentReportItems();
 		for(ReplenishmentReportItem item : list){
@@ -196,10 +201,14 @@ public class RegionViewRequest implements Serializable{
 			deliveryReportItem.setProductId(item.getProductId());
 			deliveryReportItem.setReportId(deliveryReport.getReportId());
 			deliveryReportItems.add(deliveryReportItem);
+
+			item.setDeliveredNumber(deliveryReportItem.getDeliveryNumber());
+			item.setNeedToDeilverNumber(item.getReplenishmentNumber() - item.getDeliveredNumber());
 		}
 		deliveryReport.setDeliveryReportItems(deliveryReportItems);
 		deliveryReportDao.insertDeliverReport(deliveryReport);
 		initProcess();
+
 		RequestContext.getCurrentInstance().execute("PF('approve').hide();");
 	}
 	public void approveCancel(){
@@ -218,6 +227,79 @@ public class RegionViewRequest implements Serializable{
 	}
 	public void rejectCancel(){
 		RequestContext.getCurrentInstance().execute("PF('reject').hide();");
+	}
+
+	public void openApproveSelected(){
+		if(selectedItems==null || notNeedDelivery()){
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Notice", "No Products Selected or Selected products don't need to delivery!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        return;
+		}
+
+		for(ReplenishmentReportItem item : selectedItems){
+			item.setNumberToDelivery(item.getNeedToDeilverNumber());
+		}
+		setNewDeiveryTime(selectedReport.getDeliveryTime());
+		RequestContext.getCurrentInstance().execute("PF('approveSelected').show();");
+	}
+	private boolean notNeedDelivery(){
+		if(selectedItems==null)return true;
+		for(ReplenishmentReportItem item : selectedItems){
+			if(item.getNeedToDeilverNumber() > 0)return false;
+		}
+		return true;
+	}
+
+	private boolean isDeliverAll(){
+		for(ReplenishmentReportItem item : selectedReport.getReplenishmentReportItems()){
+			if(item.getNeedToDeilverNumber() > 0){
+				for(ReplenishmentReportItem item2 : selectedItems){
+					if(item2.getNumberToDelivery() < item.getNeedToDeilverNumber()){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	public void approveSelected(){
+		if(isDeliverAll()){
+			selectedReport.setStatus(ReplenishmentReport.APPROVED);
+		}else {
+			selectedReport.setStatus(ReplenishmentReport.APPROVED_PARTLY);
+		}
+		for(ReplenishmentReport replenishmentReport : reports){
+			if(selectedReport.getReportId().equals(replenishmentReport.getReportId())){
+				replenishmentReport.setStatus(selectedReport.getStatus());
+			}
+		}
+		replenishmentReportDao.updateReplenishmentReport(selectedReport);
+		DeliveryReport deliveryReport = new DeliveryReport();
+		deliveryReport.setCreateTime(new Date());
+		deliveryReport.setDeliveryTime(newDeiveryTime);
+		deliveryReport.setReportId(IdentityUtil.randomUUID());
+		deliveryReport.setStoreId(selectedReport.getStoreId());
+		deliveryReport.setRequestReportId(selectedReport.getReportId());
+
+		ArrayList<DeliveryReportItem> deliveryReportItems = new ArrayList<DeliveryReportItem>();
+		List<ReplenishmentReportItem> list = selectedItems;
+
+		for(ReplenishmentReportItem item : list){
+			DeliveryReportItem deliveryReportItem = new DeliveryReportItem();
+			deliveryReportItem.setDeliveryNumber(item.getNumberToDelivery());
+			deliveryReportItem.setProductId(item.getProductId());
+			deliveryReportItem.setReportId(deliveryReport.getReportId());
+			deliveryReportItems.add(deliveryReportItem);
+
+			item.setDeliveredNumber(deliveryReportItem.getDeliveryNumber() + item.getDeliveredNumber());
+			item.setNeedToDeilverNumber(item.getReplenishmentNumber() - item.getDeliveredNumber());
+		}
+		deliveryReport.setDeliveryReportItems(deliveryReportItems);
+		deliveryReportDao.insertDeliverReport(deliveryReport);
+		initProcess();
+
+		RequestContext.getCurrentInstance().execute("PF('approveSelected').hide();");
 	}
 
 	public List<ReplenishmentReport> getReports() {
@@ -258,5 +340,17 @@ public class RegionViewRequest implements Serializable{
 	}
 	public void setRequestUtil(RequestUtil requestUtil) {
 		this.requestUtil = requestUtil;
+	}
+	public List<ReplenishmentReportItem> getSelectedItems() {
+		return selectedItems;
+	}
+	public void setSelectedItems(List<ReplenishmentReportItem> selectedItems) {
+		this.selectedItems = selectedItems;
+	}
+	public Date getNewDeiveryTime() {
+		return newDeiveryTime;
+	}
+	public void setNewDeiveryTime(Date newDeiveryTime) {
+		this.newDeiveryTime = newDeiveryTime;
 	}
 }

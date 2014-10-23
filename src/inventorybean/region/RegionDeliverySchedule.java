@@ -81,12 +81,16 @@ public class RegionDeliverySchedule implements Serializable{
 		for (; startC.before(endC); startC.add(Calendar.DATE, 1)) {
 			if(startC.get(Calendar.DAY_OF_MONTH) == monthSchedule.getDeliveryMark().intValue()){
 				startC.set(Calendar.HOUR_OF_DAY, monthSchedule.getDeliveryHour());
-				eventModel.addEvent(new DefaultScheduleEvent("Delivery for EveryMonth Frequency", startC.getTime(),  startC.getTime()));
+				DefaultScheduleEvent event1 = new DefaultScheduleEvent("Delivery for EveryMonth Frequency", startC.getTime(),  startC.getTime());
+				event1.setStyleClass("monthEvent");
+				eventModel.addEvent(event1);
 			}
 
 			if(startC.get(Calendar.DAY_OF_WEEK) == weekSchedule.getDeliveryMark().intValue()){
 				startC.set(Calendar.HOUR_OF_DAY, weekSchedule.getDeliveryHour());
-				eventModel.addEvent(new DefaultScheduleEvent("Delivery for EveryWeek Frequency",  startC.getTime(),  startC.getTime()));
+				DefaultScheduleEvent event2 = new DefaultScheduleEvent("Delivery for EveryWeek Frequency",  startC.getTime(),  startC.getTime());
+				event2.setStyleClass("weekEvent");
+				eventModel.addEvent(event2);
 			}
 
 		}

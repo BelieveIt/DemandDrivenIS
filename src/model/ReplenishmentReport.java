@@ -7,6 +7,7 @@ import java.util.List;
 public class ReplenishmentReport {
 public static final String WAITING_FOR_APPROVAL = "WaitingForApproval";
 public static final String APPROVED = "Approved";
+public static final String APPROVED_PARTLY = "ApprovedPartly";
 public static final String REJECTED = "Rejected";
 private String reportId;
 private String storeId;

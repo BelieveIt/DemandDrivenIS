@@ -40,6 +40,7 @@ public class DeliveryReportDao implements Serializable{
 		parameters.put("REPORT_ID", deliveryReport.getReportId());
 		parameters.put("STORE_ID", deliveryReport.getStoreId());
 		parameters.put("UPDATED", DeliveryReport.NOT_UPDATED);
+		parameters.put("REQUEST_REPORT_ID", deliveryReport.getRequestReportId());
 		simpleJdbcInsert.execute(parameters);
 
 		DeliveryReportItemDao deliveryReportItemDao = new DeliveryReportItemDao();
@@ -63,6 +64,12 @@ public class DeliveryReportDao implements Serializable{
 		SqlParameterSource namedParameters = new MapSqlParameterSource("storeId", storeId);
 		return namedParameterJdbcTemplate.query(sql, namedParameters, new DeliveryReportMapper());
 	}
+
+	public List<DeliveryReport> queryDeliveryReportsByRequestId(String requestId){
+		String sql = "select * from DELIVERY_REPORT where REQUEST_REPORT_ID = :requestId";
+		SqlParameterSource namedParameters = new MapSqlParameterSource("requestId", requestId);
+		return namedParameterJdbcTemplate.query(sql, namedParameters, new DeliveryReportMapper());
+	}
 	public int deleteAll(){
 		String sql = "delete from DELIVERY_REPORT";
 		return jdbcTemplate.update(sql);
@@ -75,6 +82,7 @@ public class DeliveryReportDao implements Serializable{
 	    	deliveryReport.setReportId(rs.getString("REPORT_ID"));
 	    	deliveryReport.setStoreId(rs.getString("STORE_ID"));
 	    	deliveryReport.setUpdated(rs.getString("UPDATED"));
+	    	deliveryReport.setRequestReportId(rs.getString("REQUEST_REPORT_ID"));
 	    	StoreDao storeDao = new StoreDao();
 	    	Store store = storeDao.queryStoreById(deliveryReport.getStoreId());
 	    	String regionId = store.getRegionId();

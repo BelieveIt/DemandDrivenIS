@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.DeliveryReport;
+import model.DeliveryReportItem;
 import model.ReplenishmentReport;
 import model.ReplenishmentReportItem;
 import model.Store;
@@ -91,11 +93,36 @@ public class ReplenishmentReportDao implements Serializable{
 	    	Store store = storeDao.queryStoreById(replenishmentReport.getStoreId());
 	    	String regionId = store.getRegionId();
 
+	    	DeliveryReportDao deliveryReportDao = new DeliveryReportDao();
+	    	List<DeliveryReport> deliveryReports = deliveryReportDao.queryDeliveryReportsByRequestId(replenishmentReport.getReportId());
+	    	HashMap<String, Integer> productsDeliveredNumberMap = new HashMap<String, Integer>();
+	    	if(deliveryReports != null){
+		    	for(DeliveryReport deliveryReport : deliveryReports){
+		    		for(DeliveryReportItem item : deliveryReport.getDeliveryReportItems()){
+		    			if(productsDeliveredNumberMap.containsKey(item.getProductId())){
+		    				Integer deliveredNum = item.getDeliveryNumber() + productsDeliveredNumberMap.get(item.getProductId());
+		    				productsDeliveredNumberMap.put(item.getProductId(), deliveredNum);
+		    			}else {
+		    				Integer deliveredNum = item.getDeliveryNumber();
+		    				productsDeliveredNumberMap.put(item.getProductId(), deliveredNum);
+						}
+		    		}
+		    	}
+	    	}
+
+
 	    	ReplenishmentReportItemDao replenishmentReportItemDao = new ReplenishmentReportItemDao();
 	    	RegionListItemDao regionListItemDao = new RegionListItemDao();
 	    	List<ReplenishmentReportItem> replenishmentReportItems = replenishmentReportItemDao.queryReplenishmentReportItemsByReportId(replenishmentReport.getReportId());
 	    	for(ReplenishmentReportItem item : replenishmentReportItems){
 	    		item.setRegionListItem(regionListItemDao.queryProductByVersionIdAndRegionId(regionId, "head", item.getProductId()));
+	    		if(productsDeliveredNumberMap.get(item.getProductId()) != null){
+	    			item.setDeliveredNumber(productsDeliveredNumberMap.get(item.getProductId()));
+	    			item.setNeedToDeilverNumber(item.getReplenishmentNumber() - item.getDeliveredNumber());
+	    		}else {
+					item.setDeliveredNumber(0);
+					item.setNeedToDeilverNumber(item.getReplenishmentNumber() - item.getDeliveredNumber());
+				}
 	    	}
 
 	    	replenishmentReport.setReplenishmentReportItems(replenishmentReportItems);

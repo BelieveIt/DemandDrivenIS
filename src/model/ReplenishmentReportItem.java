@@ -10,6 +10,10 @@ private Integer wasteForecast;
 private Integer salesForecast;
 private Integer minInventoryOnNextDelivery;
 
+private Integer deliveredNumber;
+private Integer needToDeilverNumber;
+private Integer numberToDelivery;
+
 private RegionListItem regionListItem;
 public String getReportId() {
 	return reportId;
@@ -65,6 +69,24 @@ public Integer getAutoCalculatedReplenishmentNumber() {
 public void setAutoCalculatedReplenishmentNumber(
 		Integer autoCalculatedReplenishmentNumber) {
 	this.autoCalculatedReplenishmentNumber = autoCalculatedReplenishmentNumber;
+}
+public Integer getNeedToDeilverNumber() {
+	return needToDeilverNumber;
+}
+public void setNeedToDeilverNumber(Integer needToDeilverNumber) {
+	this.needToDeilverNumber = needToDeilverNumber;
+}
+public Integer getDeliveredNumber() {
+	return deliveredNumber;
+}
+public void setDeliveredNumber(Integer deliveredNumber) {
+	this.deliveredNumber = deliveredNumber;
+}
+public Integer getNumberToDelivery() {
+	return numberToDelivery;
+}
+public void setNumberToDelivery(Integer numberToDelivery) {
+	this.numberToDelivery = numberToDelivery;
 }
 
 }

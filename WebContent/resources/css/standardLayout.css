@@ -307,6 +307,27 @@ color:green;
 .WaitingForApproval{
 color:red;
 }
+.ApprovedPartly{
+color:orange;
+}
 .ui-inplace .ui-inplace-editor{
 display:block;
+}
+.alertRow{
+background-color:#F2B3A0;
+background:#F2B3A0;
+}
+.weekEvent{
+border: 1px solid #6699FF;
+background-color: #6699FF;
+}
+.monthEvent{
+border: 1px solid #336699;
+background-color: #336699;
+}
+.greenText{
+color:green;
+}
+.redText{
+color:red;
 }

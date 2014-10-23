@@ -271,6 +271,12 @@ xmlns:p="http://primefaces.org/ui">
 				        sortBy="#{item.replenishmentNumber}" >
 				            <h:outputText value="#{item.replenishmentNumber}" />
 				        </p:column>
+
+				        <p:column headerText="DeliveredNum" styleClass="noPadding"
+				        sortBy="#{item.deliveredNumber}" >
+				            <h:outputText value="#{item.deliveredNumber}" />
+				        </p:column>
+
 				    </p:dataTable>
 				</p:panel>
 			</p:dialog>
