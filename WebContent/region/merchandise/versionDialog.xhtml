@@ -39,11 +39,22 @@ xmlns:p="http://primefaces.org/ui">
 					 <p:tabView>
 					 	<!-- Diff of Category -->
 				        <p:tab title="Category Diff">
-				            <p:panel styleClass="autoHeightPanel divStyle">
+				            <p:panel styleClass="autoHeightPanel divStyle" style="margin-bottom:8px;">
 				            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 							<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
+							
+							<h:outputText value="Addition: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{regionVersion.addtionNum}" style="float:left;margin-right:3px"/>
+			                <p:commandButton rendered="#{regionVersion.addtionNum ne 0}" action="#{regionVersion.viewAdditionCate}" 
+			                update="newTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>	
+			 
+			 				<h:outputText value="Deletion: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{regionVersion.deleteNum}" style="float:left;margin-right:3px"/>
+			                <p:commandButton rendered="#{regionVersion.deleteNum ne 0}" action="#{regionVersion.viewDeleteCate}" 
+			                update="oldTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>	
+			                               						
 						    </p:panel>
-						    <p:tree value="#{regionVersion.viewRoot}" var="category" orientation="horizontal">
+						    <p:tree id="newTree" value="#{regionVersion.viewRoot}" var="category" orientation="horizontal">
 						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						            <h:outputText value="#{category.categoryName}"/>
 						        </p:treeNode>
@@ -52,7 +63,7 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 							<h:outputText value="#{regionVersion.selectedRegionVersionListItemNext.versionId}" style="float:left;margin-right:20px"/>
 						    </p:panel>
-						    <p:tree value="#{regionVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
+						    <p:tree id="oldTree" value="#{regionVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{regionVersion.selectedRegionVersionListItemNext ne null}">
 						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						            <h:outputText value="#{category.categoryName}"/>
 						        </p:treeNode>

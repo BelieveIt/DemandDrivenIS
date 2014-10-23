@@ -87,15 +87,15 @@ xmlns:p="http://primefaces.org/ui">
 				                         rowKey="#{item.productId}" rows="15" rowsPerPageTemplate="15,30" scrollable="true"
 				                         rowStyleClass="#{item.replenishmentNumber ne item.autoCalculatedReplenishmentNumber and item.needToDeilverNumber ne 0? 'alertRow' : null}"
 				                         selection="#{regionViewRequest.selectedItems}">
-		    			<f:facet name="header" >
-
-		    			<div class="right-content-header-buttons-panel">
-							<p:commandButton action="#{regionViewRequest.openApproveSelected}" update=":approvalForm :messagesForm :viewSelectedForm"
+		    			<f:facet name="header">
+		    			<div class="right-content-header-buttons-panel#{regionViewRequest.selectedReport.status ne 'Approved' ? '1' : '0'}">
+							<p:commandButton rendered="#{regionViewRequest.selectedReport.status ne 'Approved'}" action="#{regionViewRequest.openApproveSelected}" update=":approvalForm :messagesForm :viewSelectedForm"
 			    			value="Approve Selected" styleClass="right-content-header-button" icon="ui-icon-check" style="margin-left:15px;" />
+			    			<h:outputText value="Products in the Replenishment Request List" />
 		    			</div>
 		    			</f:facet>
 
-						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+						<p:column  rendered="#{regionViewRequest.selectedReport.status ne 'Approved'}" selectionMode="multiple" style="width:16px;text-align:center"/>
 						<!-- View -->
 			            <p:column style="width:70px;text-align: center" toggleable="false"  exportable="false" >
 			            <div style="width:70px;height:40px">
@@ -167,7 +167,7 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputText value="Delivery Time:" style="float:left; margin-left:15px;"/>
 				<p:calendar value="#{regionViewRequest.newDeiveryTime}" mindate="#{regionViewRequest.newDeiveryTime}" style="float:left; margin-left:15px;"/>
 				<p:commandButton action="#{regionViewRequest.approveSelected}" update=":viewReportForm:dataTable :viewReportForm:viewHeaderPanel :tableForm"
-					value="Approve Selected &amp; Create Delivery" styleClass="right-content-header-button" icon="ui-icon-check" style="float:left; margin-left:15px;" />
+					id="aproveSelectedButton" value="Approve Selected &amp; Create Delivery" styleClass="right-content-header-button" icon="ui-icon-check" style="float:left; margin-left:15px;" />
 				</p:panel>
 			</p:dialog>
 			</h:form>

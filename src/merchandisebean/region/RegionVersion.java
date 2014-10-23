@@ -1,6 +1,7 @@
 package merchandisebean.region;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
@@ -26,6 +28,7 @@ import merchandise.utils.VersionUtil;
 import model.BasicList;
 import model.BasicListCategory;
 import model.BasicListItem;
+import model.Category;
 import model.RegionListUpdateInfo;
 @ManagedBean(name="regionVersion")
 @ViewScoped
@@ -54,6 +57,12 @@ public class RegionVersion implements Serializable{
 
 	private List<BasicList> viewItems;
 	private BasicListItem selectedViewItem;
+	
+	private Integer addtionNum;
+	private Integer deleteNum;
+	
+	private List<BasicListCategory> additionCategories;
+	private List<BasicListCategory> deleteCategories;
 	@PostConstruct
 	public void init(){
 		//TODO
@@ -117,21 +126,87 @@ public class RegionVersion implements Serializable{
 		viewRoot = CategoryUtil.generateTree(categories1, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
 		if(viewRoot!=null)viewRoot.setExpanded(true);
 
-		List<BasicListCategory> categories2;
+		List<BasicListCategory> categories2 = null;
 		if(selectedRegionVersionListItemNext!=null){
 			categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedRegionVersionListItemNext.getVersionId());
 			viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
 			if(viewRootNext!=null)viewRootNext.setExpanded(true);
-
 			basicListDiff = ProductUtil.generateBasicListDiff(selectedRegionVersionListItemNext.getVersionId(), selectedRegionVersionListItem.getVersionId());
 		}else{
 			viewRootNext = null;
 			basicListDiff = ProductUtil.generateBasicListDiff("-1", selectedRegionVersionListItem.getVersionId());
 		}
+		additionCategories = new ArrayList<BasicListCategory>();
+		deleteCategories = new ArrayList<BasicListCategory>();
+		if(categories2 != null){
+			for(BasicListCategory categoryInListNext : categories2){
+				boolean flag = false;
+				for(BasicListCategory categoryInNew : categories1){
+					if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+						flag = true;
+						break;
+					}
+				}
+				if(!flag){
+					deleteCategories.add(categoryInListNext);
+				}
+			}
+			
+			for(BasicListCategory categoryInNew : categories1){
+				boolean flag = false;
+				for(BasicListCategory categoryInListNext : categories2){
+					if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+						flag = true;
+						break;
+					}
+				}
+				if(!flag){
+					additionCategories.add(categoryInNew);
+				}
+			}
+			addtionNum = additionCategories.size();
+			deleteNum = deleteCategories.size();
+		}else {
+			addtionNum = categories1.size();
+			deleteNum = 0;	
+			additionCategories = categories1;
+		}
 
 		RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 	}
 
+	public void viewAdditionCate(){
+		List<TreeNode> allNodes = CategoryUtil.getListFromTree(viewRoot);
+		CategoryUtil.collapseAllTree(viewRoot);
+		for(TreeNode treeNode : allNodes){
+			treeNode.setSelected(false);
+		}
+		for(BasicListCategory addCategory : additionCategories){
+			for(TreeNode treeNode : allNodes){
+				if( ((BasicListCategory) treeNode.getData()).getCategoryId().equals(addCategory.getCategoryId())){
+					CategoryUtil.expandCertainTree(treeNode);
+					treeNode.setSelected(true);
+				}
+			}
+		}
+	}
+
+	public void viewDeleteCate(){
+		List<TreeNode> allNodes = CategoryUtil.getListFromTree(viewRootNext);
+		CategoryUtil.collapseAllTree(viewRootNext);
+		for(TreeNode treeNode : allNodes){
+			treeNode.setSelected(false);
+		}
+
+		for(BasicListCategory deleteCategory : deleteCategories){
+			for(TreeNode treeNode : allNodes){
+				if( ((BasicListCategory) treeNode.getData()).getCategoryId().equals(deleteCategory.getCategoryId())){
+					CategoryUtil.expandCertainTree(treeNode);
+					treeNode.setSelected(true);
+				}
+			}
+		}
+	}
 	public void viewItemsDetail(){
 		RequestContext.getCurrentInstance().execute("PF('viewItemsDetail').show();");
 	}
@@ -255,6 +330,38 @@ public class RegionVersion implements Serializable{
 
 	public void setSelectedViewItem(BasicListItem selectedViewItem) {
 		this.selectedViewItem = selectedViewItem;
+	}
+
+	public Integer getAddtionNum() {
+		return addtionNum;
+	}
+
+	public void setAddtionNum(Integer addtionNum) {
+		this.addtionNum = addtionNum;
+	}
+
+	public Integer getDeleteNum() {
+		return deleteNum;
+	}
+
+	public void setDeleteNum(Integer deleteNum) {
+		this.deleteNum = deleteNum;
+	}
+
+	public List<BasicListCategory> getAdditionCategories() {
+		return additionCategories;
+	}
+
+	public void setAdditionCategories(List<BasicListCategory> additionCategories) {
+		this.additionCategories = additionCategories;
+	}
+
+	public List<BasicListCategory> getDeleteCategories() {
+		return deleteCategories;
+	}
+
+	public void setDeleteCategories(List<BasicListCategory> deleteCategories) {
+		this.deleteCategories = deleteCategories;
 	}
 
 }

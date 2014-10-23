@@ -102,9 +102,9 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="#{item.deliveryType}" />
 				        </p:column>
 
-				        <p:column headerText="Status" styleClass="noPadding"
+				        <p:column headerText="Status" styleClass="noPaddin"
 				        sortBy="#{item.status}" >
-				            <h:outputText value="#{item.status}" />
+				            <h:outputText value="#{item.status}" styleClass="#{item.status} "/>
 				        </p:column>
 
 				    </p:dataTable>
@@ -115,14 +115,14 @@ xmlns:p="http://primefaces.org/ui">
 
 				<!-- Dialogs -->
 				<ui:include src="requestDialog.xhtml" />
-				<!-- BlockUI -->
-<!-- 				<h:form>
+				
+ 				<h:form>
 				<p:blockUI
 				block=":rightContentLayout"
-				trigger=":createRequestForm2:createAndSendButton">
+				trigger=":createRequestForm:createAndSendButton">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
-				</h:form> -->
+				</h:form>
 
     		</ui:define>
     	</ui:composition>
