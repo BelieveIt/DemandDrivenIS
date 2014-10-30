@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    	<meta charset="utf-8"/>
+        <title>Demand-Driven IS</title>
+    </h:head>
+    <h:body>
+	    <ui:composition>
+			<h:form id="analysisChartsForm">
+			<p:tabView rendered="#{storeAnalysis.analysisType eq 'CATEGORY_INCLUDE_CATEGORY'}" dynamic="true" cache="false">
+	     		<p:tab title="Sales Share of Categories">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Year:" />
+				        <p:selectOneMenu  value="#{storeAnalysis.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{storeAnalysis.salesShareForCategoryIncludeCategory!=null}" type="pie"
+			     		model="#{storeAnalysis.salesShareForCategoryIncludeCategory}" style="width:800px;height:320px" />
+		     		</p:panel>
+	     		</p:tab>
+	     		<p:tab title="Sales Trend of Categories">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{storeAnalysis.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{storeAnalysis.salesTrendForCategoryIncludeCategory!=null}" type="line"
+			     		model="#{storeAnalysis.salesTrendForCategoryIncludeCategory}" style="width:800px;height:320px" />
+		     		</p:panel>
+	     		</p:tab>
+	     		<p:tab title="Low-moving List in the Category">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+	     				<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{storeAnalysis.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshCategoryIncludeCategory}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+
+				        <h:outputLabel value="Number Showed:" />
+				        <p:selectOneMenu value="#{storeAnalysis.currentNum}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshLowMovingForCategoryIncludeCategory}"/>
+							 <f:selectItem itemLabel="10" itemValue="10" />
+							 <f:selectItem itemLabel="30" itemValue="30" />
+							 <f:selectItem itemLabel="50" itemValue="50" />
+				        </p:selectOneMenu>
+				    </p:panel>
+   					<p:dataTable id="dataTableForLowMoving" var="item" value="#{storeAnalysis.salesLowMovingForCategory}"
+                       scrollable="true" style="width:550px;">
+				        <p:column headerText="Product Id" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.productId}" />
+				        </p:column>
+
+				        <p:column headerText="Product Name" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="Sales Volume" styleClass="noPadding">
+				            <h:outputText value="#{item.salesVolume}" />
+				        </p:column>
+
+				        <p:column styleClass="noPadding">
+ 			             <p:commandButton action="#{storeAnalysis.viewProductAnalysisOfLowMoving}" update=":analysisOfLowMovingChartForm"
+			             value="Analysis" style="float:left;width:100px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="analysisOfLowMovingButton">
+			             <f:setPropertyActionListener value="#{item.sellingItem}" target="#{storeAnalysis.selectedItem}" />
+			             </p:commandButton>
+				        </p:column>
+			    	</p:dataTable>
+	     		</p:tab>
+     		</p:tabView>
+
+     		<p:tabView rendered="#{storeAnalysis.analysisType eq 'CATEGORY_INCLUDE_PRODUCT'}">
+	     		<p:tab title="Low-moving List in the Category">
+	     			<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+	     				<h:outputLabel value="Select Year:" />
+				        <p:selectOneMenu value="#{storeAnalysis.currentYear}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshLowMovingListForCategoryIncludeProduct}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+
+				        <h:outputLabel value="Number Showed:" />
+				        <p:selectOneMenu value="#{storeAnalysis.currentNum}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshLowMovingListForCategoryIncludeProduct}"/>
+							 <f:selectItem itemLabel="10" itemValue="10" />
+							 <f:selectItem itemLabel="30" itemValue="30" />
+							 <f:selectItem itemLabel="50" itemValue="50" />
+				        </p:selectOneMenu>
+				    </p:panel>
+   					<p:dataTable id="dataTableForLowMoving" var="item" value="#{storeAnalysis.salesLowMovingForCategory}"
+                       scrollable="true" style="width:550px;">
+				        <p:column headerText="Product Id" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.productId}" />
+				        </p:column>
+
+				        <p:column headerText="Product Name" styleClass="noPadding">
+				            <h:outputText value="#{item.sellingItem.regionListItem.product.name}" />
+				        </p:column>
+
+				        <p:column headerText="Sales Volume" styleClass="noPadding">
+				            <h:outputText value="#{item.salesVolume}" />
+				        </p:column>
+
+				        <p:column styleClass="noPadding">
+ 			             <p:commandButton action="#{storeAnalysis.viewProductAnalysisOfLowMoving}" update=":analysisOfLowMovingChartForm"
+			             value="Analysis" style="float:left;width:100px;margin-right:3px;text-align:center;" icon="ui-icon-search" id="analysisOfLowMovingButton">
+			             <f:setPropertyActionListener value="#{item.sellingItem}" target="#{storeAnalysis.selectedItem}" />
+			             </p:commandButton>
+				        </p:column>
+			    	</p:dataTable>
+	     		</p:tab>
+     		</p:tabView>
+
+			<p:tabView rendered="#{storeAnalysis.analysisType eq 'PRODUCT'}">
+				<p:tab title="Sales Volume Trend of Product">
+					<p:panel styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Mode:"/>
+				        <p:selectOneMenu  value="#{storeAnalysis.productAnalysisType}">
+				        	 <p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							 <f:selectItem itemLabel="For Months" itemValue="forMonth" />
+							 <f:selectItem itemLabel="For Years" itemValue="forYear" />
+				        </p:selectOneMenu>
+
+			     		<h:outputLabel  value="Select Year:"
+			     		rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}" />
+				        <p:selectOneMenu  value="#{storeAnalysis.currentYear}"
+				        rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}">
+				        	<p:ajax update=":analysisChartsForm" listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+
+				        <h:outputText value="Forecast: " />
+				        <p:inputSwitch value="#{storeAnalysis.isForecast}">
+				           <p:ajax listener="#{storeAnalysis.refreshSalesVolumeTrendForProductSwitchForecast}" update=":analysisChartsForm" />
+				        </p:inputSwitch>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{storeAnalysis.salesTrendForCategoryIncludeProduct!=null}" type="line"
+			     		model="#{storeAnalysis.salesTrendForCategoryIncludeProduct}" style="width:1100px;height:320px" />
+		     		</p:panel>
+	     		</p:tab>
+     		</p:tabView>
+     		</h:form>
+
+			<h:form id="analysisOfLowMovingChartForm">
+				<p:dialog header="Add Virtual Sales For Stock-out" widgetVar="analysisOfLowMovingChart" width="1200">
+					<p:panel styleClass="divStyle autoHeightPanel">
+					<h:outputText value="Product Name: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{storeAnalysis.selectedItem.regionListItem.product.name}" style="float:left;margin-right:20px"/>
+					<p:separator styleClass="forizontalSeparator"/>
+					</p:panel>
+					<p:panel id="lowMovingChartButtonsPanel" styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Mode:"/>
+				        <p:selectOneMenu  value="#{storeAnalysis.productAnalysisType}">
+				        	 <p:ajax update=":analysisOfLowMovingChartForm:lowMovingChartPanel :analysisOfLowMovingChartForm:lowMovingChartButtonsPanel"
+				        	 listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							 <f:selectItem itemLabel="For Months" itemValue="forMonth" />
+							 <f:selectItem itemLabel="For Years" itemValue="forYear" />
+				        </p:selectOneMenu>
+
+			     		<h:outputLabel  value="Select Year:"
+			     		rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}" />
+				        <p:selectOneMenu  value="#{storeAnalysis.currentYear}"
+				        rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}">
+				        	<p:ajax update=":analysisOfLowMovingChartForm:lowMovingChartPanel  :analysisOfLowMovingChartForm:lowMovingChartButtonsPanel"
+				        	listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+
+				        <h:outputText value="Forecast: " />
+				        <p:inputSwitch value="#{storeAnalysis.isForecast}">
+				           <p:ajax listener="#{storeAnalysis.refreshSalesVolumeTrendForProductSwitchForecast}"
+				           update=":analysisOfLowMovingChartForm:lowMovingChartPanel  :analysisOfLowMovingChartForm:lowMovingChartButtonsPanel" />
+				        </p:inputSwitch>
+				    </p:panel>
+			        <p:panel id="lowMovingChartPanel" styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{storeAnalysis.salesTrendForCategoryIncludeProduct!=null}" type="line"
+			     		model="#{storeAnalysis.salesTrendForCategoryIncludeProduct}" style="width:1100px;height:320px" />
+		     		</p:panel>
+				</p:dialog>
+			</h:form>
+	    </ui:composition>
+    </h:body>
+</html>
