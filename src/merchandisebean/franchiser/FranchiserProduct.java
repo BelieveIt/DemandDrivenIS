@@ -97,6 +97,7 @@ public class FranchiserProduct implements Serializable{
 			versionIdList.add(basicList.getVersionId());
 		}
 	}
+
 	public void onNodeSelect(NodeSelectEvent event) {
         selectedNode = event.getTreeNode();
         List<BasicListItem> list = basicListItemDao.queryProductsByVersionId(currentVersion);

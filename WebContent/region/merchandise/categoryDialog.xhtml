@@ -78,6 +78,54 @@ xmlns:p="http://primefaces.org/ui">
 		    			value="Update To the Newest Retrieved Version" styleClass="right-content-header-button" icon="ui-icon-arrowthickstop-1-n" id="updateToNewest"/>
 			</p:dialog>
 			</h:form>
+
+
+			<!-- View Version -->
+			<h:form id="viewDiffForm">
+			<p:dialog header="View Category Diff" widgetVar="viewDiff" height="600"  width="750" >
+<!-- 				<p:panel styleClass="autoHeightPanel divStyle">
+					<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionVersion.selectedRegionVersionListItem.versionId}" style="float:left;margin-right:20px"/>
+					<h:outputText value="CreateTime: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionVersion.selectedRegionVersionListItem.createTime}" style="float:left;margin-right:20px">
+		            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+		            </h:outputText>
+					<p:separator styleClass="forizontalSeparator"/>
+				</p:panel> -->
+
+				<p:panel styleClass="autoHeightPanel divStyle">
+		            <p:panel styleClass="autoHeightPanel divStyle" style="margin-bottom:8px;">
+		            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionCategory.newestVersionId}" style="float:left;margin-right:20px"/>
+
+					<h:outputText value="Addition: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionCategory.addtionNum}" style="float:left;margin-right:3px"/>
+	                <p:commandButton rendered="#{regionCategory.addtionNum ne 0}" action="#{regionCategory.viewAdditionCate}"
+	                update="newTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>
+
+	 				<h:outputText value="Deletion: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionCategory.deleteNum}" style="float:left;margin-right:3px"/>
+	                <p:commandButton rendered="#{regionCategory.deleteNum ne 0}" action="#{regionCategory.viewDeleteCate}"
+	                update="oldTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>
+
+				    </p:panel>
+				    <p:tree id="newTree" value="#{regionCategory.newestRootNode}" var="category" orientation="horizontal">
+				        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+				            <h:outputText value="#{category.categoryName}"/>
+				        </p:treeNode>
+				    </p:tree>
+		            <p:panel styleClass="autoHeightPanel divStyle" rendered="#{regionCategory.lastVersionId ne '-1'}">
+		            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
+					<h:outputText value="#{regionCategory.lastVersionId}" style="float:left;margin-right:20px"/>
+				    </p:panel>
+				    <p:tree id="oldTree" value="#{regionCategory.lastRootNode}" var="category" orientation="horizontal" rendered="#{regionCategory.lastVersionId ne '-1'}">
+				        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+				            <h:outputText value="#{category.categoryName}"/>
+				        </p:treeNode>
+				    </p:tree>
+				</p:panel>
+			</p:dialog>
+			</h:form>
 	    </ui:composition>
     </h:body>
 </html>

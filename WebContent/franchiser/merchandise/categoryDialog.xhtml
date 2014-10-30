@@ -10,6 +10,24 @@ xmlns:p="http://primefaces.org/ui">
     </h:head>
     <h:body>
 	    <ui:composition>
+	    	<!-- Category Description -->
+			<h:form id="updateRulesForm">
+			<p:dialog header="What is category?" widgetVar="categoryDescription" width="450">
+				<p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="1. Category could help you to classify the products." />
+		        </p:panel>
+		        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="2. Category will be associated with a product type. The product type will determine the attributes of the products in the category" />
+		        </p:panel>
+		        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText value="3. When you edit the categories, you can push the update to the regions by the Version Management." />
+		        </p:panel>
+		        <p:panel styleClass="autoHeightPanel divStyle text-align-left">
+		            <h:outputText style="font-weight:bold;" value="Click the category, system will provide the analysis data in the bottom panel. You could manage the category with these data." />
+		        </p:panel>
+			</p:dialog>
+			</h:form>
+
 	    	<!-- Init -->
 			<h:form id="initCategoryForm">
 			<p:dialog header="Init Category" widgetVar="initCategory" width="650">
@@ -81,7 +99,11 @@ xmlns:p="http://primefaces.org/ui">
 			<!-- Edit -->
 			<h:form id="editCategoryForm">
 			<p:dialog header="Edit Category" widgetVar="editCategory" width="450">
+				    <p:panel styleClass="autoHeightPanel divStyle">
+				    <h:outputLabel value="If this category has already been pushed to the region, new name will not push the region, region will keep its local name."/>
+				    </p:panel>
 			    <h:panelGrid columns="2" cellpadding="5">
+
 		            <h:outputLabel for="categoryName" value="Category Name:" styleClass="right-content-header-label"/>
 		            <p:inputText id="categoryName" value="#{franchiserCategory.selectedCategory.categoryName}"
 		            required="true" label="categoryName" style="float:left"/>

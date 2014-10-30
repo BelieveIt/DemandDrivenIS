@@ -30,7 +30,7 @@ xmlns:p="http://primefaces.org/ui">
 	    <p:panel id="rightContentPanel" >
 		    <p:panel id="loginPanel" styleClass="loginPanel divStyle autoHeightPanel" >
 	        <h:form id="login-form">
-
+	        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 	        <p:panel styleClass="loginPanelHeader divStyle autoHeightPanel">
 	        	<h:outputText value="Welcome!" styleClass="loginPanelHeaderText"/>
 	        </p:panel>
@@ -57,7 +57,40 @@ xmlns:p="http://primefaces.org/ui">
 				<h:outputText value="4.Region - Supply Chain Administrator" styleClass="testDataNotice"/>
 				<h:outputText value="username: r2 password: r2" styleClass="testDataNotice"/>
 	           </p:panel>
-	           <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+				<p:panel styleClass="divStyle autoHeightPanel testDataNoticePanel">
+	            <h:outputText value="Test Process:" styleClass="testDataNotice"/>
+				</p:panel>
+				<p:panel styleClass="divStyle autoHeightPanel testDataNoticePanel">
+	            <h:outputText value="[Merchandise Management Work Flow]" styleClass="testDataNotice" />
+	            <h:outputText value="1.Franchiser(f1/f1)" styleClass="testDataNotice"/>
+				<h:outputText value="(1)Initial data(Notice:Category Analysis can not used now, because the region has any data).
+	            (2)Manage categories and products data.(3)Create the new version of categories and products." styleClass="testDataNotice"/>
+
+	            <h:outputText value="2.Region(r1/r1)" styleClass="testDataNotice"/>
+				<h:outputText value="(1)Retrive the version.(2)Update the categories.(3)Update the products" styleClass="testDataNotice"/>
+
+				<h:outputText value="3.Franchiser(f1/f1)" styleClass="testDataNotice"/>
+				<h:outputText value="1)View the analysis to manage categories.(2)View the anaysis to manage products." styleClass="testDataNotice"/>
+				</p:panel>
+
+				<p:panel styleClass="divStyle autoHeightPanel testDataNoticePanel">
+				<h:outputText value="[Replenishment Management Work Flow]" styleClass="testDataNotice"/>
+				<h:outputText value="4.Region(r2/r2)(Before this, you could do Process1,2,3 again. Such as delete the category,
+				but notice that DO NOT delete 'Beverages' Category, all the test products in it)" styleClass="testDataNotice"/>
+				<h:outputText value="(1)Set the delivery date.(Better to set tommorrow as the everymonth/everyweek delivery date. It is easier to test.)" styleClass="testDataNotice"/>
+
+				<h:outputText value="5.Store(s1/s1)" styleClass="testDataNotice"/>
+				<h:outputText value="(1)Monitor Inventory(add waste record, add virtual sales record for stock-out)
+				(2)See anaysis of categories and products.(3)Make the replenishment request." styleClass="testDataNotice"/>
+
+	            <h:outputText value="6.Region(r2/r2)" styleClass="testDataNotice"/>
+	            <h:outputText value="(1)Deal with the replenishment requests from the stores." styleClass="testDataNotice"/>
+
+	            <h:outputText value="7.Store(s1/s1)" styleClass="testDataNotice"/>
+	            <h:outputText value="(1)check out the delivery records and update the inventory" styleClass="testDataNotice"/>
+
+	           </p:panel>
+
 	        </h:form>
 	        </p:panel>
 	    </p:panel>

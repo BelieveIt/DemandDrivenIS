@@ -1,6 +1,7 @@
 package merchandisebean.region;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import javax.faces.event.ActionEvent;
 
 import merchandise.utils.CategoryUtil;
 import merchandise.utils.VersionUtil;
+import model.BasicListCategory;
 import model.Category;
 import model.ProductType;
 import model.RegionListCategory;
@@ -23,6 +25,7 @@ import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
+import dao.BasicListCategoryDao;
 import dao.ProductTypeDao;
 import dao.RegionListCategoryDao;
 import dao.RegionListUpdateInfoDao;
@@ -34,6 +37,8 @@ public class RegionCategory implements Serializable{
 
 	private RegionListCategoryDao categoryDao;
 	private ProductTypeDao productTypeDao;
+	private BasicListCategoryDao basicListCategoryDao;
+
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
 	private String selectedNodeName;
@@ -50,14 +55,34 @@ public class RegionCategory implements Serializable{
 	private String leftMenuUpdateAlert;
 
 	private TreeNode newestRootNode;
+	private TreeNode lastRootNode;
+
+	public TreeNode getLastRootNode() {
+		return lastRootNode;
+	}
+
+	public void setLastRootNode(TreeNode lastRootNode) {
+		this.lastRootNode = lastRootNode;
+	}
 
 	private List<ProductType> productTypes;
+
+	private String newestVersionId;
+	private String lastVersionId;
+
+	private Integer addtionNum;
+	private Integer deleteNum;
+
+	private List<BasicListCategory> additionCategories;
+	private List<BasicListCategory> deleteCategories;
 	@PostConstruct
 	public void init(){
 		//TODO
 		currentRegionId = "1";
 		categoryDao = new RegionListCategoryDao();
 		productTypeDao = new ProductTypeDao();
+		basicListCategoryDao = new BasicListCategoryDao();
+
 		if(isHeadNull()){
 			headStatus = null;
 		}else {
@@ -68,11 +93,89 @@ public class RegionCategory implements Serializable{
 		if(isUpdateInfoNull()){
 			newestStatus = null;
 		}else {
-			initNewestRootNodeByVersionId(VersionUtil.getRetrivedNewestVersionId(currentRegionId));
+			newestVersionId = VersionUtil.getRetrivedNewestVersionId(currentRegionId);
+			lastVersionId = VersionUtil.getRetrivedLastVersionId(currentRegionId);
+			initNewestRootNodeByVersionId(newestVersionId);
 			newestStatus = "normal";
+			List<BasicListCategory> categories1 = basicListCategoryDao.queryCategoriesByVersionId(newestVersionId);
+			List<BasicListCategory> categories2 = null;
+			if(lastVersionId != "-1"){
+				categories2 = basicListCategoryDao.queryCategoriesByVersionId(lastVersionId);
+				lastRootNode = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
+				if(lastRootNode!=null)lastRootNode.setExpanded(true);
+			}
+
+			additionCategories = new ArrayList<BasicListCategory>();
+			deleteCategories = new ArrayList<BasicListCategory>();
+			if(categories2 != null){
+				for(BasicListCategory categoryInListNext : categories2){
+					boolean flag = false;
+					for(BasicListCategory categoryInNew : categories1){
+						if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+							flag = true;
+							break;
+						}
+					}
+					if(!flag){
+						deleteCategories.add(categoryInListNext);
+					}
+				}
+
+				for(BasicListCategory categoryInNew : categories1){
+					boolean flag = false;
+					for(BasicListCategory categoryInListNext : categories2){
+						if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+							flag = true;
+							break;
+						}
+					}
+					if(!flag){
+						additionCategories.add(categoryInNew);
+					}
+				}
+				addtionNum = additionCategories.size();
+				deleteNum = deleteCategories.size();
+			}else {
+				addtionNum = categories1.size();
+				deleteNum = 0;
+				additionCategories = categories1;
+			}
 		}
 		doVersionCampare();
 		setProductTypes(productTypeDao.queryProductTypes());
+	}
+
+	public void viewAdditionCate(){
+		List<TreeNode> allNodes = CategoryUtil.getListFromTree(newestRootNode);
+		CategoryUtil.collapseAllTree(newestRootNode);
+		for(TreeNode treeNode : allNodes){
+			treeNode.setSelected(false);
+		}
+		for(Category addCategory : additionCategories){
+			for(TreeNode treeNode : allNodes){
+				if( ((Category) treeNode.getData()).getCategoryId().equals(addCategory.getCategoryId())){
+					CategoryUtil.expandCertainTree(treeNode);
+					treeNode.setSelected(true);
+				}
+			}
+		}
+	}
+
+	public void viewDeleteCate(){
+		List<TreeNode> allNodes = CategoryUtil.getListFromTree(lastRootNode);
+		CategoryUtil.collapseAllTree(lastRootNode);
+		for(TreeNode treeNode : allNodes){
+			treeNode.setSelected(false);
+		}
+
+		for(Category deleteCategory : deleteCategories){
+			for(TreeNode treeNode : allNodes){
+				if( ((Category) treeNode.getData()).getCategoryId().equals(deleteCategory.getCategoryId())){
+					CategoryUtil.expandCertainTree(treeNode);
+					treeNode.setSelected(true);
+				}
+			}
+		}
 	}
 
 	public void doVersionCampare(){
@@ -94,6 +197,10 @@ public class RegionCategory implements Serializable{
 			compareWithNewest = 0;
 			leftMenuUpdateAlert = "Update";
 		}
+	}
+
+	public void openDiff(){
+		RequestContext.getCurrentInstance().execute("PF('viewDiff').show();");
 	}
 
 	private boolean isHeadNull(){
@@ -179,7 +286,6 @@ public class RegionCategory implements Serializable{
 				}
 			}
 		}
-
 		RequestContext.getCurrentInstance().execute("PF('viewCategory').show();");
 	}
 
@@ -287,6 +393,62 @@ public class RegionCategory implements Serializable{
 
 	public void setProductTypes(List<ProductType> productTypes) {
 		this.productTypes = productTypes;
+	}
+
+	public String getCurrentRegionId() {
+		return currentRegionId;
+	}
+
+	public void setCurrentRegionId(String currentRegionId) {
+		this.currentRegionId = currentRegionId;
+	}
+
+	public Integer getAddtionNum() {
+		return addtionNum;
+	}
+
+	public void setAddtionNum(Integer addtionNum) {
+		this.addtionNum = addtionNum;
+	}
+
+	public Integer getDeleteNum() {
+		return deleteNum;
+	}
+
+	public void setDeleteNum(Integer deleteNum) {
+		this.deleteNum = deleteNum;
+	}
+
+	public List<BasicListCategory> getAdditionCategories() {
+		return additionCategories;
+	}
+
+	public void setAdditionCategories(List<BasicListCategory> additionCategories) {
+		this.additionCategories = additionCategories;
+	}
+
+	public List<BasicListCategory> getDeleteCategories() {
+		return deleteCategories;
+	}
+
+	public void setDeleteCategories(List<BasicListCategory> deleteCategories) {
+		this.deleteCategories = deleteCategories;
+	}
+
+	public String getNewestVersionId() {
+		return newestVersionId;
+	}
+
+	public void setNewestVersionId(String newestVersionId) {
+		this.newestVersionId = newestVersionId;
+	}
+
+	public String getLastVersionId() {
+		return lastVersionId;
+	}
+
+	public void setLastVersionId(String lastVersionId) {
+		this.lastVersionId = lastVersionId;
 	}
 
 

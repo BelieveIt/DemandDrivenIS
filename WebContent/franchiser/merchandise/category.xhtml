@@ -22,6 +22,8 @@ xmlns:p="http://primefaces.org/ui">
     			<div class="ui-datatable-header ui-widget-header ui-corner-top right-content-header">
     			<span class="right-content-header-text">Merchandise Categories</span>
     			<div class="right-content-header-buttons-panel">
+				<p:commandButton action="#{franchiserCategory.openCategoryDescription}" value="What is category" styleClass="right-content-header-button" icon="ui-icon-help"
+				style="margin-left:10px;" />
 
     			<!-- Add/Delete/Rename -->
     			<p:commandButton action="#{franchiserCategory.openAddCategory}" update="messages :addCategoryForm"
@@ -73,18 +75,24 @@ xmlns:p="http://primefaces.org/ui">
     			</h:form>
 
     			<!-- Tree -->
+    			<p:outputPanel style="width: 100%;height: 300px;overflow: auto;display: block">
 				<h:form id="treeForm">
 				<p:messages id="messagesForTree" showDetail="true" autoUpdate="true" closable="true" />
 			    <p:tree value="#{franchiserCategory.rootNode}" var="category" selectionMode="single"
-			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal">
+			    selection="#{franchiserCategory.selectedNode}" orientation="horizontal" id="categoryTree">
 			        <p:ajax event="collapse" listener="#{franchiserCategory.onNodeCollapse}" />
 			        <p:ajax event="expand" listener="#{franchiserCategory.onNodeExpand}" />
-			        <p:ajax event="select" listener="#{franchiserCategory.onNodeSelect}" />
+			        <p:ajax event="select" listener="#{storeAnalysis.onNodeSelect}" update=":analysisChartsForm"/>
 			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 			            <h:outputText value="#{category.categoryName}" />
 			        </p:treeNode>
 			    </p:tree>
 				</h:form>
+				</p:outputPanel>
+
+				<p:panel styleClass="autoHeightPanel divStyle" id="analysisPanel">
+					<ui:include src="analysisTabView.xhtml" />
+				</p:panel>
 
 				<!-- BlockUI -->
 				<h:form>
@@ -92,7 +100,7 @@ xmlns:p="http://primefaces.org/ui">
 				block=":rightContentLayout"
 				trigger=":buttonForm:orderSelect :buttonForm:versionSelect
 				 :addCategoryForm:addCategoryButton :deleteCategoryForm:deleteCategoryButton :editCategoryForm:editCategoryButton
-				 :initCategoryForm:initButton">
+				 :initCategoryForm:initButton :treeForm:categoryTree">
 			        <p:graphicImage library="img" name="ajaxloadingbar.gif" />
 			    </p:blockUI>
 				</h:form>

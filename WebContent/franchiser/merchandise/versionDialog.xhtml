@@ -29,7 +29,7 @@ xmlns:p="http://primefaces.org/ui">
 
 			<!-- View Version -->
 			<h:form id="viewVersionForm">
-			<p:dialog header="View Version Diff" widgetVar="viewVersion">
+			<p:dialog header="View Version Diff" widgetVar="viewVersion" height="600">
 				<p:panel styleClass="autoHeightPanel divStyle">
 					<h:outputText value="VersionId: " style="float:left;font-weight:bold;margin-right:3px"/>
 					<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
@@ -44,11 +44,22 @@ xmlns:p="http://primefaces.org/ui">
 					 <p:tabView>
 					 	<!-- Diff of Category -->
 				        <p:tab title="Category Diff">
-				            <p:panel styleClass="autoHeightPanel divStyle">
+				            <p:panel styleClass="autoHeightPanel divStyle" style="margin-bottom:8px;">
 				            <h:outputText value="Newest Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 							<h:outputText value="#{franchiserVersion.selectedBasicList.versionId}" style="float:left;margin-right:20px"/>
+
+							<h:outputText value="Addition: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.addtionNum}" style="float:left;margin-right:3px"/>
+			                <p:commandButton rendered="#{franchiserVersion.addtionNum ne 0}" action="#{franchiserVersion.viewAdditionCate}"
+			                update="newTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>
+
+			 				<h:outputText value="Deletion: " style="float:left;font-weight:bold;margin-right:3px"/>
+							<h:outputText value="#{franchiserVersion.deleteNum}" style="float:left;margin-right:3px"/>
+			                <p:commandButton rendered="#{franchiserVersion.deleteNum ne 0}" action="#{franchiserVersion.viewDeleteCate}"
+			                update="oldTree" style="float:left;margin-right:20px" icon="ui-icon-search"/>
+
 						    </p:panel>
-						    <p:tree value="#{franchiserVersion.viewRoot}" var="category" orientation="horizontal">
+						    <p:tree id="newTree" value="#{franchiserVersion.viewRoot}" var="category" orientation="horizontal">
 						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						            <h:outputText value="#{category.categoryName}"/>
 						        </p:treeNode>
@@ -57,7 +68,7 @@ xmlns:p="http://primefaces.org/ui">
 				            <h:outputText value="Last Version: " style="float:left;font-weight:bold;margin-right:3px"/>
 							<h:outputText value="#{franchiserVersion.selectedBasicListNext.versionId}" style="float:left;margin-right:20px"/>
 						    </p:panel>
-						    <p:tree value="#{franchiserVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
+						    <p:tree id="oldTree" value="#{franchiserVersion.viewRootNext}" var="category" orientation="horizontal" rendered="#{franchiserVersion.selectedBasicListNext ne null}">
 						        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						            <h:outputText value="#{category.categoryName}"/>
 						        </p:treeNode>

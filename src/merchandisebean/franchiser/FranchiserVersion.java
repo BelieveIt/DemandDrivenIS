@@ -1,6 +1,7 @@
 package merchandisebean.franchiser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +40,12 @@ private BasicListItemDiff basicListDiff;
 
 private List<BasicList> viewItems;
 private BasicListItem selectedViewItem;
+
+private Integer addtionNum;
+private Integer deleteNum;
+
+private List<BasicListCategory> additionCategories;
+private List<BasicListCategory> deleteCategories;
 @PostConstruct
 public void init(){
 	basicListDao = new BasicListDao();
@@ -69,9 +76,11 @@ public void openViewVersionDetail(){
 			index = i;
 		}
 	}
+
+	List<BasicListCategory> categories2 = null;
 	if(index+1 < basicLists.size()){
 		selectedBasicListNext = basicLists.get(index+1);
-		List<BasicListCategory> categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
+		categories2 = basicListCategoryDao.queryCategoriesByVersionId(selectedBasicListNext.getVersionId());
 		viewRootNext = CategoryUtil.generateTree(categories2, CategoryUtil.ORDER_BY_NAME, CategoryUtil.ROOT_FATHER_ID);
 		if(viewRootNext!=null)viewRootNext.setExpanded(true);
 
@@ -81,9 +90,77 @@ public void openViewVersionDetail(){
 		viewRootNext = null;
 		basicListDiff = ProductUtil.generateBasicListDiff("-1", selectedBasicList.getVersionId());
 	}
+
+	additionCategories = new ArrayList<BasicListCategory>();
+	deleteCategories = new ArrayList<BasicListCategory>();
+	if(categories2 != null){
+		for(BasicListCategory categoryInListNext : categories2){
+			boolean flag = false;
+			for(BasicListCategory categoryInNew : categories1){
+				if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+					flag = true;
+					break;
+				}
+			}
+			if(!flag){
+				deleteCategories.add(categoryInListNext);
+			}
+		}
+
+		for(BasicListCategory categoryInNew : categories1){
+			boolean flag = false;
+			for(BasicListCategory categoryInListNext : categories2){
+				if(categoryInListNext.getCategoryId().equals(categoryInNew.getCategoryId())){
+					flag = true;
+					break;
+				}
+			}
+			if(!flag){
+				additionCategories.add(categoryInNew);
+			}
+		}
+		setAddtionNum(additionCategories.size());
+		setDeleteNum(deleteCategories.size());
+	}else {
+		setAddtionNum(categories1.size());
+		setDeleteNum(0);
+		additionCategories = categories1;
+	}
 	RequestContext.getCurrentInstance().execute("PF('viewVersion').show();");
 }
 
+public void viewAdditionCate(){
+	List<TreeNode> allNodes = CategoryUtil.getListFromTree(viewRoot);
+	CategoryUtil.collapseAllTree(viewRoot);
+	for(TreeNode treeNode : allNodes){
+		treeNode.setSelected(false);
+	}
+	for(BasicListCategory addCategory : additionCategories){
+		for(TreeNode treeNode : allNodes){
+			if( ((BasicListCategory) treeNode.getData()).getCategoryId().equals(addCategory.getCategoryId())){
+				CategoryUtil.expandCertainTree(treeNode);
+				treeNode.setSelected(true);
+			}
+		}
+	}
+}
+
+public void viewDeleteCate(){
+	List<TreeNode> allNodes = CategoryUtil.getListFromTree(viewRootNext);
+	CategoryUtil.collapseAllTree(viewRootNext);
+	for(TreeNode treeNode : allNodes){
+		treeNode.setSelected(false);
+	}
+
+	for(BasicListCategory deleteCategory : deleteCategories){
+		for(TreeNode treeNode : allNodes){
+			if( ((BasicListCategory) treeNode.getData()).getCategoryId().equals(deleteCategory.getCategoryId())){
+				CategoryUtil.expandCertainTree(treeNode);
+				treeNode.setSelected(true);
+			}
+		}
+	}
+}
 public void openAboutRules(){
 	RequestContext.getCurrentInstance().execute("PF('aboutRules').show();");
 }
@@ -159,6 +236,38 @@ public BasicListItem getSelectedViewItem() {
 
 public void setSelectedViewItem(BasicListItem selectedViewItem) {
 	this.selectedViewItem = selectedViewItem;
+}
+
+public Integer getAddtionNum() {
+	return addtionNum;
+}
+
+public void setAddtionNum(Integer addtionNum) {
+	this.addtionNum = addtionNum;
+}
+
+public Integer getDeleteNum() {
+	return deleteNum;
+}
+
+public void setDeleteNum(Integer deleteNum) {
+	this.deleteNum = deleteNum;
+}
+
+public List<BasicListCategory> getAdditionCategories() {
+	return additionCategories;
+}
+
+public void setAdditionCategories(List<BasicListCategory> additionCategories) {
+	this.additionCategories = additionCategories;
+}
+
+public List<BasicListCategory> getDeleteCategories() {
+	return deleteCategories;
+}
+
+public void setDeleteCategories(List<BasicListCategory> deleteCategories) {
+	this.deleteCategories = deleteCategories;
 }
 
 

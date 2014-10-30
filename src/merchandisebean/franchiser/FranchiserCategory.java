@@ -1,5 +1,7 @@
 package merchandisebean.franchiser;
 
+import inventorybean.store.StoreAnalysis;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -54,6 +57,9 @@ public class FranchiserCategory implements Serializable{
 	private BasicListItemDao basicListItemDao;
 	private RegionListItemDao regionListItemDao;
 	private ProductTypeDao productTypeDao;
+
+	@ManagedProperty(value="#{storeAnalysis}")
+	private StoreAnalysis storeAnalysis;
 
 	private TreeNode rootNode;
 	private TreeNode selectedNode;
@@ -140,6 +146,10 @@ public class FranchiserCategory implements Serializable{
 
 	}
 
+	public void openCategoryDescription(){
+		RequestContext.getCurrentInstance().execute("PF('categoryDescription').show();");
+	}
+
 	public void searchCategory(){
 		List<TreeNode> allNodes = CategoryUtil.getListFromTree(rootNode);
 		CategoryUtil.collapseAllTree(rootNode);
@@ -214,7 +224,6 @@ public class FranchiserCategory implements Serializable{
 //			Category selectedCategory = (Category) selectedNode.getData();
 //			expandIds.add(selectedCategory.getCategoryId());
 //	 		rootNode= getCurrentTree();
-	//
 //			selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
 //			selectedNode.setSelected(true);
 //			CategoryUtil.expandTree(rootNode, expandIds);
@@ -224,8 +233,6 @@ public class FranchiserCategory implements Serializable{
 			selectedNode = CategoryUtil.queryNode(rootNode, selectedCategory.getCategoryId());
 			RequestContext.getCurrentInstance().execute("PF('addCategory').hide();");
 		}
-
-
 	}
 
 	//Delete Category
@@ -352,7 +359,6 @@ public class FranchiserCategory implements Serializable{
 					item.setProduct(product);
 					regionListItemDao.updateProduct(item);
 				}
-
 			}
 		}
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
@@ -426,8 +432,6 @@ public class FranchiserCategory implements Serializable{
 		productTypeDao.updateProductType(selectedProductType);
 		RequestContext.getCurrentInstance().execute("PF('addAttribute').hide();");
 	}
-
-
 
 	public void expandAllTree(){
 		CategoryUtil.expandAllTree(rootNode);
@@ -636,6 +640,14 @@ public class FranchiserCategory implements Serializable{
 
 	public void setNewBasicListCategory(BasicListCategory newBasicListCategory) {
 		this.newBasicListCategory = newBasicListCategory;
+	}
+
+	public StoreAnalysis getStoreAnalysis() {
+		return storeAnalysis;
+	}
+
+	public void setStoreAnalysis(StoreAnalysis storeAnalysis) {
+		this.storeAnalysis = storeAnalysis;
 	}
 
 

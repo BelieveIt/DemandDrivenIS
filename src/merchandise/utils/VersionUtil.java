@@ -261,6 +261,15 @@ public static String getRetrivedNewestVersionId(String regionId){
 	String localNewestVersion = newestRegionListUpdateInfos.get(0).getVersionId();
 	return localNewestVersion;
 }
+
+//Region retrieved last versionId
+public static String getRetrivedLastVersionId(String regionId){
+	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();
+	List<RegionListUpdateInfo> newestRegionListUpdateInfos = regionListUpdateInfoDao.queryRegionListUpdateInfosByRegionId(regionId);
+	if(newestRegionListUpdateInfos.size()<2)return "-1";
+	String localLastVersion = newestRegionListUpdateInfos.get(1).getVersionId();
+	return localLastVersion;
+}
 //Region retrieved newest finished versionId
 public static String getRetrivedNewestFinishedVersionId(String regionId){
 	RegionListUpdateInfoDao regionListUpdateInfoDao = new RegionListUpdateInfoDao();

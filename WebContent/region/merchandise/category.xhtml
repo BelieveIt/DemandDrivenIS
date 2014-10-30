@@ -82,6 +82,8 @@ xmlns:p="http://primefaces.org/ui">
     			<div class="treeHeader">
     			<span class="treeHeaderText">Newest Retrieved Categories</span>
     			<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></span>
+	             <p:commandButton action="#{regionCategory.openDiff}" update=":viewDiffForm"
+	              icon="ui-icon-search" value="View Diff"/>
     			<p:commandButton onclick="location.href='#{request.contextPath}/region/merchandise/version.xhtml'"  rendered="#{regionCategory.newestStatus eq null}"
 		    			value="Retrive New Version" styleClass="right-content-header-button floatLeft" icon="ui-icon-contact"/>
 				</div>

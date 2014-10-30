@@ -19,6 +19,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
+import oracle.net.aso.s;
+
 import org.apache.commons.math3.ml.neuralnet.MapUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.primefaces.context.RequestContext;
@@ -36,9 +38,11 @@ import dao.SalesRecordDao;
 import dao.StoreDao;
 
 import merchandise.utils.CategoryUtil;
+import model.BasicListItem;
 import model.Category;
 import model.Region;
 import model.RegionListCategory;
+import model.RegionListItem;
 import model.Store;
 import model.StoreSellingItem;
 
@@ -66,7 +70,7 @@ public class StoreAnalysis implements Serializable{
 	private List<StoreSellingItem> filteredItems;
 
 	private StoreSellingItem selectedItem;
-
+	private BasicListItem selectedBasicItem;
 	private String analysisType;
 
 	private String currentYear;
@@ -153,6 +157,12 @@ public class StoreAnalysis implements Serializable{
 	public void viewProductAnalysis(){
 		analysisType = AnalysisUtil.PRODUCT;
 		refreshSalesVolumeTrendForProduct();
+	}
+
+	public void openViewAnalysis(){
+		analysisType = AnalysisUtil.PRODUCT;
+		refreshSalesVolumeTrendForProduct();
+		RequestContext.getCurrentInstance().execute("PF('viewAnalysis').show();");
 	}
 
 	//Show share of categories
@@ -267,6 +277,10 @@ public class StoreAnalysis implements Serializable{
 	}
 
 	public void refreshSalesVolumeTrendForProductForYear(){
+		if(selectedItem == null){
+			salesTrendForCategoryIncludeProduct = null;
+			return;
+		}
 		String currentProductId = selectedItem.getProductId();
 		LinkedHashMap<String, LinkedHashMap<String, Double>> dataMap = new LinkedHashMap<String, LinkedHashMap<String,Double>>();
 		LinkedHashMap<String, Double> itemHashMap = analysisUtil.getForecastSalesDataForYear(currentStore.getStoreId(), currentProductId);
@@ -541,6 +555,19 @@ public class StoreAnalysis implements Serializable{
 
 	public void setIsForecast(boolean isForecast) {
 		this.isForecast = isForecast;
+	}
+
+	public BasicListItem getSelectedBasicItem() {
+		return selectedBasicItem;
+	}
+
+	public void setSelectedBasicItem(BasicListItem selectedBasicItem) {
+		for(StoreSellingItem item : storeSellingItems){
+			if(item.getProductId().equals(selectedBasicItem.getProductId())){
+				selectedItem = item;
+			}
+		}
+		this.selectedBasicItem = selectedBasicItem;
 	}
 
 

@@ -310,6 +310,41 @@ xmlns:pe="http://primefaces.org/ui/extensions">
 			        </h:panelGrid>
 				</p:dialog>
 				</h:form>
+
+    			<!-- View Analysis -->
+    			<p:dialog header="View Analysis" widgetVar="viewAnalysis" width="1250">
+				<h:form id="viewAnalysisForm">
+					<p:panel rendered="#{storeAnalysis.salesTrendForCategoryIncludeProduct!=null}" styleClass="divStyle autoHeightPanel text-align-left">
+			     		<h:outputLabel  value="Select Mode:"/>
+				        <p:selectOneMenu  value="#{storeAnalysis.productAnalysisType}">
+				        	 <p:ajax update=":viewAnalysisForm" listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							 <f:selectItem itemLabel="For Months" itemValue="forMonth" />
+							 <f:selectItem itemLabel="For Years" itemValue="forYear" />
+				        </p:selectOneMenu>
+
+			     		<h:outputLabel  value="Select Year:"
+			     		rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}" />
+				        <p:selectOneMenu  value="#{storeAnalysis.currentYear}"
+				        rendered="#{storeAnalysis.productAnalysisType eq 'forMonth' and storeAnalysis.isForecast eq false}">
+				        	<p:ajax update=":viewAnalysisForm" listener="#{storeAnalysis.refreshSalesVolumeTrendForProduct}"/>
+							<f:selectItems value="#{storeAnalysis.years.entrySet()}" var="year"
+							                    itemLabel="#{year.value}" itemValue="#{year.key}" />
+				        </p:selectOneMenu>
+
+				        <h:outputText value="Forecast: " />
+				        <p:inputSwitch value="#{storeAnalysis.isForecast}">
+				           <p:ajax listener="#{storeAnalysis.refreshSalesVolumeTrendForProductSwitchForecast}" update=":viewAnalysisForm" />
+				        </p:inputSwitch>
+				    </p:panel>
+			        <p:panel styleClass="divStyle autoHeightPanel">
+		     			<p:chart rendered="#{storeAnalysis.salesTrendForCategoryIncludeProduct!=null}" type="line"
+			     		model="#{storeAnalysis.salesTrendForCategoryIncludeProduct}" style="width:1100px;height:350px" />
+		     		</p:panel>
+		     		<p:panel rendered="#{storeAnalysis.salesTrendForCategoryIncludeProduct==null}" styleClass="divStyle autoHeightPanel">
+		     			<h:outputLabel value="There is not any sales record. Maybe regions and stores are not start operating." />
+		     		</p:panel>
+				</h:form>
+				</p:dialog>
 	    </ui:composition>
     </h:body>
 </html>
